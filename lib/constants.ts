@@ -34,3 +34,11 @@ export const socialMedia = [
   },
 ];
 
+export const ANIMATION_DELAYS = {
+  highlights: 0.2,
+  highlightCard: 0.3,
+  highlightCardStagger: 0.1,
+  images: 0.6,
+  imageStagger: 0.1,
+} as const;
+
