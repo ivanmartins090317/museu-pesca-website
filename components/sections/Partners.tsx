@@ -2,17 +2,23 @@
 
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import Image from "next/image";
-import Link from "next/link";
-import { fadeInUp, staggerContainer, defaultTransition } from "@/lib/animations";
+import gsap from "gsap";
+import { defaultTransition } from "@/lib/animations";
 import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
 import type { PartnersProps } from "@/types";
+
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export function Partners({ partners }: PartnersProps) {
   const prefersReducedMotion = useReducedMotion();
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.2 });
+
+  const shouldAnimate = !prefersReducedMotion && isInView;
 
   const partnersByCategory = {
     master: partners.filter((p) => p.category === "master"),
@@ -20,13 +26,60 @@ export function Partners({ partners }: PartnersProps) {
     institutional: partners.filter((p) => p.category === "institutional"),
   };
 
+  //animation GSAP
+  const sectionRef = useRef<HTMLElement>(null);
+  const plantsRef1 = useRef<HTMLDivElement>(null);
+  const plantsRef2 = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (plantsRef1.current && plantsRef2.current && sectionRef.current) {
+      const animation1 = gsap.fromTo(
+        plantsRef1.current,
+        { x: "-100vw", opacity: 0 }, // posição inicial fora da tela à esquerda
+        {
+          x: "0",
+          opacity: 1,
+          duration: 2,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 80%", // quando o topo da seção estiver a 80% da altura da viewport
+            toggleActions: "play reverse play reverse",
+            markers: false,
+          },
+        }
+      );
+      const animation2 = gsap.fromTo(
+        plantsRef2.current,
+        { x: "100vw", opacity: 0 }, // posição inicial fora da tela à esquerda
+        {
+          x: "0",
+          opacity: 1,
+          duration: 2,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 80%", // quando o topo da seção estiver a 80% da altura da viewport
+            toggleActions: "play reverse play reverse",
+            markers: false,
+          },
+        }
+      );
+      return () => {
+        animation1?.scrollTrigger?.kill(); // limpa ao desmontar o componente
+        animation2?.scrollTrigger?.kill(); // limpa ao desmontar o componente
+      };
+    }
+  }, []);
+
   return (
-    <section className="py-section bg-neutral-white">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+    <section
+      ref={sectionRef}
+      className="py-section bg-neutral-white relative overflow-hidden"
+    >
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 h-full pb-96 ">
         <motion.div
           ref={ref}
-          initial={prefersReducedMotion || !isInView ? {} : fadeInUp.hidden}
-          animate={prefersReducedMotion || !isInView ? {} : fadeInUp.visible}
+          initial={shouldAnimate ? { opacity: 0, y: 20 } : undefined}
+          animate={shouldAnimate ? { opacity: 1, y: 0 } : undefined}
           transition={defaultTransition}
           className="text-center mb-12"
         >
@@ -34,15 +87,40 @@ export function Partners({ partners }: PartnersProps) {
             Quem Apoia o Museu
           </h2>
           <p className="text-body text-neutral-gray-800 max-w-2xl mx-auto">
-            Agradecemos aos nossos parceiros e apoiadores que tornam possível nossa missão
+            Agradecemos aos nossos parceiros e apoiadores que tornam possível
+            nossa missão
           </p>
         </motion.div>
+        <div
+          ref={plantsRef1}
+          className="flex w-full justify-start absolute top-1/5 left-0"
+        >
+          <Image
+            src="/images/algas_marinhas 1.png"
+            alt="Partner 1"
+            width={300}
+            height={300}
+            className="object-contain max-h-100"
+          />
+        </div>
+        <div
+          ref={plantsRef2}
+          className="flex w-full justify-end absolute top-1/5 right-0"
+        >
+          <Image
+            src="/images/algas_marinhas2.png"
+            alt="Partner 1"
+            width={300}
+            height={300}
+            className="object-contain max-h-100"
+          />
+        </div>
 
         {/* Patrocinadores Master */}
-        {partnersByCategory.master.length > 0 && (
+        {/* {partnersByCategory.master.length > 0 && (
           <motion.div
-            initial={prefersReducedMotion || !isInView ? {} : fadeInUp.hidden}
-            animate={prefersReducedMotion || !isInView ? {} : fadeInUp.visible}
+            initial={shouldAnimate ? { opacity: 0, y: 20 } : undefined}
+            animate={shouldAnimate ? { opacity: 1, y: 0 } : undefined}
             transition={{ ...defaultTransition, delay: 0.2 }}
             className="mb-16"
           >
@@ -53,9 +131,14 @@ export function Partners({ partners }: PartnersProps) {
               {partnersByCategory.master.map((partner, index) => (
                 <motion.div
                   key={partner.id}
-                  initial={prefersReducedMotion || !isInView ? {} : { opacity: 0, scale: 0.9 }}
-                  animate={prefersReducedMotion || !isInView ? {} : { opacity: 1, scale: 1 }}
-                  transition={{ ...defaultTransition, delay: 0.3 + index * 0.1 }}
+                  initial={
+                    shouldAnimate ? { opacity: 0, scale: 0.9 } : undefined
+                  }
+                  animate={shouldAnimate ? { opacity: 1, scale: 1 } : undefined}
+                  transition={{
+                    ...defaultTransition,
+                    delay: 0.3 + index * 0.1,
+                  }}
                   className="flex items-center justify-center"
                 >
                   {partner.website ? (
@@ -86,13 +169,13 @@ export function Partners({ partners }: PartnersProps) {
               ))}
             </div>
           </motion.div>
-        )}
+        )} */}
 
         {/* Apoiadores */}
-        {partnersByCategory.supporter.length > 0 && (
+        {/* {partnersByCategory.supporter.length > 0 && (
           <motion.div
-            initial={prefersReducedMotion || !isInView ? {} : fadeInUp.hidden}
-            animate={prefersReducedMotion || !isInView ? {} : fadeInUp.visible}
+            initial={shouldAnimate ? { opacity: 0, y: 20 } : undefined}
+            animate={shouldAnimate ? { opacity: 1, y: 0 } : undefined}
             transition={{ ...defaultTransition, delay: 0.4 }}
             className="mb-16"
           >
@@ -103,9 +186,12 @@ export function Partners({ partners }: PartnersProps) {
               {partnersByCategory.supporter.map((partner, index) => (
                 <motion.div
                   key={partner.id}
-                  initial={prefersReducedMotion || !isInView ? {} : { opacity: 0, y: 20 }}
-                  animate={prefersReducedMotion || !isInView ? {} : { opacity: 1, y: 0 }}
-                  transition={{ ...defaultTransition, delay: 0.5 + index * 0.05 }}
+                  initial={shouldAnimate ? { opacity: 0, y: 20 } : undefined}
+                  animate={shouldAnimate ? { opacity: 1, y: 0 } : undefined}
+                  transition={{
+                    ...defaultTransition,
+                    delay: 0.5 + index * 0.05,
+                  }}
                   className="flex items-center justify-center"
                 >
                   {partner.website ? (
@@ -136,13 +222,13 @@ export function Partners({ partners }: PartnersProps) {
               ))}
             </div>
           </motion.div>
-        )}
+        )} */}
 
         {/* Parceiros Institucionais */}
-        {partnersByCategory.institutional.length > 0 && (
+        {/* {partnersByCategory.institutional.length > 0 && (
           <motion.div
-            initial={prefersReducedMotion || !isInView ? {} : fadeInUp.hidden}
-            animate={prefersReducedMotion || !isInView ? {} : fadeInUp.visible}
+            initial={shouldAnimate ? { opacity: 0, y: 20 } : undefined}
+            animate={shouldAnimate ? { opacity: 1, y: 0 } : undefined}
             transition={{ ...defaultTransition, delay: 0.6 }}
           >
             <h3 className="text-h3 font-bold text-primary-ocean mb-8 text-center">
@@ -152,9 +238,12 @@ export function Partners({ partners }: PartnersProps) {
               {partnersByCategory.institutional.map((partner, index) => (
                 <motion.div
                   key={partner.id}
-                  initial={prefersReducedMotion || !isInView ? {} : { opacity: 0, y: 20 }}
-                  animate={prefersReducedMotion || !isInView ? {} : { opacity: 1, y: 0 }}
-                  transition={{ ...defaultTransition, delay: 0.7 + index * 0.05 }}
+                  initial={shouldAnimate ? { opacity: 0, y: 20 } : undefined}
+                  animate={shouldAnimate ? { opacity: 1, y: 0 } : undefined}
+                  transition={{
+                    ...defaultTransition,
+                    delay: 0.7 + index * 0.05,
+                  }}
                   className="flex items-center justify-center"
                 >
                   {partner.website ? (
@@ -185,9 +274,8 @@ export function Partners({ partners }: PartnersProps) {
               ))}
             </div>
           </motion.div>
-        )}
+        )} */}
       </div>
     </section>
   );
 }
-

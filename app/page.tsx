@@ -9,8 +9,9 @@ import { Location } from "@/components/sections/Location";
 
 // Dados mockados - em produção viriam de um CMS ou API
 const heroData = {
-  title: "Museu de Pesca Santos",
-  subtitle: "Preservando a história marítima brasileira desde 1934",
+  title: "Museu de Pesca de Santos",
+  subtitle:
+    "Preservando a história marítima brasileira desde 1934 agora disponível para você explorar virtualmente",
   badge: {
     text: "Desde 1934",
     variant: "highlight" as const,
@@ -36,8 +37,9 @@ const aboutData = {
     { label: "Área do Museu", value: "1.200m²" },
   ],
   images: [
-    "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&q=80",
-    "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&q=80",
+    "/images/entrada_museu.png",
+    "/images/museu-de-pesca-santos-visao-fora.webp",
+    "/images/museu-pesca-peixes.jpg",
   ],
 };
 
@@ -51,6 +53,16 @@ const virtual360Data = {
     "Biblioteca Marítima",
     "Auditório",
     "Área Externa",
+  ],
+  images: [
+    "/images/entrada_museu.png",
+    "/images/museu-de-pesca-santos-visao-fora.webp",
+    "/images/museu-pesca-peixes.jpg",
+    "/images/imagem_mar_ok.png",
+    "/images/entrada_museu.png",
+    "/images/museu-de-pesca-santos-visao-fora.webp",
+    "/images/museu-pesca-peixes.jpg",
+    "/images/imagem_mar_ok.png",
   ],
   cta: {
     label: "Agende sua Visita Presencial",
@@ -147,8 +159,7 @@ const locationData = {
 export default function HomePage() {
   return (
     <>
-      <Header />
-      <main>
+      <main className="overflow-hidden">
         <Hero {...heroData} />
         <About {...aboutData} />
         <Virtual360 {...virtual360Data} />

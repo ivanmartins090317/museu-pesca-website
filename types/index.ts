@@ -27,6 +27,7 @@ export interface Virtual360Props {
   title: string;
   embedUrl: string;
   areas: string[];
+  images: string[];
   cta: {
     label: string;
     href: string;

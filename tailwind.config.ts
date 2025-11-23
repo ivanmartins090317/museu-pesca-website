@@ -15,12 +15,13 @@ const config: Config = {
           stone: "#8B9B9B",
           ocean: "#1A6B6B",
           aqua: "#4DB8B8",
+          sea: "#082536",
         },
         neutral: {
           white: "#FFFFFF",
           black: "#0A0A0A",
           gray: {
-            100: "#F5F5F5",
+            100: "#FaFaFa",
             200: "#E5E5E5",
             300: "#D4D4D4",
             800: "#262626",
@@ -47,4 +48,3 @@ const config: Config = {
   plugins: [],
 };
 export default config;
-
