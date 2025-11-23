@@ -7,6 +7,7 @@ import { defaultTransition } from "@/lib/animations";
 import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
 import type { HeroProps } from "@/types";
 import Image from "next/image";
+import { Header } from "../shared/Header";
 export function Hero({
   title,
   subtitle,
@@ -19,52 +20,54 @@ export function Hero({
   const y = useTransform(scrollY, [0, 500], [0, 150]);
 
   return (
-    <section className="relative h-screen md:h-[100vh] flex items-center justify-center overflow-hidden">
-      {/* Background Image with Parallax */}
+    <section>
+      <Header />
+      <div className="relative h-screen md:h-[100vh] flex items-center justify-center overflow-hidden">
+        {/* Background Image with Parallax */}
 
-      <div className="absolute inset-0 w-full h-full z-0">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="auto"
-          className="absolute inset-0 w-full h-full object-cover"
-        >
-          <source src="video/video_hero_museu.mp4" type="video/mp4" />
-          Seu navegador não suporta vídeos HTML5.
-        </video>
-        {/* Overlay Gradient */}
-        {/* <div className="absolute inset-0 bg-gradient-to-b from-primary-ocean/30 via-primary-ocean/50 to-primary-ocean/70" /> */}
-      </div>
-
-      {/* Content */}
-      <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-0 text-start">
-        <motion.div
-          initial={prefersReducedMotion ? undefined : { opacity: 0, y: 20 }}
-          animate={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
-          transition={defaultTransition}
-          className="max-w-4xl ml-8"
-        >
-          <motion.h1
-            initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
-            animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
-            transition={{ ...defaultTransition, delay: 0.3 }}
-            className="text-hero leading-none font-black text-neutral-white mb-6 text-balance"
+        <div className="absolute inset-0 w-full h-full z-0">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+            className="absolute inset-0 w-full h-full object-cover"
           >
-            {title}
-          </motion.h1>
+            <source src="video/video_hero_museu.mp4" type="video/mp4" />
+            Seu navegador não suporta vídeos HTML5.
+          </video>
+          {/* Overlay Gradient */}
+          {/* <div className="absolute inset-0 bg-gradient-to-b from-primary-ocean/30 via-primary-ocean/50 to-primary-ocean/70" /> */}
+        </div>
 
-          <motion.p
-            initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
-            animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
-            transition={{ ...defaultTransition, delay: 0.4 }}
-            className="text-body text-neutral-white mb-8 max-w-2xl  text-balance"
+        {/* Content */}
+        <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-0 text-center flex flex-col items-center justify-center">
+          <motion.div
+            initial={prefersReducedMotion ? undefined : { opacity: 0, y: 20 }}
+            animate={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
+            transition={defaultTransition}
+            className="max-w-4xl ml-8"
           >
-            {subtitle}
-          </motion.p>
+            <motion.h1
+              initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
+              animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
+              transition={{ ...defaultTransition, delay: 0.3 }}
+              className="text-5xl md:text-7xl mx-auto leading-none font-black text-neutral-white mb-6 text-balance"
+            >
+              {title}
+            </motion.h1>
 
-          {/* <motion.div
+            <motion.p
+              initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
+              animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
+              transition={{ ...defaultTransition, delay: 0.4 }}
+              className="text-body mx-auto text-neutral-white mb-8 max-w-2xl  text-balance"
+            >
+              {subtitle}
+            </motion.p>
+
+            {/* <motion.div
             initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
             animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
             transition={{ ...defaultTransition, delay: 0.2 }}
@@ -77,20 +80,24 @@ export function Hero({
             </Badge>
           </motion.div> */}
 
-          <motion.div
-            initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
-            animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
-            transition={{ ...defaultTransition, delay: 0.5 }}
-          >
-            <Button asChild size="lg" className="text-lg">
-              <Link href={cta.href}>{cta.label}</Link>
-            </Button>
+            <motion.div
+              initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
+              animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
+              transition={{ ...defaultTransition, delay: 0.5 }}
+            >
+              <Button
+                asChild
+                size="lg"
+                className="text-lg rounded-full bg-primary-sea/20 backdrop-blur-md text-neutral-white hover:bg-primary-sea hover:text-neutral-white duration-700"
+              >
+                <Link href={cta.href}>{cta.label}</Link>
+              </Button>
+            </motion.div>
           </motion.div>
-        </motion.div>
-      </div>
+        </div>
 
-      {/* Scroll Indicator */}
-      {/* <motion.div
+        {/* Scroll Indicator */}
+        {/* <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1, duration: 0.5 }}
@@ -109,13 +116,14 @@ export function Hero({
         </motion.div>
       </motion.div> */}
 
-      <div className="absolute inset-x-0 bottom-0">
-        <Image
-          src="/images/waves-divider.svg"
-          alt="Museu de Pesca de Santos"
-          width={1920}
-          height={1080}
-        />
+        <div className="absolute inset-x-0 bottom-0">
+          <Image
+            src="/images/waves-divider.svg"
+            alt="Museu de Pesca de Santos"
+            width={1920}
+            height={1080}
+          />
+        </div>
       </div>
     </section>
   );
