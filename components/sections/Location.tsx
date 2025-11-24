@@ -14,30 +14,53 @@ export function Location({
   contact,
   parkingInfo,
   publicTransport,
+  mapShareUrl,
 }: LocationProps) {
   const prefersReducedMotion = useReducedMotion();
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.2 });
 
-  const mapUrl = `https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&q=${address.coordinates.lat},${address.coordinates.lng}&zoom=15`;
+  // Gera a URL do embed do Google Maps
+  const getMapEmbedUrl = (): string => {
+    // Prepara o endereço completo para usar como query
+    const addressQuery = encodeURIComponent(
+      `${address.street}, ${address.city}, ${address.state}`
+    );
+
+    // Se tiver link compartilhado ou API key, usa o endereço para gerar o embed
+    // O Google Maps Embed aceita o endereço como query string
+    if (mapShareUrl || process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY) {
+      // Se tiver API key, usa a API oficial do Google Maps Embed
+      if (process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY) {
+        return `https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&q=${addressQuery}&zoom=15`;
+      }
+      // Se não tiver API key mas tiver link compartilhado, usa o formato básico com endereço
+      return `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3657.5!2d${address.coordinates.lng}!3d${address.coordinates.lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjPCsDU4JzI0LjYiUyA0NsKwMTknMDUuNSJX!5e0!3m2!1spt-BR!2sbr!4v1234567890&q=${addressQuery}`;
+    }
+
+    // Fallback: usa coordenadas diretamente no formato de embed básico
+    return `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3657.5!2d${address.coordinates.lng}!3d${address.coordinates.lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjPCsDU4JzI0LjYiUyA0NsKwMTknMDUuNSJX!5e0!3m2!1spt-BR!2sbr!4v1234567890&q=${addressQuery}`;
+  };
+
+  const mapUrl = getMapEmbedUrl();
+
+  const shouldAnimate = !prefersReducedMotion && isInView;
 
   return (
     <section
       id="localizacao"
       ref={ref}
-      className="py-section bg-neutral-gray-100"
+      className="py-section bg-primary-sea_floor/10"
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
-          initial={prefersReducedMotion || !isInView ? {} : fadeInUp.hidden}
-          animate={prefersReducedMotion || !isInView ? {} : fadeInUp.visible}
+          initial={shouldAnimate ? { opacity: 0, y: 20 } : {}}
+          animate={shouldAnimate ? { opacity: 1, y: 0 } : {}}
           transition={defaultTransition}
           className="text-center mb-12"
         >
-          <h2 className="text-h2 font-bold text-primary-ocean mb-4">
-            Como Chegar
-          </h2>
-          <p className="text-body text-neutral-gray-800 max-w-2xl mx-auto">
+          <h2 className="text-h2 font-bold text-white mb-4">Como Chegar</h2>
+          <p className="text-body text-white max-w-2xl mx-auto">
             Encontre-nos facilmente e planeje sua visita
           </p>
         </motion.div>
@@ -45,12 +68,16 @@ export function Location({
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Google Maps */}
           <motion.div
-            initial={prefersReducedMotion || !isInView ? {} : { opacity: 0, x: -40 }}
-            animate={prefersReducedMotion || !isInView ? {} : { opacity: 1, x: 0 }}
+            initial={
+              prefersReducedMotion || !isInView ? {} : { opacity: 0, x: -40 }
+            }
+            animate={
+              prefersReducedMotion || !isInView ? {} : { opacity: 1, x: 0 }
+            }
             transition={{ ...defaultTransition, delay: 0.2 }}
             className="relative h-[500px] rounded-lg overflow-hidden shadow-lg"
           >
-            {process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ? (
+            {mapUrl ? (
               <iframe
                 src={mapUrl}
                 width="100%"
@@ -64,7 +91,8 @@ export function Location({
             ) : (
               <div className="w-full h-full bg-neutral-gray-200 flex items-center justify-center">
                 <p className="text-neutral-gray-800">
-                  Configure NEXT_PUBLIC_GOOGLE_MAPS_API_KEY para exibir o mapa
+                  Configure o link do mapa ou NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
+                  para exibir o mapa
                 </p>
               </div>
             )}
@@ -72,10 +100,14 @@ export function Location({
 
           {/* Information Card */}
           <motion.div
-            initial={prefersReducedMotion || !isInView ? {} : { opacity: 0, x: 40 }}
-            animate={prefersReducedMotion || !isInView ? {} : { opacity: 1, x: 0 }}
+            initial={
+              prefersReducedMotion || !isInView ? {} : { opacity: 0, x: 40 }
+            }
+            animate={
+              prefersReducedMotion || !isInView ? {} : { opacity: 1, x: 0 }
+            }
             transition={{ ...defaultTransition, delay: 0.3 }}
-            className="bg-primary-stone text-neutral-white rounded-lg p-8 shadow-lg"
+            className="bg-primary-sea_floor/30 backdrop-blur-md text-neutral-white rounded-lg p-8 shadow-lg"
           >
             <div className="space-y-6">
               {/* Address */}
@@ -98,7 +130,9 @@ export function Location({
                 <div className="flex items-start mb-2">
                   <Clock className="w-5 h-5 mr-3 mt-1 flex-shrink-0" />
                   <div>
-                    <h3 className="font-bold text-lg mb-1">Horário de Funcionamento</h3>
+                    <h3 className="font-bold text-lg mb-1">
+                      Horário de Funcionamento
+                    </h3>
                     <p className="text-neutral-white/90">
                       <strong>Segunda a Sexta:</strong> {hours.weekday}
                       <br />
@@ -125,7 +159,10 @@ export function Location({
                         <>
                           <br />
                           <a
-                            href={`https://wa.me/${contact.whatsapp.replace(/\D/g, "")}`}
+                            href={`https://wa.me/${contact.whatsapp.replace(
+                              /\D/g,
+                              ""
+                            )}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="hover:text-primary-aqua transition-colors"
@@ -156,7 +193,9 @@ export function Location({
                   <div className="flex items-start mb-2">
                     <Bus className="w-5 h-5 mr-3 mt-1 flex-shrink-0" />
                     <div>
-                      <h3 className="font-bold text-lg mb-1">Transporte Público</h3>
+                      <h3 className="font-bold text-lg mb-1">
+                        Transporte Público
+                      </h3>
                       <ul className="space-y-1 text-neutral-white/90">
                         {publicTransport.map((transport, index) => (
                           <li key={index}>• {transport}</li>
@@ -173,4 +212,3 @@ export function Location({
     </section>
   );
 }
-

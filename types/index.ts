@@ -25,7 +25,7 @@ export interface AboutSection {
 
 export interface Virtual360Props {
   title: string;
-  embedUrl: string;
+  embedUrl: string | string[];
   areas: string[];
   images: string[];
   cta: {
@@ -83,6 +83,7 @@ export interface LocationProps {
   };
   parkingInfo: string;
   publicTransport: string[];
+  mapShareUrl?: string;
 }
 
 export interface FooterProps {
