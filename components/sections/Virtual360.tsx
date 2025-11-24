@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { Virtual360Props } from "@/types";
@@ -31,12 +31,6 @@ export function Virtual360({
     }
   }, [embedUrls]);
 
-  // Auto rotate
-  useEffect(() => {
-    if (!embedUrls || embedUrls.length === 0) return;
-    const interval = setInterval(next, 5000);
-    return () => clearInterval(interval);
-  }, [embedUrls, next]);
   return (
     <section id="visita-360" className="relative py-32 px-6 overflow-hidden">
       {/* Light overlay for readability */}
