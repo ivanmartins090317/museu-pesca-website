@@ -1,170 +1,131 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
-import { useRef } from "react";
 import Image from "next/image";
-import { staggerContainer } from "@/lib/animations";
-import { useAnimationProps } from "@/lib/hooks/useAnimationProps";
-import { ANIMATION_DELAYS } from "@/lib/constants";
 import type { AboutSection } from "@/types";
 
-interface HighlightCardProps {
-  highlight: { label: string; value: string };
-  index: number;
-  isInView: boolean;
-}
+interface AboutProps extends AboutSection {}
 
-function HighlightCard({ highlight, index, isInView }: HighlightCardProps) {
-  const cardAnimation = useAnimationProps({
-    isInView,
-    delay:
-      ANIMATION_DELAYS.highlightCard +
-      index * ANIMATION_DELAYS.highlightCardStagger,
-  });
-
+export function About({ title, description, highlights, images }: AboutProps) {
   return (
-    <motion.div
-      {...cardAnimation}
-      className="bg-neutral-white p-6 rounded-lg shadow-sm border border-neutral-gray-200 hover:shadow-md transition-shadow"
-    >
-      <div className="text-4xl font-black text-primary-aqua mb-2">
-        {highlight.value}
+    <section id="sobre" className="relative py-32 px-6 overflow-hidden">
+      {/* Light overlay for readability */}
+      <div className="absolute inset-0 bg-[#0a1628]/30" />
+
+      {/* Background Elements */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute top-1/4 left-0 w-96 h-96 bg-cyan-500 rounded-full blur-[120px]" />
+        <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-blue-500 rounded-full blur-[120px]" />
       </div>
-      <div className="text-sm text-neutral-gray-800 font-medium">
-        {highlight.label}
-      </div>
-    </motion.div>
-  );
-}
 
-interface ImageCardProps {
-  image: string;
-  index: number;
-  isInView: boolean;
-  className?: string;
-  style?: React.CSSProperties;
-}
-
-function ImageCard({
-  image,
-  index,
-  isInView,
-  className = "",
-  style,
-}: ImageCardProps) {
-  const imageAnimation = useAnimationProps({
-    isInView,
-    delay: ANIMATION_DELAYS.images + index * ANIMATION_DELAYS.imageStagger,
-  });
-
-  return (
-    <motion.div
-      {...imageAnimation}
-      className={`relative rounded-lg overflow-hidden shadow-xl ${className}`}
-      style={style}
-    >
-      <Image
-        src={image}
-        alt={`Imagem do museu ${index + 1}`}
-        fill
-        className="object-cover"
-        sizes="(max-width: 768px) 100vw, 50vw"
-      />
-    </motion.div>
-  );
-}
-
-export function About({
-  title,
-  description,
-  highlights,
-  images,
-}: AboutSection) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.3 });
-
-  const containerAnimation = useAnimationProps({
-    variants: staggerContainer,
-    isInView,
-  });
-
-  const textAnimation = useAnimationProps({ isInView });
-  const highlightsAnimation = useAnimationProps({
-    isInView,
-    delay: ANIMATION_DELAYS.highlights,
-  });
-  const imagesAnimation = useAnimationProps({
-    isInView,
-    delay: ANIMATION_DELAYS.images,
-  });
-
-  return (
-    <section id="sobre" ref={ref} className="py-section bg-neutral-gray-100">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          {...containerAnimation}
-          className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center"
-        >
+      <div className="max-w-7xl mx-auto relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Text Content */}
-          <motion.div {...textAnimation}>
-            <h2 className="text-h2 font-bold text-primary-sea mb-6">{title}</h2>
-            <div className="space-y-4 text-body text-neutral-gray-800">
-              {description.map((paragraph, index) => (
-                <p key={index}>{paragraph}</p>
-              ))}
-            </div>
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="space-y-6"
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+              viewport={{ once: true }}
+            >
+              <span className="text-white uppercase tracking-wider">
+                Sobre Nós
+              </span>
+              <motion.h2
+                className="text-5xl md:text-6xl text-white font-bold mt-4"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1, delay: 0.3, ease: "easeOut" }}
+                viewport={{ once: true }}
+              >
+                {title}
+              </motion.h2>
+            </motion.div>
+
+            {description.map((paragraph, index) => (
+              <motion.p
+                key={index}
+                className="text-gray-300 text-lg leading-relaxed"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ duration: 0.8, delay: 0.4 + index * 0.2 }}
+                viewport={{ once: true }}
+              >
+                {paragraph}
+              </motion.p>
+            ))}
+
+            {highlights && highlights.length > 0 && (
+              <motion.div
+                className="grid grid-cols-2 gap-4 pt-6"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.8 }}
+                viewport={{ once: true }}
+              >
+                {highlights.map((highlight, index) => (
+                  <motion.div
+                    key={index}
+                    className="bg-cyan-500/10 border border-cyan-500/30 rounded-lg p-4"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5, delay: 0.9 + index * 0.1 }}
+                    viewport={{ once: true }}
+                  >
+                    <div className="text-3xl font-bold text-cyan-400">
+                      {highlight.value}
+                    </div>
+                    <div className="text-sm text-gray-400 mt-1">
+                      {highlight.label}
+                    </div>
+                  </motion.div>
+                ))}
+              </motion.div>
+            )}
           </motion.div>
 
-          {/* Images Collage */}
-          {images.length > 0 && (
+          {/* Image Grid */}
+          {images && images.length > 0 && (
             <motion.div
-              {...imagesAnimation}
-              className="mt-16 flex flex-col sm:flex-row gap-4 sm:gap-6 w-full"
+              className="grid grid-cols-2 gap-4"
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
             >
-              {/* Smaller Images Column */}
-              <div className="flex flex-col gap-4 sm:gap-6 flex-1 sm:flex-[0.8]">
-                {/* Top Image */}
-                {images[1] && (
-                  <div className="relative flex-1 min-h-[200px] sm:min-h-[240px] md:min-h-[280px] mt-16">
-                    <ImageCard
-                      key={images[1]}
-                      image={images[1]}
-                      index={1}
-                      isInView={isInView}
-                      className="w-full h-full"
+              {images.map((imageSrc, index) => (
+                <motion.div
+                  key={index}
+                  className={`relative overflow-hidden rounded-2xl ${
+                    index === 0 ? "col-span-2" : ""
+                  }`}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.2 }}
+                  viewport={{ once: true }}
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <div className="relative aspect-[4/3] overflow-hidden group">
+                    <Image
+                      src={imageSrc}
+                      alt={`Imagem ${index + 1} do museu`}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0a1628]/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </div>
-                )}
-
-                {/* Bottom Image */}
-                {images[2] && (
-                  <div className="relative flex-1 min-h-[200px] sm:min-h-[240px] md:min-h-[280px]">
-                    <ImageCard
-                      key={images[2]}
-                      image={images[2]}
-                      index={2}
-                      isInView={isInView}
-                      className="w-full h-full"
-                    />
-                  </div>
-                )}
-              </div>
-              {/* Main Large Image (Right/Center) */}
-              {images[0] && (
-                <div className="flex-1 relative min-h-[300px] sm:min-h-[400px] md:min-h-[500px] mb-16">
-                  <ImageCard
-                    key={images[0]}
-                    image={images[0]}
-                    index={0}
-                    isInView={isInView}
-                    className="w-full h-full"
-                  />
-                </div>
-              )}
+                </motion.div>
+              ))}
             </motion.div>
           )}
-        </motion.div>
+        </div>
       </div>
     </section>
   );
