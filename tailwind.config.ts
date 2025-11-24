@@ -15,7 +15,8 @@ const config: Config = {
           stone: "#8B9B9B",
           ocean: "#1A6B6B",
           aqua: "#4DB8B8",
-          sea: "#082536",
+          sea: "#0d1f3c",
+          sea_floor: "#050d1a",
         },
         neutral: {
           white: "#FFFFFF",
