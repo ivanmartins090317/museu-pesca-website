@@ -1,5 +1,5 @@
 export const siteConfig = {
-  name: "Museu de Pesca de Santos",
+  name: "Museu de Pesca",
   description: "Preservando a história marítima brasileira desde 1934",
   url: "https://museu-pesca-santos.com.br",
 };
@@ -41,4 +41,3 @@ export const ANIMATION_DELAYS = {
   images: 0.6,
   imageStagger: 0.1,
 } as const;
-
