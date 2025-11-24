@@ -20,13 +20,13 @@ export function Hero({
   const y = useTransform(scrollY, [0, 500], [0, 150]);
 
   return (
-    <section>
-      <Header />
-      <div className="relative h-screen md:h-[100vh] flex items-center justify-center overflow-hidden">
+    <section className="bg-primary-sea/20">
+      {/* <Header /> */}
+      <div className="relative h-screen md:h-[100vh] flex items-center justify-center overflow-hidden bg-transparent">
         {/* Background Image with Parallax */}
 
         <div className="absolute inset-0 w-full h-full z-0">
-          <video
+          {/* <video
             autoPlay
             loop
             muted
@@ -36,7 +36,7 @@ export function Hero({
           >
             <source src="video/video_hero_museu.mp4" type="video/mp4" />
             Seu navegador não suporta vídeos HTML5.
-          </video>
+          </video> */}
           {/* Overlay Gradient */}
           {/* <div className="absolute inset-0 bg-gradient-to-b from-primary-ocean/30 via-primary-ocean/50 to-primary-ocean/70" /> */}
         </div>
@@ -88,7 +88,7 @@ export function Hero({
               <Button
                 asChild
                 size="lg"
-                className="text-lg rounded-full bg-primary-sea/20 backdrop-blur-md text-neutral-white hover:bg-primary-sea hover:text-neutral-white duration-700"
+                className="text-lg rounded-full bg-primary-sea/60 backdrop-blur-md text-neutral-white hover:bg-primary-sea hover:text-neutral-white duration-700"
               >
                 <Link href={cta.href}>{cta.label}</Link>
               </Button>
@@ -116,14 +116,14 @@ export function Hero({
         </motion.div>
       </motion.div> */}
 
-        <div className="absolute inset-x-0 bottom-0">
+        {/* <div className="absolute inset-x-0 bottom-0">
           <Image
             src="/images/waves-divider.svg"
             alt="Museu de Pesca de Santos"
             width={1920}
             height={1080}
           />
-        </div>
+        </div> */}
       </div>
     </section>
   );
