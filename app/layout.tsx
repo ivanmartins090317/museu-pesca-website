@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 import "./globals.css";
 import { siteConfig } from "@/lib/constants";
+import { BackgroundScroll } from "@/components/shared/BackgroundScroll";
 
 const roboto = Roboto({
   weight: ["100", "300", "400", "500", "700", "900"],
@@ -38,10 +39,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR" className={roboto.variable}>
-      <body
-        // No body do layout.tsx ou no main do page.tsx
-        className="bg-[url('/images/bg-sea-floor_.svg')] bg-fixed bg-[size:140%] md:bg-[size:100%] bg-top bg-no-repeat"
-      >
+      <body className="relative">
+        <BackgroundScroll />
         {children}
       </body>
     </html>

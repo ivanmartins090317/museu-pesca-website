@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { defaultTransition } from "@/lib/animations";
@@ -16,8 +16,6 @@ export function Hero({
   backgroundImage,
 }: HeroProps) {
   const prefersReducedMotion = useReducedMotion();
-  const { scrollY } = useScroll();
-  const y = useTransform(scrollY, [0, 500], [0, 150]);
 
   return (
     <section className="bg-primary-sea/20">

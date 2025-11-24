@@ -83,7 +83,7 @@ export function Header() {
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
-              className="md:hidden w-full mt-4 pb-4 flex flex-col gap-4 overflow-hidden bg-primary-sea/10 backdrop-blur-md rounded-md p-4"
+              className="md:hidden w-full mt-4 pb-4 flex flex-col gap-4 overflow-hidden bg-primary-sea_floor/5 backdrop-blur-md rounded-md p-4"
             >
               {navigation.map((item) => (
                 <Link
