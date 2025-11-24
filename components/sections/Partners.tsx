@@ -73,7 +73,7 @@ export function Partners({ partners }: PartnersProps) {
   return (
     <section
       ref={sectionRef}
-      className="py-section bg-neutral-white relative overflow-hidden"
+      className="py-section relative overflow-hidden bg-transparent"
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 h-full pb-96 ">
         <motion.div
@@ -83,10 +83,10 @@ export function Partners({ partners }: PartnersProps) {
           transition={defaultTransition}
           className="text-center mb-12"
         >
-          <h2 className="text-h2 font-bold text-primary-ocean mb-4">
+          <h2 className="text-h2 font-bold text-white mb-4">
             Quem Apoia o Museu
           </h2>
-          <p className="text-body text-neutral-gray-800 max-w-2xl mx-auto">
+          <p className="text-body text-white max-w-lg mx-auto">
             Agradecemos aos nossos parceiros e apoiadores que tornam possível
             nossa missão
           </p>
