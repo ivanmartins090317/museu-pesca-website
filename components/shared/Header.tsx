@@ -1,81 +1,104 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X } from "lucide-react";
-import { navigation } from "@/lib/constants";
-import Image from "next/image";
+import { Waves, Menu, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { navigation, siteConfig } from "@/lib/constants";
 
 export function Header() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <header className="w-3/4 rounded-full absolute mx-auto left-0 right-0 z-50 bg-white/10 backdrop-blur-md border border-white/20 shadow-lg top-4">
-      <nav className="container w-3/4 mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify- h-12">
-          {/* <Link
-            href="/"
-            className="text-2xl font-bold text-primary-ocean hover:text-primary-aqua transition-colors"
+    <motion.nav
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.6 }}
+      className={`fixed w-5/6 mx-auto rounded-md top-4 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled
+          ? "bg-[#0a1628]/70 backdrop-blur-xl border-b border-white/10"
+          : "bg-transparent"
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-6 py-4">
+        <div className="flex items-center justify-between">
+          {/* Logo */}
+          <motion.div
+            className="flex items-center gap-2"
+            whileHover={{ scale: 1.05 }}
+            transition={{ type: "spring", stiffness: 300 }}
           >
-            <Image
-              src="/logos/logo-museu-predio.png"
-              alt="Museu de Pesca de Santos"
-              width={100}
-              height={100}
-            />
-          </Link> */}
+            <Link href="/" className="flex items-center gap-2">
+              <span className="hidden md:block text-white text-xl font-bold">
+                {siteConfig.name}
+              </span>
+            </Link>
+          </motion.div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            {navigation.map((item) => (
-              <Link
+          {/* Desktop Menu */}
+          <div className="hidden md:flex items-center gap-8">
+            {navigation.map((item, index) => (
+              <motion.div
                 key={item.href}
-                href={item.href}
-                className="text-neutral-gray-800 text-lg hover:bg-neutral-white py-2 px-4 rounded-full transition-colors font-semibold duration-300"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                whileHover={{ y: -2 }}
               >
-                {item.label}
-              </Link>
+                <Link
+                  href={item.href}
+                  className="text-gray-300 hover:text-cyan-400 transition-colors cursor-pointer"
+                >
+                  {item.label}
+                </Link>
+              </motion.div>
             ))}
           </div>
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden p-2 text-neutral-gray-800 hover:text-primary-ocean transition-colors"
-            onClick={() => setIsOpen(!isOpen)}
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="md:hidden text-white p-2"
             aria-label="Toggle menu"
-            aria-expanded={isOpen}
+            aria-expanded={isMobileMenuOpen}
           >
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
 
-        {/* Mobile Navigation */}
+        {/* Mobile Menu */}
         <AnimatePresence>
-          {isOpen && (
+          {isMobileMenuOpen && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
-              className="md:hidden overflow-hidden"
+              className="md:hidden w-full mt-4 pb-4 flex flex-col gap-4 overflow-hidden bg-primary-sea/10 backdrop-blur-md rounded-md p-4"
             >
-              <div className="py-4 space-y-4">
-                {navigation.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="block text-neutral-gray-800 hover:text-primary-ocean transition-colors font-medium"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-              </div>
+              {navigation.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="text-gray-300 hover:text-cyan-400 transition-colors"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {item.label}
+                </Link>
+              ))}
             </motion.div>
           )}
         </AnimatePresence>
-      </nav>
-    </header>
+      </div>
+    </motion.nav>
   );
 }
