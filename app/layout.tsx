@@ -38,8 +38,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR" className={roboto.variable}>
-      <body>{children}</body>
+      <body
+        // No body do layout.tsx ou no main do page.tsx
+        className="bg-[url('/images/bg-sea-floor_.svg')] bg-fixed bg-[size:140%] md:bg-[size:100%] bg-top bg-no-repeat"
+      >
+        {children}
+      </body>
     </html>
   );
 }
-
