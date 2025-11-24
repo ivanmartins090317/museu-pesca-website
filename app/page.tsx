@@ -9,7 +9,7 @@ import { Location } from "@/components/sections/Location";
 
 // Dados mockados - em produção viriam de um CMS ou API
 const heroData = {
-  title: "Museu de Pesca de Santos",
+  title: "Museu de Pesca",
   subtitle:
     "Preservando a história marítima brasileira desde 1934 agora disponível para você explorar virtualmente",
   badge: {
@@ -45,7 +45,10 @@ const aboutData = {
 
 const virtual360Data = {
   title: "Explore o Museu Virtualmente",
-  embedUrl: "https://my.matterport.com/show/?m=example123",
+  embedUrl: [
+    "https://my.matterport.com/show/?m=X9SyiXKERd4",
+    "https://my.matterport.com/show/?m=r1yf88xgFsk",
+  ],
   areas: [
     "Sala Principal",
     "Exposição de Embarcações",
@@ -154,12 +157,14 @@ const locationData = {
     "Linha 25 - Praia do Gonzaga",
     "Estação da CPTM próxima",
   ],
+  mapShareUrl: "https://maps.app.goo.gl/nrinDrkvR4FkiLbh8",
 };
 
 export default function HomePage() {
   return (
     <>
       <main className="overflow-hidden">
+        <Header />
         <Hero {...heroData} />
         <About {...aboutData} />
         <Virtual360 {...virtual360Data} />
