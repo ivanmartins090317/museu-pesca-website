@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { Virtual360Props } from "@/types";
@@ -18,6 +18,25 @@ export function Virtual360({
     [embedUrl]
   );
   const [current, setCurrent] = useState(0);
+  const [mounted, setMounted] = useState(false);
+
+  // Calcular valores aleatórios apenas no cliente para evitar erro de hidratação
+  const backgroundElements = useMemo(() => {
+    return Array.from({ length: 20 }, (_, i) => ({
+      id: i,
+      width: Math.random() * 300 + 100,
+      height: Math.random() * 300 + 100,
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+      duration: Math.random() * 5 + 5,
+      delay: Math.random() * 2,
+    }));
+  }, []);
+
+  // Garantir que só renderiza no cliente
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const next = useCallback(() => {
     if (embedUrls && embedUrls.length > 0) {
@@ -37,29 +56,31 @@ export function Virtual360({
       <div className="absolute inset-0 bg-primary-sea/40" />
 
       {/* Background Elements */}
-      <div className="absolute inset-0 opacity-5">
-        {[...Array(20)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute rounded-full border border-cyan-500"
-            style={{
-              width: Math.random() * 300 + 100,
-              height: Math.random() * 300 + 100,
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-            }}
-            animate={{
-              scale: [1, 1.2, 1],
-              opacity: [0.3, 0.6, 0.3],
-            }}
-            transition={{
-              duration: Math.random() * 5 + 5,
-              repeat: Infinity,
-              delay: Math.random() * 2,
-            }}
-          />
-        ))}
-      </div>
+      {mounted && (
+        <div className="absolute inset-0 opacity-5">
+          {backgroundElements.map((element) => (
+            <motion.div
+              key={element.id}
+              className="absolute rounded-full border border-cyan-500"
+              style={{
+                width: element.width,
+                height: element.height,
+                left: `${element.left}%`,
+                top: `${element.top}%`,
+              }}
+              animate={{
+                scale: [1, 1.2, 1],
+                opacity: [0.3, 0.6, 0.3],
+              }}
+              transition={{
+                duration: element.duration,
+                repeat: Infinity,
+                delay: element.delay,
+              }}
+            />
+          ))}
+        </div>
+      )}
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Header */}
@@ -162,7 +183,7 @@ export function Virtual360({
                         <iframe
                           src={url}
                           className="w-full h-full border-0"
-                          allow="fullscreen; vr; accelerometer; gyroscope"
+                          allow="fullscreen; accelerometer; gyroscope"
                           allowFullScreen
                           title={`Visita Virtual 360° - Museu de Pesca de Santos - ${
                             index + 1
