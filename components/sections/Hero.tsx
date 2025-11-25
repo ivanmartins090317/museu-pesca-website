@@ -40,18 +40,18 @@ export function Hero({
         </div>
 
         {/* Content */}
-        <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-0 text-center flex flex-col items-center justify-center">
+        <div className="relative z-10 container mx-auto px-2 sm:px-6 lg:px-0 text-center flex flex-col items-center justify-center">
           <motion.div
             initial={prefersReducedMotion ? undefined : { opacity: 0, y: 20 }}
             animate={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
             transition={defaultTransition}
-            className="max-w-4xl ml-8"
+            className="max-w-4xl ml-0 md:ml-8"
           >
             <motion.h1
               initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
               animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
               transition={{ ...defaultTransition, delay: 0.3 }}
-              className="text-5xl md:text-7xl mx-auto leading-none font-black text-neutral-white mb-6 text-balance"
+              className="text-4xl md:text-7xl mx-auto leading-none font-black text-neutral-white mb-6 text-balance"
             >
               {title}
             </motion.h1>
@@ -60,7 +60,7 @@ export function Hero({
               initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
               animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
               transition={{ ...defaultTransition, delay: 0.4 }}
-              className="text-body mx-auto text-neutral-white mb-8 max-w-2xl  text-balance"
+              className="text-sm md:text-body mx-auto text-neutral-white mb-8 max-w-2xl  text-balance"
             >
               {subtitle}
             </motion.p>
