@@ -16,12 +16,24 @@ export function BackgroundScroll() {
   // Usa position: fixed que mantém o elemento completamente parado na viewport
   // Não aplica nenhum transform - o elemento fica fixo na tela
   // O conteúdo acima (z-index maior) se move normalmente durante o scroll
+  // pointer-events-none garante que não bloqueie interações com outros componentes
   return (
     <div
       className={`${
         prefersReducedMotion ? "absolute" : "fixed"
-      } inset-0 -z-10 w-screen h-screen bg-[url('/images/bg-sea-floor_.svg')] bg-[size:140%] md:bg-[size:100%] bg-top bg-no-repeat pointer-events-none`}
+      } inset-0 w-full h-full z-0 pointer-events-none`}
       aria-hidden="true"
-    />
+    >
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        preload="auto"
+        className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+      >
+        <source src="/video/video_hero_museu.mp4" type="video/mp4" />
+      </video>
+    </div>
   );
 }
