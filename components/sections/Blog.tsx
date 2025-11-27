@@ -78,9 +78,11 @@ export function Blog({ title, posts, ctaLink }: BlogSectionProps) {
             asChild
             size="lg"
             variant="outline"
-            className="border border-white hover:border-primary-sea hover:bg-primary-sea rounded-md p-4 text-white"
+            className="border rounded-full border-white hover:border-primary-sea hover:bg-primary-sea p-4 text-white"
           >
-            <Link href={ctaLink}>Ver Todos os Artigos</Link>
+            <Link href={ctaLink} target="_blank">
+              Ver Todos os Artigos
+            </Link>
           </Button>
         </div>
       </div>
