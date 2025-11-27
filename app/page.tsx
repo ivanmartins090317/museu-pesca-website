@@ -110,7 +110,7 @@ const blogData = {
       slug: "expedicao-cientifica-litoral-paulista",
     },
   ],
-  ctaLink: "/blog",
+  ctaLink: "https://museudepescadesantos.blogspot.com/",
 };
 
 const partnersData = {
