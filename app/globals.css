@@ -19,6 +19,23 @@
 
   html {
     scroll-behavior: smooth;
+    /* Ocultar barra de rolagem mas manter funcionalidade */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE e Edge antigo */
+  }
+
+  html::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Edge */
+  }
+
+  body {
+    /* Garantir que body também tenha scrollbar oculta */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE e Edge antigo */
+  }
+
+  body::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Edge */
   }
 }
 
