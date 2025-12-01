@@ -12,8 +12,6 @@ import type { PartnersProps } from "@/types";
 
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-gsap.registerPlugin(ScrollTrigger);
-
 export function Partners({ partners }: PartnersProps) {
   const prefersReducedMotion = useReducedMotion();
   const ref = useRef(null);
@@ -21,74 +19,79 @@ export function Partners({ partners }: PartnersProps) {
 
   const shouldAnimate = !prefersReducedMotion && isInView;
 
-  const partnersByCategory = {
-    master: partners.filter((p) => p.category === "master"),
-    supporter: partners.filter((p) => p.category === "supporter"),
-    institutional: partners.filter((p) => p.category === "institutional"),
-  };
-
   //animation GSAP
   const sectionRef = useRef<HTMLElement>(null);
   const plantsRef1 = useRef<HTMLDivElement>(null);
   const plantsRef2 = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (plantsRef1.current && plantsRef2.current && sectionRef.current) {
-      const animation1 = gsap.fromTo(
-        plantsRef1.current,
-        { x: "-100vw", opacity: 0 }, // posição inicial fora da tela à esquerda
-        {
-          x: "0",
-          opacity: 1,
-          duration: 2,
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 80%", // quando o topo da seção estiver a 80% da altura da viewport
-            toggleActions: "play reverse play reverse",
-            markers: false,
-          },
-        }
-      );
-      const animation2 = gsap.fromTo(
-        plantsRef2.current,
-        { x: "100vw", opacity: 0 }, // posição inicial fora da tela à esquerda
-        {
-          x: "0",
-          opacity: 1,
-          duration: 2,
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 80%", // quando o topo da seção estiver a 80% da altura da viewport
-            toggleActions: "play reverse play reverse",
-            markers: false,
-          },
-        }
-      );
-      return () => {
-        animation1?.scrollTrigger?.kill(); // limpa ao desmontar o componente
-        animation2?.scrollTrigger?.kill(); // limpa ao desmontar o componente
-      };
+    // Registrar ScrollTrigger apenas no cliente após montagem
+    if (typeof window !== "undefined") {
+      gsap.registerPlugin(ScrollTrigger);
     }
   }, []);
 
+  useEffect(() => {
+    // Aguardar hidratação completa antes de criar animações
+    if (typeof window === "undefined") return;
+    if (prefersReducedMotion) return;
+
+    if (plantsRef1.current && plantsRef2.current && sectionRef.current) {
+      // Armazenar referências das animações para cleanup
+      let animation1: gsap.core.Tween | null = null;
+      let animation2: gsap.core.Tween | null = null;
+
+      // Forçar refresh do ScrollTrigger após um pequeno delay
+      const timer = setTimeout(() => {
+        animation1 = gsap.fromTo(
+          plantsRef1.current,
+          { x: "-100vw", opacity: 0 },
+          {
+            x: "0",
+            opacity: 1,
+            duration: 2,
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: "top 80%",
+              toggleActions: "play reverse play reverse",
+              markers: false,
+            },
+          }
+        );
+        animation2 = gsap.fromTo(
+          plantsRef2.current,
+          { x: "100vw", opacity: 0 },
+          {
+            x: "0",
+            opacity: 1,
+            duration: 2,
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: "top 80%",
+              toggleActions: "play reverse play reverse",
+              markers: false,
+            },
+          }
+        );
+
+        // Refresh do ScrollTrigger após criar as animações
+        ScrollTrigger.refresh();
+      }, 100);
+
+      return () => {
+        clearTimeout(timer);
+        // Limpar animações se existirem
+        if (animation1?.scrollTrigger) {
+          animation1.scrollTrigger.kill();
+        }
+        if (animation2?.scrollTrigger) {
+          animation2.scrollTrigger.kill();
+        }
+      };
+    }
+  }, [prefersReducedMotion]);
+
   // Logos dos apoiadores
-  const apoiadores = [
-    {
-      name: "CNPq",
-      logo: "/logos/Logo_apoiadores_CNPq.svg",
-      alt: "Conselho Nacional de Desenvolvimento Científico e Tecnológico",
-    },
-    {
-      name: "FNDCT",
-      logo: "/logos/Logo_apoiadores_fndct.svg",
-      alt: "Fundo Nacional de Desenvolvimento Científico e Tecnológico",
-    },
-    {
-      name: "MCTI",
-      logo: "/logos/Logo_apoiadores_MCTI.svg",
-      alt: "Ministério da Ciência, Tecnologia e Inovações",
-    },
-  ];
 
   // Estado para o carrossel mobile
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -98,11 +101,11 @@ export function Partners({ partners }: PartnersProps) {
     if (prefersReducedMotion) return;
 
     const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % apoiadores.length);
+      setCurrentIndex((prev) => (prev + 1) % partners.length);
     }, 3000); // Muda a cada 3 segundos
 
     return () => clearInterval(interval);
-  }, [apoiadores.length, prefersReducedMotion]);
+  }, [partners.length, prefersReducedMotion]);
 
   return (
     <section
@@ -121,8 +124,7 @@ export function Partners({ partners }: PartnersProps) {
             Quem Apoia o Museu
           </h2>
           <p className="text-body text-white max-w-lg mx-auto">
-            Agradecemos aos nossos parceiros e apoiadores que tornam possível
-            nossa missão
+            Agradecemos aos nossos apoiadores que tornam possível nossa missão
           </p>
         </motion.div>
 
@@ -159,9 +161,9 @@ export function Partners({ partners }: PartnersProps) {
           initial={shouldAnimate ? { opacity: 0, y: 30 } : undefined}
           animate={shouldAnimate ? { opacity: 1, y: 0 } : undefined}
           transition={{ ...defaultTransition, delay: 0.2 }}
-          className="hidden md:flex w-full flex-wrap items-center justify-center gap-8 md:gap-12 lg:gap-16 mt-0"
+          className="flex w-full flex-wrap items-center justify-center gap-20 md:gap-12 lg:gap-16 mt-0"
         >
-          {apoiadores.map((apoiador, index) => (
+          {partners.map((apoiador, index) => (
             <motion.div
               key={apoiador.name}
               initial={shouldAnimate ? { opacity: 0, scale: 0.9 } : undefined}
@@ -170,7 +172,7 @@ export function Partners({ partners }: PartnersProps) {
                 ...defaultTransition,
                 delay: 0.3 + index * 0.1,
               }}
-              className="flex items-center justify-center grayscale hover:grayscale-0 transition-all duration-300 hover:scale-105"
+              className="flex items-center justify-center hover:grayscale-0 transition-all duration-300 hover:scale-105"
             >
               <Image
                 src={apoiador.logo}
@@ -185,7 +187,7 @@ export function Partners({ partners }: PartnersProps) {
         </motion.div>
 
         {/* Carrossel Mobile - abaixo de 760px */}
-        <div className="md:hidden w-full overflow-hidden relative">
+        <div className="hidden w-full overflow-hidden relative">
           <motion.div
             initial={shouldAnimate ? { opacity: 0, y: 30 } : undefined}
             animate={shouldAnimate ? { opacity: 1, y: 0 } : undefined}
@@ -193,32 +195,40 @@ export function Partners({ partners }: PartnersProps) {
             className="flex items-center justify-center"
           >
             <div className="relative w-full max-w-sm mx-auto">
-              <AnimatePresence mode="wait" initial={false}>
-                <motion.div
-                  key={currentIndex}
-                  initial={{ opacity: 0, x: 50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -50 }}
-                  transition={{
-                    duration: 0.5,
-                    ease: "easeInOut",
-                  }}
-                  className="flex items-center justify-center grayscale hover:grayscale-0 transition-all duration-300"
-                >
-                  <Image
-                    src={apoiadores[currentIndex].logo}
-                    alt={apoiadores[currentIndex].alt}
-                    width={200}
-                    height={80}
-                    className="object-contain max-h-20 w-auto h-auto bg-white p-4 rounded-lg"
-                    priority={currentIndex === 0}
-                  />
-                </motion.div>
+              <AnimatePresence 
+                mode="wait" 
+                initial={false}
+                onExitComplete={() => {
+                  // Garantir que a limpeza seja concluída
+                }}
+              >
+                {partners[currentIndex] && (
+                  <motion.div
+                    key={currentIndex}
+                    initial={{ opacity: 0, x: 50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -50 }}
+                    transition={{
+                      duration: 0.5,
+                      ease: "easeInOut",
+                    }}
+                    className="flex items-center justify-center grayscale hover:grayscale-0 transition-all duration-300"
+                  >
+                    <Image
+                      src={partners[currentIndex].logo}
+                      alt={partners[currentIndex].alt}
+                      width={200}
+                      height={80}
+                      className="object-contain max-h-20 w-auto h-auto bg-white p-4 rounded-lg"
+                      priority={currentIndex === 0}
+                    />
+                  </motion.div>
+                )}
               </AnimatePresence>
 
               {/* Indicadores de slide */}
               <div className="flex justify-center gap-2 mt-6">
-                {apoiadores.map((_, index) => (
+                {partners.map((_, index) => (
                   <button
                     key={index}
                     onClick={() => setCurrentIndex(index)}
@@ -237,7 +247,7 @@ export function Partners({ partners }: PartnersProps) {
         {/* Background text "APOIO" */}
         <div className="absolute inset-0 flex  items-center justify-center pointer-events-none z-0 overflow-hidden">
           <h2
-            className="text-[clamp(8rem,25vw,20rem)] font-black text-transparent select-none leading-none"
+            className="text-[clamp(6rem,25vw,20rem)] font-black text-transparent select-none leading-none"
             style={{
               WebkitTextStroke: "2px rgba(255, 255, 255, 0.08)",
               WebkitTextFillColor: "transparent",
