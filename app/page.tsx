@@ -6,6 +6,7 @@ import { Virtual360 } from "@/components/sections/Virtual360";
 import { Blog } from "@/components/sections/Blog";
 import { Partners } from "@/components/sections/Partners";
 import { Location } from "@/components/sections/Location";
+import { Collab } from "@/components/sections/Collab";
 
 // Dados mockados - em produção viriam de um CMS ou API
 const heroData = {
@@ -49,28 +50,6 @@ const virtual360Data = {
     "https://my.matterport.com/show/?m=X9SyiXKERd4",
     "https://my.matterport.com/show/?m=r1yf88xgFsk",
   ],
-  areas: [
-    "Sala Principal",
-    "Exposição de Embarcações",
-    "Acervo de Equipamentos",
-    "Biblioteca Marítima",
-    "Auditório",
-    "Área Externa",
-  ],
-  images: [
-    "/images/entrada_museu.png",
-    "/images/museu-de-pesca-santos-visao-fora.webp",
-    "/images/museu-pesca-peixes.jpg",
-    "/images/imagem_mar_ok.png",
-    "/images/entrada_museu.png",
-    "/images/museu-de-pesca-santos-visao-fora.webp",
-    "/images/museu-pesca-peixes.jpg",
-    "/images/imagem_mar_ok.png",
-  ],
-  cta: {
-    label: "Agende sua Visita Presencial",
-    href: "#localizacao",
-  },
 };
 
 const blogData = {
@@ -116,18 +95,38 @@ const blogData = {
 const partnersData = {
   partners: [
     {
-      id: "1",
-      name: "Prefeitura de Santos",
-      logo: "/logos/prefeitura-santos.svg",
-      category: "master" as const,
-      website: "https://www.santos.sp.gov.br",
+      name: "CNPq",
+      logo: "/logos/Logo_apoiadores_CNPq.svg",
+      alt: "Conselho Nacional de Desenvolvimento Científico e Tecnológico",
     },
     {
-      id: "2",
-      name: "Instituto de Pesca",
-      logo: "/logos/instituto-pesca.svg",
-      category: "institutional" as const,
-      website: "https://www.institutodepesca.sp.gov.br",
+      name: "FNDCT",
+      logo: "/logos/Logo_apoiadores_fndct.svg",
+      alt: "Fundo Nacional de Desenvolvimento Científico e Tecnológico",
+    },
+    {
+      name: "MCTI",
+      logo: "/logos/Logo_apoiadores_MCTI_color.svg",
+      alt: "Ministério da Ciência, Tecnologia e Inovações",
+    },
+  ],
+};
+const collabsData = {
+  collabs: [
+    {
+      name: "Aquario",
+      logo: "/logos/Logo_parceiro_aquario.png",
+      alt: "Conselho Nacional de Desenvolvimento Científico e Tecnológico",
+    },
+    {
+      name: "Pinacoteca",
+      logo: "/logos/Logo_parceiro_pinacoteca.png",
+      alt: "Fundo Nacional de Desenvolvimento Científico e Tecnológico",
+    },
+    {
+      name: "Museu Pelé",
+      logo: "/logos/Logo_parceiro_museu_pele.png",
+      alt: "Ministério da Ciência, Tecnologia e Inovações",
     },
   ],
 };
@@ -170,6 +169,7 @@ export default function HomePage() {
         <Virtual360 {...virtual360Data} />
         <Blog {...blogData} />
         <Partners {...partnersData} />
+        <Collab {...collabsData} />
         <Location {...locationData} />
       </main>
       <Footer />
