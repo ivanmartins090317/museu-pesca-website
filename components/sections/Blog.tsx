@@ -31,7 +31,7 @@ function BlogCard({ post }: BlogCardProps) {
       </div>
       <CardHeader>
         <div className="flex items-center justify-between mb-2">
-          <Badge variant="secondary">{post.category}</Badge>
+          <Badge variant="info">{post.category}</Badge>
           <time className="text-small text-neutral-gray-800">
             {new Date(post.publishedAt).toLocaleDateString("pt-BR")}
           </time>
@@ -46,7 +46,7 @@ function BlogCard({ post }: BlogCardProps) {
       <div className="px-6 pb-6">
         <Link
           href={`/blog/${post.slug}`}
-          className="text-primary-ocean hover:text-primary-aqua font-medium text-sm transition-colors"
+          className="text-primary-sea hover:text-primary-aqua font-medium text-sm transition-colors"
         >
           Ler mais →
         </Link>
