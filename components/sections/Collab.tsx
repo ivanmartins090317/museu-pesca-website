@@ -1,0 +1,265 @@
+"use client";
+
+import React from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useInView } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
+import gsap from "gsap";
+import { defaultTransition } from "@/lib/animations";
+import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
+import type { CollabProps } from "@/types";
+
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+export function Collab({ collabs }: CollabProps) {
+  const prefersReducedMotion = useReducedMotion();
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, amount: 0.2 });
+
+  const shouldAnimate = !prefersReducedMotion && isInView;
+
+  //animation GSAP
+  const sectionRef = useRef<HTMLElement>(null);
+  const plantsRef1 = useRef<HTMLDivElement>(null);
+  const plantsRef2 = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Registrar ScrollTrigger apenas no cliente após montagem
+    if (typeof window !== "undefined") {
+      gsap.registerPlugin(ScrollTrigger);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Aguardar hidratação completa antes de criar animações
+    if (typeof window === "undefined") return;
+    if (prefersReducedMotion) return;
+
+    if (plantsRef1.current && plantsRef2.current && sectionRef.current) {
+      // Armazenar referências das animações para cleanup
+      let animation1: gsap.core.Tween | null = null;
+      let animation2: gsap.core.Tween | null = null;
+
+      // Forçar refresh do ScrollTrigger após um pequeno delay
+      const timer = setTimeout(() => {
+        animation1 = gsap.fromTo(
+          plantsRef1.current,
+          { x: "-100vw", opacity: 0 },
+          {
+            x: "0",
+            opacity: 1,
+            duration: 2,
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: "top 80%",
+              toggleActions: "play reverse play reverse",
+              markers: false,
+            },
+          }
+        );
+        animation2 = gsap.fromTo(
+          plantsRef2.current,
+          { x: "100vw", opacity: 0 },
+          {
+            x: "0",
+            opacity: 1,
+            duration: 2,
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: "top 80%",
+              toggleActions: "play reverse play reverse",
+              markers: false,
+            },
+          }
+        );
+
+        // Refresh do ScrollTrigger após criar as animações
+        ScrollTrigger.refresh();
+      }, 100);
+
+      return () => {
+        clearTimeout(timer);
+        // Limpar animações se existirem
+        if (animation1?.scrollTrigger) {
+          animation1.scrollTrigger.kill();
+        }
+        if (animation2?.scrollTrigger) {
+          animation2.scrollTrigger.kill();
+        }
+      };
+    }
+  }, [prefersReducedMotion]);
+
+  // Logos dos apoiadores
+
+  // Estado para o carrossel mobile
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  // Auto-play do carrossel apenas em mobile
+  useEffect(() => {
+    if (prefersReducedMotion) return;
+
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % collabs.length);
+    }, 5000); // Muda a cada 3 segundos
+
+    return () => clearInterval(interval);
+  }, [collabs.length, prefersReducedMotion]);
+
+  return (
+    <section
+      ref={sectionRef}
+      className="py-section relative overflow-hidden bg-transparent isolate"
+    >
+      <div className="container mx-auto sm:px-6 lg:px-8 h-full pb-10 relative z-10 px-1">
+        <motion.div
+          ref={ref}
+          initial={shouldAnimate ? { opacity: 0, y: 20 } : undefined}
+          animate={shouldAnimate ? { opacity: 1, y: 0 } : undefined}
+          transition={defaultTransition}
+          className="text-center mb-0"
+        >
+          <h2 className="text-h2 font-bold text-white mb-4">
+            Os colaboradores do Museu
+          </h2>
+          <p className="text-body text-white max-w-lg mx-auto">
+            Agradecemos aos nossos colaboradores que tornam possível nossa
+            missão
+          </p>
+        </motion.div>
+
+        {/* Elementos decorativos - algas marinhas */}
+        <div
+          ref={plantsRef1}
+          className="flex w-full justify-start absolute top-1/5 left-0 z-0"
+        >
+          <Image
+            src="/images/algas_marinhas 1.png"
+            alt="Decoração algas marinhas"
+            width={300}
+            height={300}
+            className="object-contain max-h-100 opacity-0"
+          />
+        </div>
+
+        <div
+          ref={plantsRef2}
+          className="flex w-full justify-end absolute top-1/5 right-0 z-0"
+        >
+          <Image
+            src="/images/algas_marinhas2.png"
+            alt="Decoração algas marinhas"
+            width={300}
+            height={300}
+            className="object-contain max-h-100 opacity-0"
+          />
+        </div>
+      </div>
+      <div className="relative h-full md:py-32 py-10">
+        {/* Logos dos Apoiadores - Desktop (grid) */}
+        <motion.div
+          initial={shouldAnimate ? { opacity: 0, y: 30 } : undefined}
+          animate={shouldAnimate ? { opacity: 1, y: 0 } : undefined}
+          transition={{ ...defaultTransition, delay: 0.2 }}
+          className="hidden md:flex w-full flex-wrap items-center justify-center gap-8 md:gap-12 lg:gap-16 mt-0"
+        >
+          {collabs.map((collab, index) => (
+            <motion.div
+              key={collab.name}
+              initial={shouldAnimate ? { opacity: 0, scale: 0.9 } : undefined}
+              animate={shouldAnimate ? { opacity: 1, scale: 1 } : undefined}
+              transition={{
+                ...defaultTransition,
+                delay: 0.3 + index * 0.1,
+              }}
+              className="flex items-center justify-center  hover:grayscale-100 transition-all duration-300 hover:scale-105"
+            >
+              <Image
+                src={collab.logo}
+                alt={collab.alt}
+                width={800}
+                height={300}
+                className="object-contain max-h-40 md:max-h-48 w-auto h-auto bg-white p-4 rounded-lg"
+                priority={index === 0}
+              />
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* Carrossel Mobile - abaixo de 760px */}
+        <div className="md:hidden w-full overflow-hidden relative">
+          <motion.div
+            initial={shouldAnimate ? { opacity: 0, y: 30 } : undefined}
+            animate={shouldAnimate ? { opacity: 1, y: 0 } : undefined}
+            transition={{ ...defaultTransition, delay: 0.2 }}
+            className="flex items-center justify-center"
+          >
+            <div className="relative w-full max-w-sm mx-auto">
+              <AnimatePresence
+                mode="wait"
+                initial={false}
+                onExitComplete={() => {
+                  // Garantir que a limpeza seja concluída
+                }}
+              >
+                {collabs[currentIndex] && (
+                  <motion.div
+                    key={currentIndex}
+                    initial={{ opacity: 0, x: 50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -50 }}
+                    transition={{
+                      duration: 0.5,
+                      ease: "easeInOut",
+                    }}
+                    className="flex items-center justify-center  hover:grayscale-0 transition-all duration-300"
+                  >
+                    <Image
+                      src={collabs[currentIndex].logo}
+                      alt={collabs[currentIndex].alt}
+                      width={200}
+                      height={80}
+                      className="object-contain max-h-60 w-auto h-auto bg-white p-4 rounded-lg"
+                      priority={currentIndex === 0}
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Indicadores de slide */}
+              <div className="flex justify-center gap-2 mt-6">
+                {collabs.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentIndex(index)}
+                    className={`h-2 rounded-full transition-all duration-300 ${
+                      currentIndex === index
+                        ? "bg-white w-8"
+                        : "bg-white/40 w-2 hover:bg-white/60"
+                    }`}
+                    aria-label={`Ir para slide ${index + 1}`}
+                  />
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        </div>
+        {/* Background text "APOIO" */}
+        <div className="absolute inset-0 flex  items-center justify-center pointer-events-none z-0 overflow-hidden">
+          <h2
+            className="text-[clamp(4rem,15vw,8rem)] font-black text-transparent select-none leading-none"
+            style={{
+              WebkitTextStroke: "2px rgba(255, 255, 255, 0.08)",
+              WebkitTextFillColor: "transparent",
+              letterSpacing: "0.05em",
+              fontFamily: "var(--font-roboto)",
+            }}
+          >
+            COLABORADORES
+          </h2>
+        </div>
+      </div>
+    </section>
+  );
+}
