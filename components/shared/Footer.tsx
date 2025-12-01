@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useState, useEffect, useMemo } from "react";
 import {
   Waves,
   Facebook,
@@ -38,35 +39,56 @@ const footerLinks = {
 };
 
 export function Footer() {
+  const [mounted, setMounted] = useState(false);
+
+  // Calcular valores aleatórios apenas no cliente após montagem
+  const backgroundElements = useMemo(() => {
+    if (!mounted) return [];
+    return Array.from({ length: 20 }, (_, i) => ({
+      id: i,
+      width: Math.random() * 200 + 50,
+      height: Math.random() * 200 + 50,
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+      duration: Math.random() * 5 + 5,
+    }));
+  }, [mounted]);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <footer id="contato" className="relative pt-20 pb-10 overflow-hidden">
       {/* Darker overlay only for footer */}
       <div className="absolute inset-0 bg-gradient-to-b from-primary-sea/60 backdrop-blur-md to-primary-sea_floor/80" />
 
       {/* Animated Background */}
-      <div className="absolute inset-0 opacity-5">
-        {[...Array(10)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute rounded-full bg-cyan-500"
-            style={{
-              width: Math.random() * 200 + 50,
-              height: Math.random() * 200 + 50,
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-            }}
-            animate={{
-              y: [-20, 20, -20],
-              opacity: [0.1, 0.3, 0.1],
-            }}
-            transition={{
-              duration: Math.random() * 5 + 5,
-              repeat: Infinity,
-              ease: "linear",
-            }}
-          />
-        ))}
-      </div>
+      {mounted && (
+        <div className="absolute inset-0 opacity-5">
+          {backgroundElements.map((element) => (
+            <motion.div
+              key={element.id}
+              className="absolute rounded-full bg-cyan-500"
+              style={{
+                width: element.width,
+                height: element.height,
+                left: `${element.left}%`,
+                top: `${element.top}%`,
+              }}
+              animate={{
+                y: [-20, 20, -20],
+                opacity: [0.1, 0.3, 0.1],
+              }}
+              transition={{
+                duration: element.duration,
+                repeat: Infinity,
+                ease: "linear",
+              }}
+            />
+          ))}
+        </div>
+      )}
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         {/* Main Footer Content */}
@@ -230,9 +252,11 @@ export function Footer() {
           className="w-full h-full"
         >
           <motion.path
-            d="M0,0 C300,50 600,50 900,20 C1100,0 1150,10 1200,20 L1200,120 L0,120 Z"
             fill="currentColor"
             className="text-cyan-500"
+            initial={{
+              d: "M0,0 C300,50 600,50 900,20 C1100,0 1150,10 1200,20 L1200,120 L0,120 Z",
+            }}
             animate={{
               d: [
                 "M0,0 C300,50 600,50 900,20 C1100,0 1150,10 1200,20 L1200,120 L0,120 Z",
