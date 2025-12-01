@@ -26,12 +26,16 @@ export interface AboutSection {
 export interface Virtual360Props {
   title: string;
   embedUrl: string | string[];
-  areas: string[];
-  images: string[];
-  cta: {
-    label: string;
-    href: string;
-  };
+}
+export interface Apoiador {
+  name: string;
+  logo: string;
+  alt: string;
+}
+export interface colabora {
+  name: string;
+  logo: string;
+  alt: string;
 }
 
 export interface BlogPost {
@@ -59,7 +63,10 @@ export interface Partner {
 }
 
 export interface PartnersProps {
-  partners: Partner[];
+  partners: Apoiador[];
+}
+export interface CollabProps {
+  collabs: colabora[];
 }
 
 export interface LocationProps {
@@ -101,4 +108,3 @@ export interface FooterProps {
     submitLabel: string;
   };
 }
-
