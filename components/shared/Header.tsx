@@ -39,15 +39,7 @@ export function Header() {
             transition={{ type: "spring", stiffness: 400, damping: 17 }}
           >
             <Link href="/" className="flex items-center gap-2 group">
-              <span
-                style={{
-                  WebkitTextStroke: ".5px rgba(255, 255, 255, 0.2)",
-                  WebkitTextFillColor: "transparent",
-                  letterSpacing: "0.08em",
-                  fontFamily: "var(--font-roboto)",
-                }}
-                className="text-white text-lg sm:text-xl md:text-2xl font-bold tracking-tight transition-colors group-hover:text-primary-aqua"
-              >
+              <span className="text-white text-lg sm:text-xl md:text-2xl font-bold tracking-tight transition-colors group-hover:text-primary-aqua">
                 {siteConfig.name}
               </span>
             </Link>
