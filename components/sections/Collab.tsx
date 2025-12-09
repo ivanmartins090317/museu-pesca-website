@@ -102,7 +102,7 @@ export function Collab({ collabs }: CollabProps) {
 
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % collabs.length);
-    }, 5000); // Muda a cada 3 segundos
+    }, 4000); // Muda a cada 4 segundos para melhor experiência
 
     return () => clearInterval(interval);
   }, [collabs.length, prefersReducedMotion]);
@@ -121,9 +121,9 @@ export function Collab({ collabs }: CollabProps) {
           className="text-center mb-0"
         >
           <h2 className="text-h2 font-bold text-white mb-4">
-            Os colaboradores do Museu
+            Os colaboradores <br className="sm:hidden" /> do Museu
           </h2>
-          <p className="text-body text-white max-w-lg mx-auto">
+          <p className="text-body text-white max-w-lg mx-auto mb-10 md:mb-0">
             Agradecemos aos nossos colaboradores que tornam possível nossa
             missão
           </p>
@@ -157,7 +157,7 @@ export function Collab({ collabs }: CollabProps) {
         </div>
       </div>
       <div className="relative h-full md:py-32 py-10">
-        {/* Logos dos Apoiadores - Desktop (grid) */}
+        {/* Logos dos parceiros - Desktop (grid) */}
         <motion.div
           initial={shouldAnimate ? { opacity: 0, y: 30 } : undefined}
           animate={shouldAnimate ? { opacity: 1, y: 0 } : undefined}
@@ -167,7 +167,7 @@ export function Collab({ collabs }: CollabProps) {
           {collabs.map((collab, index) => (
             <motion.div
               key={collab.name}
-              initial={shouldAnimate ? { opacity: 0, scale: 0.9 } : undefined}
+              initial={shouldAnimate ? { opacity: 1, scale: 0.9 } : undefined}
               animate={shouldAnimate ? { opacity: 1, scale: 1 } : undefined}
               transition={{
                 ...defaultTransition,
@@ -187,48 +187,96 @@ export function Collab({ collabs }: CollabProps) {
           ))}
         </motion.div>
 
-        {/* Carrossel Mobile - abaixo de 760px */}
-        <div className="md:hidden w-full overflow-hidden relative">
+        {/* Carrossel Mobile - abaixo de 760px com cards empilhados */}
+        <div className="md:hidden w-full overflow-visible relative">
           <motion.div
             initial={shouldAnimate ? { opacity: 0, y: 30 } : undefined}
             animate={shouldAnimate ? { opacity: 1, y: 0 } : undefined}
             transition={{ ...defaultTransition, delay: 0.2 }}
             className="flex items-center justify-center"
           >
-            <div className="relative w-full max-w-sm mx-auto">
-              <AnimatePresence
-                mode="wait"
-                initial={false}
-                onExitComplete={() => {
-                  // Garantir que a limpeza seja concluída
-                }}
-              >
-                {collabs[currentIndex] && (
-                  <motion.div
-                    key={currentIndex}
-                    initial={{ opacity: 0, x: 50 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -50 }}
-                    transition={{
-                      duration: 0.5,
-                      ease: "easeInOut",
-                    }}
-                    className="flex items-center justify-center  hover:grayscale-0 transition-all duration-300"
-                  >
-                    <Image
-                      src={collabs[currentIndex].logo}
-                      alt={collabs[currentIndex].alt}
-                      width={200}
-                      height={80}
-                      className="object-contain max-h-60 w-auto h-auto bg-white p-4 rounded-lg"
-                      priority={currentIndex === 0}
-                    />
-                  </motion.div>
-                )}
-              </AnimatePresence>
+            <div className="relative w-full max-w-sm mx-auto h-[280px] flex items-center justify-center">
+              {/* Container dos cards empilhados */}
+              <div className="relative w-full h-full">
+                {collabs.map((collab, index) => {
+                  // Calcular posição relativa ao card atual
+                  const position = index - currentIndex;
+                  const isActive = position === 0;
+                  const isNext = position === 10;
+                  const isPrevious = position === -10;
+                  const isVisible = Math.abs(position) <= 2; // Mostrar até 2 cards de cada lado
+
+                  if (!isVisible) return null;
+
+                  // Calcular transformações e z-index
+                  const getTransform = () => {
+                    if (isActive) {
+                      return { x: 0, y: 0, scale: 1, rotate: 0 };
+                    } else if (isNext) {
+                      return { x: 60, y: 20, scale: 1, rotate: 3 };
+                    } else if (isPrevious) {
+                      return { x: -60, y: 20, scale: 1, rotate: -3 };
+                      // } else if (position > 1) {
+                      //   return { x: -60, y: -20, scale: 1, rotate: 4 };
+                    } else return { x: -40, y: 20, scale: 1, rotate: 0 };
+                    // }
+                  };
+
+                  const transform = getTransform();
+                  const zIndex = collabs.length - Math.abs(position);
+
+                  // Calcular opacidade baseada na posição
+                  const getOpacity = () => {
+                    if (isActive) return 1;
+                    if (Math.abs(position) === 1) return 1;
+                    if (Math.abs(position) === 2) return 1;
+                    return 0;
+                  };
+
+                  return (
+                    <motion.div
+                      key={collab.name}
+                      initial={false}
+                      animate={{
+                        x: transform.x,
+                        y: transform.y,
+                        scale: transform.scale,
+                        rotate: transform.rotate,
+                        opacity: getOpacity(),
+                      }}
+                      transition={{
+                        duration: 0.6,
+                        ease: [0.4, 0, 0.2, 1],
+                      }}
+                      className="absolute inset-0 flex items-center justify-center mb-24"
+                      style={{
+                        zIndex,
+                        transformOrigin: "center center",
+                      }}
+                    >
+                      <div
+                        className={`flex items-center justify-center transition-all duration-300 ${
+                          isActive
+                            ? "hover:scale-105 cursor-pointer"
+                            : "pointer-events-none"
+                        }`}
+                      >
+                        <Image
+                          src={collab.logo}
+                          alt={collab.alt}
+                          width={200}
+                          height={80}
+                          className="object-contain max-h-65 w-auto h-auto bg-white p-4 rounded-lg shadow-xl"
+                          priority={index === 0}
+                        />
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
 
               {/* Indicadores de slide */}
-              <div className="flex justify-center gap-2 mt-6">
+              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex justify-center gap-2  z-50">
                 {collabs.map((_, index) => (
                   <button
                     key={index}
@@ -246,11 +294,11 @@ export function Collab({ collabs }: CollabProps) {
           </motion.div>
         </div>
         {/* Background text "APOIO" */}
-        <div className="absolute inset-0 flex  items-center justify-center pointer-events-none z-0 overflow-hidden">
+        {/* <div className="absolute inset-0 flex  items-center justify-center pointer-events-none z-0 overflow-hidden">
           <h2
-            className="text-[clamp(4rem,15vw,8rem)] font-black text-transparent select-none leading-none"
+            className="text-[clamp(2rem,9vw,4rem)] font-black text-transparent select-none leading-none"
             style={{
-              WebkitTextStroke: "2px rgba(255, 255, 255, 0.08)",
+              WebkitTextStroke: "2px rgba(255, 255, 255, 1)",
               WebkitTextFillColor: "transparent",
               letterSpacing: "0.05em",
               fontFamily: "var(--font-roboto)",
@@ -258,7 +306,7 @@ export function Collab({ collabs }: CollabProps) {
           >
             COLABORADORES
           </h2>
-        </div>
+        </div> */}
       </div>
     </section>
   );
