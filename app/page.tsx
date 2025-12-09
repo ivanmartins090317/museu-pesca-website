@@ -124,9 +124,14 @@ const collabsData = {
       alt: "Fundo Nacional de Desenvolvimento Científico e Tecnológico",
     },
     {
+      name: "Museu Café",
+      logo: "/logos/Logo_parceiro_museu_cafe.png",
+      alt: "Museu Café",
+    },
+    {
       name: "Museu Pelé",
       logo: "/logos/Logo_parceiro_museu_pele.png",
-      alt: "Ministério da Ciência, Tecnologia e Inovações",
+      alt: "Museu Pelé",
     },
   ],
 };
@@ -162,14 +167,14 @@ const locationData = {
 export default function HomePage() {
   return (
     <>
-      <main className="overflow-hidden">
+      <main className="overflow-hidden z-10">
         <Header />
         <Hero {...heroData} />
         <About {...aboutData} />
         <Virtual360 {...virtual360Data} />
+        <Collab {...collabsData} />
         <Blog {...blogData} />
         <Partners {...partnersData} />
-        <Collab {...collabsData} />
         <Location {...locationData} />
       </main>
       <Footer />
