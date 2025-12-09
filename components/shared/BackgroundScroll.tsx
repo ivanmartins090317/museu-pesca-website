@@ -1,7 +1,7 @@
 "use client";
 
 import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 /**
  * Componente de background fixo compatível com iOS Safari
@@ -12,34 +12,22 @@ import { useState, useEffect, useRef } from "react";
  * No iOS, position: fixed funciona melhor que background-attachment: fixed
  *
  * Otimizações de performance:
- * - Fallback visual imediato (cor de fundo) para evitar tela cinza
- * - Imagem de poster exibida enquanto o vídeo carrega
- * - Controle de estado de carregamento do vídeo
- * - Transição suave quando vídeo está pronto
+ * - Vídeo renderizado imediatamente (sem esperar mounted)
+ * - Preload agressivo para iniciar download o mais cedo possível
+ * - Força carregamento do vídeo via load() no mount
+ * - Fallback visual imediato (cor de fundo + poster) para evitar tela cinza
  */
 export function BackgroundScroll() {
   const prefersReducedMotion = useReducedMotion();
-  const [mounted, setMounted] = useState(false);
-  const [videoLoaded, setVideoLoaded] = useState(false);
-  const [videoError, setVideoError] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
+  // Força o carregamento do vídeo assim que o componente montar
   useEffect(() => {
-    setMounted(true);
+    if (videoRef.current) {
+      // Força o navegador a começar a baixar o vídeo imediatamente
+      videoRef.current.load();
+    }
   }, []);
-
-  // Handlers para eventos do vídeo
-  const handleLoadedData = () => {
-    setVideoLoaded(true);
-  };
-
-  const handleCanPlay = () => {
-    setVideoLoaded(true);
-  };
-
-  const handleError = () => {
-    setVideoError(true);
-  };
 
   // Container sempre renderizado com fallback de cor de fundo
   // Isso elimina a tela cinza durante refresh
@@ -53,26 +41,21 @@ export function BackgroundScroll() {
       } inset-0 w-full h-full z-0 pointer-events-none bg-primary-sea`}
       aria-hidden="true"
     >
-      {/* Vídeo com imagem de poster */}
+      {/* Vídeo renderizado imediatamente para começar o carregamento o mais cedo possível */}
       {/* O poster é exibido automaticamente pelo navegador enquanto o vídeo carrega */}
-      {/* Quando o vídeo está pronto e começa a tocar, ele substitui o poster automaticamente */}
-      {mounted && (
-        <video
-          ref={videoRef}
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="auto"
-          poster="/images/bg_sea_floor.png"
-          onLoadedData={handleLoadedData}
-          onCanPlay={handleCanPlay}
-          onError={handleError}
-          className="absolute inset-0 w-full h-full object-cover pointer-events-none"
-        >
-          <source src="/video/video_hero_museu.mp4" type="video/mp4" />
-        </video>
-      )}
+      {/* preload="auto" + load() forçam o download imediato */}
+      <video
+        ref={videoRef}
+        autoPlay
+        loop
+        muted
+        playsInline
+        preload="auto"
+        poster="/images/bg_sea_floor.png"
+        className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+      >
+        <source src="/video/video_hero_museu.mp4" type="video/mp4" />
+      </video>
     </div>
   );
 }
