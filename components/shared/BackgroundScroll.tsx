@@ -12,10 +12,11 @@ import { useEffect, useRef } from "react";
  * No iOS, position: fixed funciona melhor que background-attachment: fixed
  *
  * Otimizações de performance:
- * - Vídeo renderizado imediatamente (sem esperar mounted)
- * - Preload agressivo para iniciar download o mais cedo possível
- * - Força carregamento do vídeo via load() no mount
- * - Fallback visual imediato (cor de fundo + poster) para evitar tela cinza
+ * - WebM primeiro (menor tamanho, ~40-50% menor que MP4)
+ * - MP4 como fallback (compatibilidade universal)
+ * - Preload otimizado (metadata em vez de auto)
+ * - Fallback visual imediato (cor de fundo + poster)
+ * - Respeita prefersReducedMotion
  */
 export function BackgroundScroll() {
   const prefersReducedMotion = useReducedMotion();
@@ -23,37 +24,43 @@ export function BackgroundScroll() {
 
   // Força o carregamento do vídeo assim que o componente montar
   useEffect(() => {
-    if (videoRef.current) {
+    if (videoRef.current && !prefersReducedMotion) {
       // Força o navegador a começar a baixar o vídeo imediatamente
       videoRef.current.load();
     }
-  }, []);
+  }, [prefersReducedMotion]);
 
-  // Container sempre renderizado com fallback de cor de fundo
-  // Isso elimina a tela cinza durante refresh
-  // Usa position: fixed que mantém o elemento completamente parado na viewport
-  // O conteúdo acima (z-index maior) se move normalmente durante o scroll
-  // pointer-events-none garante que não bloqueie interações com outros componentes
+  // Se preferir movimento reduzido, não renderiza vídeo
+  if (prefersReducedMotion) {
+    return (
+      <div
+        className="fixed inset-0 w-full h-full z-0 pointer-events-none bg-primary-sea"
+        aria-hidden="true"
+      />
+    );
+  }
+
   return (
     <div
-      className={`${
-        prefersReducedMotion ? "absolute" : "fixed"
-      } inset-0 w-full h-full z-0 pointer-events-none bg-primary-sea`}
+      className="fixed inset-0 w-full h-full z-0 pointer-events-none bg-primary-sea"
       aria-hidden="true"
     >
       {/* Vídeo renderizado imediatamente para começar o carregamento o mais cedo possível */}
       {/* O poster é exibido automaticamente pelo navegador enquanto o vídeo carrega */}
-      {/* preload="auto" + load() forçam o download imediato */}
+      {/* WebM primeiro (menor tamanho), MP4 como fallback (compatibilidade) */}
       <video
         ref={videoRef}
         autoPlay
         loop
         muted
         playsInline
-        preload="auto"
+        preload="metadata"
         poster="/images/bg_sea_floor.png"
         className="absolute inset-0 w-full h-full object-cover pointer-events-none"
       >
+        {/* WebM primeiro - menor tamanho, melhor compressão */}
+        <source src="/video/video_hero_museu.webm" type="video/webm" />
+        {/* MP4 como fallback - compatibilidade universal (Safari, IE, etc) */}
         <source src="/video/video_hero_museu.mp4" type="video/mp4" />
       </video>
     </div>
