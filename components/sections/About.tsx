@@ -35,7 +35,7 @@ export function About({ title, description, highlights, images }: AboutProps) {
   return (
     <section
       id="sobre"
-      className="relative py-16 md:py-section px-4 sm:px-6 md:px-8 overflow-hidden"
+      className="relative py-16 md:py-section px-4 sm:px-6 md:px-8 overflow-hidden z-10"
     >
       {/* Light overlay for readability */}
       <div className="absolute inset-0 bg-[#0a1628]/30" />
