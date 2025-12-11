@@ -23,13 +23,13 @@ export function Header() {
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
-      className={`fixed w-[calc(100%-2rem)] sm:w-5/6 mx-auto rounded-lg top-3 sm:top-4 left-4 right-4 sm:left-0 sm:right-0 z-50 transition-all duration-500 ${
+      className={`fixed  md:w-11/12 sm:w-5/6 mx-auto rounded-lg top-3 sm:top-4 left-4 right-4 sm:left-0 sm:right-0 z-[500] transition-all duration-500 ${
         isScrolled
           ? "bg-[#0a1628]/65 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.3)]"
           : "bg-transparent"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-3 sm:py-4 md:py-5">
+      <div className="w-11/12 mx-auto px-4 sm:px-6 md:px-1 py-3 sm:py-4 md:py-5">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <motion.div
