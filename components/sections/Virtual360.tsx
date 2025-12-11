@@ -219,7 +219,7 @@ export function Virtual360({ title, embedUrl }: Virtual360Props) {
             Visita Virtual
           </span>
           <motion.h2
-            className="text-h2 font-bold md:text-6xl text-white mt-4"
+            className="text-h2 font-bold  text-white mt-4"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
