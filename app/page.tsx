@@ -10,7 +10,6 @@ import { Collab } from "@/components/sections/Collab";
 
 // Dados mockados - em produção viriam de um CMS ou API
 const heroData = {
-  title: "Museu de Pesca",
   subtitle:
     "Preservando a história marítima brasileira desde 1934 agora disponível para você explorar virtualmente",
   badge: {
@@ -57,36 +56,38 @@ const blogData = {
   posts: [
     {
       id: "1",
-      title: "A História do Tubarão-Baleia do Museu",
+      title: "Lula Gigante (Architeuthis spp.)",
       excerpt:
-        "Conheça a história por trás do impressionante esqueleto de tubarão-baleia que é uma das principais atrações do nosso acervo.",
+        "Conheça a história por trás do impressionante da lula gigante que é uma das principais atrações do nosso acervo.",
       category: "História",
       publishedAt: new Date("2024-01-15"),
       thumbnail:
-        "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&q=80",
-      slug: "historia-tubarao-baleia",
+        "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhXbiJKLpeKt7LnRJ95iSoWVF5qigQ06zJ_SpvhgXTl7Iz28_nb2n5PFm3yHVzPsZvGW1yhipulV4tyETqYMQMZC9b11CfJPaA_2SWH0rkuQFOHeJv4CbqH8lPUyY50pf8Xtc9yn5PZh2o/s320/lula+gigante.png",
+      slug: "lula-gigante-architeuthis-spp",
+      url: "https://museudepescadesantos.blogspot.com/2017/10/lula-gigante-architeuthis-spp.html",
     },
     {
       id: "2",
-      title: "Técnicas Tradicionais de Pesca Artesanal",
+      title: "A história da Baleia-fin",
       excerpt:
-        "Descubra as técnicas ancestrais de pesca que foram passadas de geração em geração nas comunidades litorâneas brasileiras.",
+        "O Museu de Pesca tem como principal atração a ossada da baleia-fin (Balaenoptera physalus).",
       category: "Cultura",
       publishedAt: new Date("2024-01-10"),
       thumbnail:
-        "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&q=80",
-      slug: "tecnicas-pesca-artesanal",
+        "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgIPABSFfMMVw7eZprEmWeVFBQocsIqNBFVl45hVildn_wa2RoWbK2RLUpj3hAKh-H6DKg82WWy0J_KVQ77IDq1rAFyM3O8W5XJi2JfE_lEeTBexXW-XNbTg-gpfeMqYs8O08M7GBE0dos/s320/foto+baleia+fin.jpg",
+      slug: "baleia-fin-balaenoptera-physalus",
+      url: "https://museudepescadesantos.blogspot.com/2017/10/baleia-fin-balaenoptera-physalus.html",
     },
     {
       id: "3",
-      title: "Expedição Científica: Descobertas no Litoral Paulista",
-      excerpt:
-        "Relato da última expedição científica realizada pelo museu, revelando novas descobertas sobre a vida marinha do litoral paulista.",
+      title: "EXPOSIÇÃO: ARCADAS DE TUBARÕES",
+      excerpt: "ARCADA DENTÁRIA DOS ELASMOBRANCHII – SELACHIMORPHA (TUBARÕES)",
       category: "Ciência",
       publishedAt: new Date("2024-01-05"),
       thumbnail:
-        "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&q=80",
-      slug: "expedicao-cientifica-litoral-paulista",
+        "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg2v6YoQRKq_1k8Qpv1XtTloUmbqYh-lSmTS8V3tthd9Vuzl7S8bjyjRIo6KXhhU8VrvMIOshViBOxzo-QXDV8PFRwvLRZAG4kEMOcuzCkBZPUb-tTSkIAtcNpHuV5gy4K7U91vu8c96O4/s640/ad651c05-793e-49be-b567-e4ab225f7116.jpg",
+      slug: "exposicao-de-arcadas",
+      url: "https://museudepescadesantos.blogspot.com/2019/07/exposicao-de-arcadas.html",
     },
   ],
   ctaLink: "https://museudepescadesantos.blogspot.com/",
