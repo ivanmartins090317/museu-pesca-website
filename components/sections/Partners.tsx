@@ -161,7 +161,7 @@ export function Partners({ partners }: PartnersProps) {
           initial={shouldAnimate ? { opacity: 0, y: 30 } : undefined}
           animate={shouldAnimate ? { opacity: 1, y: 0 } : undefined}
           transition={{ ...defaultTransition, delay: 0.2 }}
-          className="flex w-full flex-wrap items-center justify-center gap-20 md:gap-12 lg:gap-16 mt-0"
+          className="flex sm:bg-transparent md:bg-white p-4 w-full flex-wrap items-center justify-center gap-20 md:gap-12 lg:gap-16 mt-0"
         >
           {partners.map((apoiador, index) => (
             <motion.div
@@ -195,8 +195,8 @@ export function Partners({ partners }: PartnersProps) {
             className="flex items-center justify-center"
           >
             <div className="relative w-full max-w-sm mx-auto">
-              <AnimatePresence 
-                mode="wait" 
+              <AnimatePresence
+                mode="wait"
                 initial={false}
                 onExitComplete={() => {
                   // Garantir que a limpeza seja concluída
