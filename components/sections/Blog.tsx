@@ -45,7 +45,9 @@ function BlogCard({ post }: BlogCardProps) {
       </CardContent>
       <div className="px-6 pb-6">
         <Link
-          href={`/blog/${post.slug}`}
+          href={post.url || `/blog/${post.slug}`}
+          target={post.url ? "_blank" : undefined}
+          rel={post.url ? "noopener noreferrer" : undefined}
           className="text-primary-sea hover:text-primary-aqua font-medium text-sm transition-colors"
         >
           Ler mais →

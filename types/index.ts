@@ -1,5 +1,5 @@
 export interface HeroProps {
-  title: string;
+  title?: string;
   subtitle: string;
   badge: {
     text: string;
@@ -46,6 +46,7 @@ export interface BlogPost {
   publishedAt: Date;
   thumbnail: string;
   slug: string;
+  url?: string;
 }
 
 export interface BlogSectionProps {
