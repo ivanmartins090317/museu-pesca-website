@@ -1,11 +1,12 @@
 "use client";
 
 import React from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, PanInfo } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import gsap from "gsap";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { defaultTransition } from "@/lib/animations";
 import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
 import type { CollabProps } from "@/types";
@@ -95,6 +96,34 @@ export function Collab({ collabs }: CollabProps) {
 
   // Estado para o carrossel mobile
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [exitX, setExitX] = useState<number>(0);
+
+  // Função para navegar entre slides
+  const handleNext = () => {
+    setCurrentIndex((prev) => (prev + 1) % collabs.length);
+  };
+
+  const handlePrevious = () => {
+    setCurrentIndex((prev) => (prev - 1 + collabs.length) % collabs.length);
+  };
+
+  // Função para lidar com drag/swipe
+  const handleDragEnd = (
+    event: MouseEvent | TouchEvent | PointerEvent,
+    info: PanInfo
+  ) => {
+    if (Math.abs(info.offset.x) > 100) {
+      setExitX(info.offset.x);
+      setTimeout(() => {
+        if (info.offset.x > 0) {
+          handlePrevious();
+        } else {
+          handleNext();
+        }
+        setExitX(0);
+      }, 200);
+    }
+  };
 
   // Auto-play do carrossel apenas em mobile
   useEffect(() => {
@@ -195,100 +224,118 @@ export function Collab({ collabs }: CollabProps) {
             transition={{ ...defaultTransition, delay: 0.2 }}
             className="flex items-center justify-center"
           >
-            <div className="relative w-full max-w-sm mx-auto h-[280px] flex items-center justify-center">
+            <div className="relative w-full max-w-sm mx-auto h-[320px] flex items-center justify-center">
               {/* Container dos cards empilhados */}
               <div className="relative w-full h-full">
-                {collabs.map((collab, index) => {
-                  // Calcular posição relativa ao card atual
-                  const position = index - currentIndex;
-                  const isActive = position === 0;
-                  const isNext = position === 10;
-                  const isPrevious = position === -10;
-                  const isVisible = Math.abs(position) <= 2; // Mostrar até 2 cards de cada lado
+                <AnimatePresence mode="popLayout">
+                  {collabs.map((collab, index) => {
+                    // Calcular posição relativa ao card atual
+                    const position = index - currentIndex;
+                    const isCurrentCard = position === 0;
+                    const isPrevCard =
+                      index ===
+                      (currentIndex - 1 + collabs.length) % collabs.length;
+                    const isNextCard =
+                      index === (currentIndex + 1) % collabs.length;
 
-                  if (!isVisible) return null;
+                    // Mostrar apenas o card atual e os 2 próximos/anteriores
+                    if (!isCurrentCard && !isPrevCard && !isNextCard)
+                      return null;
 
-                  // Calcular transformações e z-index
-                  const getTransform = () => {
-                    if (isActive) {
-                      return { x: 0, y: 0, scale: 1, rotate: 0 };
-                    } else if (isNext) {
-                      return { x: 60, y: 20, scale: 1, rotate: 3 };
-                    } else if (isPrevious) {
-                      return { x: -60, y: 20, scale: 1, rotate: -3 };
-                      // } else if (position > 1) {
-                      //   return { x: -60, y: -20, scale: 1, rotate: 4 };
-                    } else return { x: -40, y: 20, scale: 1, rotate: 0 };
-                    // }
-                  };
+                    // Calcular z-index baseado na posição
+                    const zIndex = isCurrentCard ? 3 : isPrevCard ? 2 : 1;
 
-                  const transform = getTransform();
-                  const zIndex = collabs.length - Math.abs(position);
-
-                  // Calcular opacidade baseada na posição
-                  const getOpacity = () => {
-                    if (isActive) return 1;
-                    if (Math.abs(position) === 1) return 1;
-                    if (Math.abs(position) === 2) return 1;
-                    return 0;
-                  };
-
-                  return (
-                    <motion.div
-                      key={collab.name}
-                      initial={false}
-                      animate={{
-                        x: transform.x,
-                        y: transform.y,
-                        scale: transform.scale,
-                        rotate: transform.rotate,
-                        opacity: getOpacity(),
-                      }}
-                      transition={{
-                        duration: 0.6,
-                        ease: [0.4, 0, 0.2, 1],
-                      }}
-                      className="absolute inset-0 flex items-center justify-center mb-24"
-                      style={{
-                        zIndex,
-                        transformOrigin: "center center",
-                      }}
-                    >
-                      <div
-                        className={`flex items-center justify-center transition-all duration-300 ${
-                          isActive
-                            ? "hover:scale-105 cursor-pointer"
-                            : "pointer-events-none"
-                        }`}
+                    return (
+                      <motion.div
+                        key={`${collab.name}-${index}`}
+                        drag={isCurrentCard ? "x" : false}
+                        dragConstraints={{ left: 0, right: 0 }}
+                        dragElastic={0.7}
+                        onDragEnd={isCurrentCard ? handleDragEnd : undefined}
+                        initial={{
+                          scale: 0.95,
+                          opacity: 0,
+                          y: isCurrentCard ? 0 : isPrevCard ? 8 : 16,
+                          rotate: isCurrentCard ? 0 : isPrevCard ? -2 : -4,
+                        }}
+                        animate={{
+                          scale: isCurrentCard ? 1 : 0.95,
+                          opacity: isCurrentCard ? 1 : isPrevCard ? 0.6 : 0.3,
+                          x: isCurrentCard ? exitX : 0,
+                          y: isCurrentCard ? 0 : isPrevCard ? 8 : 16,
+                          rotate: isCurrentCard
+                            ? exitX / 20
+                            : isPrevCard
+                            ? -2
+                            : -4,
+                        }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 300,
+                          damping: 20,
+                        }}
+                        className="absolute inset-0 flex items-center justify-center cursor-grab active:cursor-grabbing"
+                        style={{
+                          zIndex,
+                        }}
                       >
-                        <Image
-                          src={collab.logo}
-                          alt={collab.alt}
-                          width={200}
-                          height={80}
-                          className="object-contain max-h-65 w-auto h-auto bg-white p-4 rounded-lg shadow-xl"
-                          priority={index === 0}
-                        />
-                      </div>
-                    </motion.div>
-                  );
-                })}
+                        <div
+                          className={`flex items-center justify-center transition-all duration-300 ${
+                            isCurrentCard
+                              ? "hover:scale-105"
+                              : "pointer-events-none"
+                          }`}
+                        >
+                          <div className="bg-white p-4 rounded-2xl shadow-xl dark:bg-card dark:shadow-[2px_2px_4px_rgba(0,0,0,0.4),-1px_-1px_3px_rgba(255,255,255,0.1)]">
+                            <Image
+                              src={collab.logo}
+                              alt={collab.alt}
+                              width={200}
+                              height={80}
+                              className="object-contain max-h-200 w-auto h-auto"
+                              priority={index === 0}
+                            />
+                          </div>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </AnimatePresence>
               </div>
 
-              {/* Indicadores de slide */}
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex justify-center gap-2  z-50">
-                {collabs.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentIndex(index)}
-                    className={`h-2 rounded-full transition-all duration-300 ${
-                      currentIndex === index
-                        ? "bg-white w-8"
-                        : "bg-white/40 w-2 hover:bg-white/60"
-                    }`}
-                    aria-label={`Ir para slide ${index + 1}`}
-                  />
-                ))}
+              {/* Controles de navegação */}
+              <div className="absolute top-[24rem] bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-4 z-50">
+                <button
+                  onClick={handlePrevious}
+                  className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm border-2 border-white/30 hover:bg-white/30 hover:border-white/50 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+                  aria-label="Slide anterior"
+                >
+                  <ChevronLeft className="h-5 w-5 text-white" />
+                </button>
+
+                {/* Indicadores de slide */}
+                <div className="flex justify-center gap-2">
+                  {collabs.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentIndex(index)}
+                      className={`h-2 rounded-full transition-all duration-300 ${
+                        currentIndex === index
+                          ? "bg-white w-8"
+                          : "bg-white/40 w-2 hover:bg-white/60"
+                      }`}
+                      aria-label={`Ir para slide ${index + 1}`}
+                    />
+                  ))}
+                </div>
+
+                <button
+                  onClick={handleNext}
+                  className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm border-2 border-white/30 hover:bg-white/30 hover:border-white/50 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+                  aria-label="Próximo slide"
+                >
+                  <ChevronRight className="h-5 w-5 text-white" />
+                </button>
               </div>
             </div>
           </motion.div>
