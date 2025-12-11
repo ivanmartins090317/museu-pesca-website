@@ -276,9 +276,22 @@ export function Hero({
             >
               <motion.div
                 initial={prefersReducedMotion ? {} : { opacity: 0, scale: 0.8 }}
-                animate={prefersReducedMotion ? {} : { opacity: 1, scale: 1 }}
-                transition={{ ...defaultTransition, duration: 1, delay: 0.2 }}
-                className="relative z-0 md:z-[100] w-full lg:max-w-lg xl:max-w-4xl top-32 mt-80 md:mt-0 md:top-0 md:relative md:bottom-0"
+                animate={
+                  prefersReducedMotion
+                    ? {}
+                    : { opacity: 1, scale: [1, 1.05, 1] }
+                }
+                transition={{
+                  ...defaultTransition,
+                  duration: 1,
+                  delay: 0.2,
+                  scale: {
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  },
+                }}
+                className="relative z-0 md:z-[100] w-full lg:max-w-lg xl:max-w-4xl top-32 mt-80 md:mt-0 md:top-0 md:relative md:bottom-0 md:left-16"
               >
                 <Image
                   src="/images/GPT_agua_viva.png"
