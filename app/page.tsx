@@ -10,6 +10,7 @@ import { Collab } from "@/components/sections/Collab";
 
 // Dados mockados - em produção viriam de um CMS ou API
 const heroData = {
+  title: "Museu de Pesca",
   subtitle:
     "Preservando a história marítima brasileira desde 1934 agora disponível para você explorar virtualmente",
   badge: {

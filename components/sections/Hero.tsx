@@ -10,11 +10,12 @@ import type { HeroProps } from "@/types";
 import { useEffect, useRef, useState } from "react";
 
 export function Hero({
+  title,
   subtitle,
   badge,
   cta,
   backgroundImage,
-}: Omit<HeroProps, "title">) {
+}: HeroProps) {
   const prefersReducedMotion = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
   const [scrollY, setScrollY] = useState(0);
@@ -134,6 +135,7 @@ export function Hero({
 
   return (
     <section
+      id="hero"
       ref={sectionRef}
       className="bg-primary-sea/40 relative overflow-visible z-[100] h-[130vh] md:h-screen"
     >
@@ -200,6 +202,14 @@ export function Hero({
                 transition={{ ...defaultTransition, duration: 0.5 }}
                 className="w-full mb-60 md:mb-0"
               >
+                <motion.h1
+                  initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
+                  animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
+                  transition={{ ...defaultTransition, duration: 0.5 }}
+                  className="w-full text-2xl text-center md:text-left  sm:text-regular md:text-4xl text-neutral-white/95 mb-2 md:mb-6 text-balance leading-relaxed md:leading-relaxed font-bold drop-shadow-[0_2px_10px_rgba(0,0,0,0.3)]"
+                >
+                  {title}
+                </motion.h1>
                 <motion.p
                   initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
                   animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
@@ -208,7 +218,7 @@ export function Hero({
                     delay: 0.3,
                     duration: 0.5,
                   }}
-                  className="w-full md:w-10/12 text-center md:text-left text-xl sm:text-base md:text-2xl  text-neutral-white/95 mb-8 md:mb-12 text-balance leading-relaxed md:leading-relaxed font-light drop-shadow-[0_2px_10px_rgba(0,0,0,0.3)]"
+                  className="w-full md:w-10/12 text-center md:text-left text-sm sm:text-balance md:text-xl  text-neutral-white/95 mb-8 md:mb-12 text-balance leading-relaxed md:leading-relaxed font-thin drop-shadow-[0_2px_10px_rgba(0,0,0,0.3)]"
                   style={{
                     textShadow: prefersReducedMotion
                       ? undefined
@@ -248,7 +258,7 @@ export function Hero({
                   <Button
                     asChild
                     size="lg"
-                    className="w-full sm:w-auto text-base sm:text-lg md:text-xl px-6 sm:px-8 md:px-12 py-5 sm:py-6 md:py-7 min-h-[48px] sm:min-h-[56px] rounded-full bg-primary-sea/60 backdrop-blur-lg text-neutral-white hover:bg-primary-sea hover:text-neutral-white active:bg-primary-sea/90 transition-all duration-300 shadow-[0_8px_30px_rgba(13,31,60,0.5)] hover:shadow-[0_12px_40px_rgba(13,31,60,0.7)] border border-white/20 hover:border-white/40 font-semibold touch-manipulation relative overflow-hidden group"
+                    className="w-full sm:w-auto text-base sm:text-md md:text-md px-6 sm:px-8 md:px-12 py-5 sm:py-6 md:py-7 min-h-[48px] sm:min-h-[56px] rounded-full bg-primary-sea/60 backdrop-blur-lg text-neutral-white hover:bg-primary-sea hover:text-neutral-white active:bg-primary-sea/90 transition-all duration-300 shadow-[0_8px_30px_rgba(13,31,60,0.5)] hover:shadow-[0_12px_40px_rgba(13,31,60,0.7)] border border-white/20 hover:border-white/40 font-semibold touch-manipulation relative overflow-hidden group"
                   >
                     <Link href={cta.href}>
                       <span className="relative z-10">{cta.label}</span>
