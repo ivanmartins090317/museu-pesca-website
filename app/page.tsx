@@ -12,7 +12,7 @@ import { Collab } from "@/components/sections/Collab";
 const heroData = {
   title: "Museu de Pesca",
   subtitle:
-    "Preservando a história marítima brasileira desde 1934 agora disponível para você explorar virtualmente",
+    "Preservando a história marítima brasileira desde 1934 agora disponível para você explorar virtualmente.",
   badge: {
     text: "Desde 1934",
     variant: "highlight" as const,
