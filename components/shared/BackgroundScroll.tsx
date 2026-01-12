@@ -112,7 +112,7 @@ export function BackgroundScroll() {
   // Determina qual vídeo usar
   const videoPath =
     videoSource === "mobile"
-      ? "/video/video_drone-museu-web.webm"
+      ? "/video/video_drone-museu-web-mobile.webm"
       : "/video/video_drone-museu-web.webm";
 
   return (
