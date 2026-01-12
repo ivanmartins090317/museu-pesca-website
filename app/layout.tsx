@@ -3,7 +3,6 @@ import { Roboto, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import { siteConfig } from "@/lib/constants";
 import { BackgroundScroll } from "@/components/shared/BackgroundScroll";
-import { VideoPreload } from "@/components/shared/VideoPreload";
 
 const roboto = Roboto({
   weight: ["100", "300", "400", "500", "700", "900"],
@@ -57,7 +56,6 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" className={`${roboto.variable} ${robotoMono.variable}`}>
       <body className="relative" suppressHydrationWarning>
-        <VideoPreload />
         <BackgroundScroll />
         {children}
       </body>

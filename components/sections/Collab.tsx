@@ -5,13 +5,10 @@ import { motion, AnimatePresence, PanInfo } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import gsap from "gsap";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { defaultTransition } from "@/lib/animations";
 import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
 import type { CollabProps } from "@/types";
-
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 export function Collab({ collabs }: CollabProps) {
   const prefersReducedMotion = useReducedMotion();
@@ -19,78 +16,6 @@ export function Collab({ collabs }: CollabProps) {
   const isInView = useInView(ref, { once: true, amount: 0.2 });
 
   const shouldAnimate = !prefersReducedMotion && isInView;
-
-  //animation GSAP
-  const sectionRef = useRef<HTMLElement>(null);
-  const plantsRef1 = useRef<HTMLDivElement>(null);
-  const plantsRef2 = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    // Registrar ScrollTrigger apenas no cliente após montagem
-    if (typeof window !== "undefined") {
-      gsap.registerPlugin(ScrollTrigger);
-    }
-  }, []);
-
-  useEffect(() => {
-    // Aguardar hidratação completa antes de criar animações
-    if (typeof window === "undefined") return;
-    if (prefersReducedMotion) return;
-
-    if (plantsRef1.current && plantsRef2.current && sectionRef.current) {
-      // Armazenar referências das animações para cleanup
-      let animation1: gsap.core.Tween | null = null;
-      let animation2: gsap.core.Tween | null = null;
-
-      // Forçar refresh do ScrollTrigger após um pequeno delay
-      const timer = setTimeout(() => {
-        animation1 = gsap.fromTo(
-          plantsRef1.current,
-          { x: "-100vw", opacity: 0 },
-          {
-            x: "0",
-            opacity: 1,
-            duration: 2,
-            scrollTrigger: {
-              trigger: sectionRef.current,
-              start: "top 80%",
-              toggleActions: "play reverse play reverse",
-              markers: false,
-            },
-          }
-        );
-        animation2 = gsap.fromTo(
-          plantsRef2.current,
-          { x: "100vw", opacity: 0 },
-          {
-            x: "0",
-            opacity: 1,
-            duration: 2,
-            scrollTrigger: {
-              trigger: sectionRef.current,
-              start: "top 80%",
-              toggleActions: "play reverse play reverse",
-              markers: false,
-            },
-          }
-        );
-
-        // Refresh do ScrollTrigger após criar as animações
-        ScrollTrigger.refresh();
-      }, 100);
-
-      return () => {
-        clearTimeout(timer);
-        // Limpar animações se existirem
-        if (animation1?.scrollTrigger) {
-          animation1.scrollTrigger.kill();
-        }
-        if (animation2?.scrollTrigger) {
-          animation2.scrollTrigger.kill();
-        }
-      };
-    }
-  }, [prefersReducedMotion]);
 
   // Logos dos apoiadores
 
@@ -137,10 +62,7 @@ export function Collab({ collabs }: CollabProps) {
   }, [collabs.length, prefersReducedMotion]);
 
   return (
-    <section
-      ref={sectionRef}
-      className="py-section relative overflow-hidden bg-transparent isolate"
-    >
+    <section className="py-section relative overflow-hidden bg-transparent isolate">
       <div className="container mx-auto sm:px-6 lg:px-8 h-full pb-10 relative z-10 px-1">
         <motion.div
           ref={ref}
@@ -157,33 +79,6 @@ export function Collab({ collabs }: CollabProps) {
             missão
           </p>
         </motion.div>
-
-        {/* Elementos decorativos - algas marinhas */}
-        <div
-          ref={plantsRef1}
-          className="flex w-full justify-start absolute top-1/5 left-0 z-0"
-        >
-          <Image
-            src="/images/algas_marinhas 1.png"
-            alt="Decoração algas marinhas"
-            width={300}
-            height={300}
-            className="object-contain max-h-100 opacity-0"
-          />
-        </div>
-
-        <div
-          ref={plantsRef2}
-          className="flex w-full justify-end absolute top-1/5 right-0 z-0"
-        >
-          <Image
-            src="/images/algas_marinhas2.png"
-            alt="Decoração algas marinhas"
-            width={300}
-            height={300}
-            className="object-contain max-h-100 opacity-0"
-          />
-        </div>
       </div>
       <div className="relative h-full md:py-32 py-10">
         {/* Logos dos parceiros - Desktop (grid) */}

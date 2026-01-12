@@ -137,7 +137,7 @@ export function Hero({
     <section
       id="hero"
       ref={sectionRef}
-      className="bg-primary-sea/40 relative overflow-visible z-[100] h-[130vh] md:h-screen"
+      className="bg-primary-sea/40 relative overflow-visible z-[100] h-[100vh] md:h-screen"
     >
       <div className="container mx-auto relative h-screen md:h-[100vh] flex items-center justify-center bg-transparent pt-20 md:pt-0">
         {/* Background com efeito parallax no scroll */}
@@ -152,7 +152,7 @@ export function Hero({
         </motion.div>
 
         {/* Partículas flutuantes interativas */}
-        {!prefersReducedMotion && (
+        {/* {!prefersReducedMotion && (
           <>
             {[...Array(6)].map((_, i) => (
               <motion.div
@@ -178,7 +178,7 @@ export function Hero({
               />
             ))}
           </>
-        )}
+        )} */}
 
         {/* Container principal com layout de duas colunas */}
         <div className="relative  pb-32 md:pb-0 md:pt-0 container overflow-y-visible mx-auto px-4 sm:px-6 md:px-8 lg:px-12 h-full flex items-center">
@@ -200,7 +200,7 @@ export function Hero({
                   prefersReducedMotion ? undefined : { opacity: 1, y: 0 }
                 }
                 transition={{ ...defaultTransition, duration: 0.5 }}
-                className="w-full mb-60 md:mb-0"
+                className="w-full mb-30 md:mb-0"
               >
                 <motion.h1
                   initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
@@ -275,7 +275,7 @@ export function Hero({
             </motion.div>
 
             {/* Coluna direita - Imagem da água-viva */}
-            <motion.div
+            {/* <motion.div
               style={{
                 x: prefersReducedMotion ? 0 : jellyfishX,
                 y: prefersReducedMotion ? 0 : jellyfishY,
@@ -315,7 +315,7 @@ export function Hero({
                   }}
                 />
               </motion.div>
-            </motion.div>
+            </motion.div> */}
           </div>
         </div>
         {/* Indicador de scroll */}
@@ -324,7 +324,7 @@ export function Hero({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1 }}
-            className="absolute bottom-[-10rem] md:bottom-8  left-1/2 sm:transform -translate-x-1/2 md:transform md:-translate-x-1"
+            className="absolute bottom-0 md:bottom-8  left-1/2 sm:transform -translate-x-1/2 md:transform md:-translate-x-1"
           >
             <motion.div
               animate={{ y: [0, 10, 0] }}

@@ -138,6 +138,33 @@ export function Virtual360({ title, embedUrl }: Virtual360Props) {
     }));
   }, []);
 
+  // Timeout para remover overlay caso onLoad não dispare (comum em iframes 360°)
+  // Para visitas virtuais, o iframe pode estar pronto mas o evento onLoad não disparar
+  useEffect(() => {
+    const timeouts: NodeJS.Timeout[] = [];
+
+    embedUrls.forEach((_, index) => {
+      // Timeout curto (2s) para permitir interação mesmo durante carregamento
+      const shortTimeout = setTimeout(() => {
+        setIframeStates((prev) => {
+          if (prev[index]?.loading && !prev[index]?.error) {
+            return {
+              ...prev,
+              [index]: { loading: false, error: false },
+            };
+          }
+          return prev;
+        });
+      }, 2000);
+
+      timeouts.push(shortTimeout);
+    });
+
+    return () => {
+      timeouts.forEach((timeout) => clearTimeout(timeout));
+    };
+  }, [embedUrls]);
+
   // Carregar iframe quando se torna current
   useEffect(() => {
     if (!loadedIframes.has(current)) {
@@ -313,19 +340,6 @@ export function Virtual360({ title, embedUrl }: Virtual360Props) {
                     aria-hidden={!isCurrent}
                   >
                     <div className="relative aspect-video rounded-2xl overflow-hidden shadow-2xl bg-primary-sea/20 border border-cyan-500/20">
-                      {iframeState.loading && (
-                        <div className="absolute inset-0 flex items-center justify-center bg-primary-sea/30 z-10">
-                          <Loader2 className="w-8 h-8 text-cyan-400 animate-spin" />
-                        </div>
-                      )}
-                      {iframeState.error && (
-                        <div className="absolute inset-0 flex flex-col items-center justify-center bg-primary-sea/30 z-10 p-4">
-                          <AlertCircle className="w-8 h-8 text-red-400 mb-2" />
-                          <p className="text-white text-sm text-center">
-                            Erro ao carregar visita virtual
-                          </p>
-                        </div>
-                      )}
                       {!iframeState.error && (
                         <iframe
                           src={
@@ -335,7 +349,8 @@ export function Virtual360({ title, embedUrl }: Virtual360Props) {
                           }
                           data-src={url}
                           className="w-full h-full border-0"
-                          allow="fullscreen; accelerometer; gyroscope"
+                          allow="fullscreen; accelerometer; gyroscope; autoplay; camera; microphone; xr-spatial-tracking; vr; payment"
+                          allowFullScreen
                           title={`Visita Virtual 360° - Museu de Pesca de Santos - ${
                             index + 1
                           } de ${embedUrls.length}`}
@@ -346,6 +361,25 @@ export function Virtual360({ title, embedUrl }: Virtual360Props) {
                             embedUrls.length
                           }`}
                         />
+                      )}
+                      {iframeState.loading && (
+                        <div
+                          className="absolute inset-0 flex items-center justify-center bg-primary-sea/10 z-[5] pointer-events-none transition-opacity duration-300"
+                          style={{
+                            opacity: iframeState.loading ? 0.3 : 0,
+                          }}
+                          aria-hidden="true"
+                        >
+                          <Loader2 className="w-8 h-8 text-cyan-400 animate-spin opacity-70" />
+                        </div>
+                      )}
+                      {iframeState.error && (
+                        <div className="absolute inset-0 flex flex-col items-center justify-center bg-primary-sea/30 z-10 p-4 pointer-events-auto">
+                          <AlertCircle className="w-8 h-8 text-red-400 mb-2" />
+                          <p className="text-white text-sm text-center">
+                            Erro ao carregar visita virtual
+                          </p>
+                        </div>
                       )}
                     </div>
                   </motion.div>
