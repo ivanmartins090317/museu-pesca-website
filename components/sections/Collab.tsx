@@ -72,11 +72,10 @@ export function Collab({ collabs }: CollabProps) {
           className="text-center mb-0"
         >
           <h2 className="text-h2 font-bold text-white mb-4">
-            Os colaboradores <br className="sm:hidden" /> do Museu
+            Os Parceiros <br className="sm:hidden" /> do Museu
           </h2>
           <p className="text-body text-white max-w-lg mx-auto mb-10 md:mb-0">
-            Agradecemos aos nossos colaboradores que tornam possível nossa
-            missão
+            Parceiros que tornam possível nossa missão
           </p>
         </motion.div>
       </div>

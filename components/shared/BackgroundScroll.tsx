@@ -135,7 +135,7 @@ export function BackgroundScroll() {
         <source src={videoPath} type="video/webm" />
       </video>
       {/* Overlay escuro */}
-      <div className="absolute inset-0 bg-black/80 pointer-events-none" />
+      <div className="absolute inset-0 bg-black/55 pointer-events-none" />
     </div>
   );
 }
