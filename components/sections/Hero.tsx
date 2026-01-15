@@ -181,7 +181,7 @@ export function Hero({
         )} */}
 
         {/* Container principal com layout de duas colunas */}
-        <div className="relative  pb-32 md:pb-0 md:pt-0 container overflow-y-visible mx-auto px-4 sm:px-6 md:px-8 lg:px-12 h-full flex items-center">
+        <div className="relative pb-32 md:pb-0 md:pt-0 container overflow-y-visible mx-auto px-4 sm:px-6 md:px-8 lg:px-12 h-full flex items-center">
           <div className="w-full  flex flex-col-reverse md:flex-row gap-8 lg:gap-12 items-center">
             {/* Coluna esquerda - Texto e Botão */}
             <motion.div
@@ -200,7 +200,7 @@ export function Hero({
                   prefersReducedMotion ? undefined : { opacity: 1, y: 0 }
                 }
                 transition={{ ...defaultTransition, duration: 0.5 }}
-                className="w-full mb-30 md:mb-0"
+                className="w-full mb-30 md:mb-32"
               >
                 <motion.h1
                   initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
@@ -316,6 +316,26 @@ export function Hero({
                 />
               </motion.div>
             </motion.div> */}
+            {/* Tour Virtual 360 - Matterport */}
+            <motion.div
+              initial={prefersReducedMotion ? {} : { opacity: 0, scale: 0.95 }}
+              animate={prefersReducedMotion ? {} : { opacity: 1, scale: 1 }}
+              transition={{ ...defaultTransition, delay: 0.3, duration: 0.6 }}
+              className="w-full md:w-1/2 lg:w-[65%]"
+            >
+              <div className="relative w-full aspect-[4/3] md:aspect-video rounded-2xl overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.4)] border border-white/20">
+                <iframe
+                  src="https://my.matterport.com/show/?m=X9SyiXKERd4"
+                  title="Tour Virtual 360 - Museu de Pesca"
+                  width="100%"
+                  height="100%"
+                  frameBorder="0"
+                  allow="fullscreen; xr-spatial-tracking"
+                  allowFullScreen
+                  className="absolute inset-0 w-full h-full"
+                />
+              </div>
+            </motion.div>
           </div>
         </div>
         {/* Indicador de scroll */}
