@@ -331,7 +331,6 @@ export function Hero({
                   height="100%"
                   frameBorder="0"
                   allow="fullscreen; xr-spatial-tracking"
-                  allowFullScreen
                   className="absolute inset-0 w-full h-full"
                 />
               </div>
