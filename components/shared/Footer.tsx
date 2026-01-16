@@ -7,7 +7,6 @@ import {
   Waves,
   Facebook,
   Instagram,
-  Twitter,
   Youtube,
   Mail,
   MapPin,
@@ -19,7 +18,6 @@ const socialIcons = {
   instagram: Instagram,
   facebook: Facebook,
   youtube: Youtube,
-  twitter: Twitter,
 };
 
 const footerLinks = {
@@ -192,10 +190,10 @@ export function Footer() {
             </div>
             <div>
               <h5 className="text-white mb-1 font-semibold">Email</h5>
-              <p className="text-gray-400">contato@museupescasantos.com.br</p>
+              <p className="text-gray-400">mpescasanto@gmail.com</p>
             </div>
           </div>
-          <div className="flex items-start gap-4">
+          {/* <div className="flex items-start gap-4">
             <div className="p-3 rounded-lg bg-cyan-500/10 border border-cyan-500/30">
               <Phone className="w-5 h-5 text-cyan-400" />
             </div>
@@ -203,7 +201,7 @@ export function Footer() {
               <h5 className="text-white mb-1 font-semibold">Telefone</h5>
               <p className="text-gray-400">(13) 3261-5260</p>
             </div>
-          </div>
+          </div> */}
           <div className="flex items-start gap-4">
             <div className="p-3 rounded-lg bg-cyan-500/10 border border-cyan-500/30">
               <MapPin className="w-5 h-5 text-cyan-400" />

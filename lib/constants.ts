@@ -14,23 +14,18 @@ export const navigation = [
 export const socialMedia = [
   {
     platform: "instagram" as const,
-    url: "https://instagram.com/museupescasantos",
+    url: "https://instagram.com/museu_de_pesca",
     label: "Instagram",
   },
   {
     platform: "facebook" as const,
-    url: "https://facebook.com/museupescasantos",
+    url: "https://www.facebook.com/museudepescaoficial",
     label: "Facebook",
   },
   {
     platform: "youtube" as const,
-    url: "https://youtube.com/@museupescasantos",
+    url: "https://www.youtube.com/watch?v=hAq4oAeLlEk&amp;list=PLyCx5sbEDbxtYnMKOI3ubVbyR4924YkML",
     label: "YouTube",
-  },
-  {
-    platform: "twitter" as const,
-    url: "https://twitter.com/museupescasantos",
-    label: "Twitter",
   },
 ];
 

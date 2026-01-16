@@ -101,7 +101,7 @@ export interface FooterProps {
     href: string;
   }[];
   socialMedia: {
-    platform: "instagram" | "facebook" | "youtube" | "twitter";
+    platform: "instagram" | "facebook" | "youtube";
     url: string;
   }[];
   newsletter: {
