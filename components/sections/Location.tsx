@@ -21,25 +21,26 @@ export function Location({
   const isInView = useInView(ref, { once: true, amount: 0.2 });
 
   // Gera a URL do embed do Google Maps
-  const getMapEmbedUrl = (): string => {
+  const getMapEmbedUrl = (): string | null => {
     // Prepara o endereço completo para usar como query
     const addressQuery = encodeURIComponent(
       `${address.street}, ${address.city}, ${address.state}`
     );
 
-    // Se tiver link compartilhado ou API key, usa o endereço para gerar o embed
-    // O Google Maps Embed aceita o endereço como query string
-    if (mapShareUrl || process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY) {
-      // Se tiver API key, usa a API oficial do Google Maps Embed
-      if (process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY) {
-        return `https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&q=${addressQuery}&zoom=15`;
-      }
-      // Se não tiver API key mas tiver link compartilhado, usa o formato básico com endereço
-      return `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3657.5!2d${address.coordinates.lng}!3d${address.coordinates.lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjPCsDU4JzI0LjYiUyA0NsKwMTknMDUuNSJX!5e0!3m2!1spt-BR!2sbr!4v1234567890&q=${addressQuery}`;
+    // Se tiver API key, usa a API oficial do Google Maps Embed
+    if (process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY) {
+      return `https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&q=${addressQuery}&zoom=15`;
     }
 
-    // Fallback: usa coordenadas diretamente no formato de embed básico
-    return `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3657.5!2d${address.coordinates.lng}!3d${address.coordinates.lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjPCsDU4JzI0LjYiUyA0NsKwMTknMDUuNSJX!5e0!3m2!1spt-BR!2sbr!4v1234567890&q=${addressQuery}`;
+    // Usa coordenadas diretamente no formato de embed do Google Maps
+    // Formato que funciona sem API key usando coordenadas
+    const { lat, lng } = address.coordinates;
+
+    // Gera URL de embed usando coordenadas no formato padrão do Google Maps
+    // Este formato funciona sem necessidade de API key
+    // O formato pb (place base) é complexo, então usamos uma abordagem mais simples
+    // com coordenadas e endereço como fallback
+    return `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3000!2d${lng}!3d${lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjPCsDU4JzI0LjYiUyA0NsKwMTknMDUuNSJX!5e0!3m2!1spt-BR!2sbr!4v${Date.now()}&q=${addressQuery}`;
   };
 
   const mapUrl = getMapEmbedUrl();
@@ -107,7 +108,7 @@ export function Location({
               prefersReducedMotion || !isInView ? {} : { opacity: 1, x: 0 }
             }
             transition={{ ...defaultTransition, delay: 0.3 }}
-            className="bg-primary-sea_floor/30 backdrop-blur-md text-neutral-white rounded-lg p-8 shadow-lg"
+            className="bg-primary-sea_floor/30 backdrop-blur-md text-neutral-white rounded-lg p-8 shadow-lg flex flex-col justify-center"
           >
             <div className="space-y-6">
               {/* Address */}
@@ -133,17 +134,25 @@ export function Location({
                     <h3 className="font-bold text-lg mb-1">
                       Horário de Funcionamento
                     </h3>
-                    <p className="text-neutral-white/90">
-                      <strong>Segunda a Sexta:</strong> {hours.weekday}
+                    <p className="text-primary-aqua">
+                      *Museu temporariamente fechado para restauração.
+                      <br />{" "}
+                      <a
+                        href="/virtual-tour"
+                        className="hover:text-neutral-white/80 transition-colors mt-8"
+                      >
+                        - Conheça nossa visita virtual
+                      </a>
+                      {/* <strong>Segunda a Sexta:</strong> {hours.weekday}
                       <br />
-                      <strong>Sábado e Domingo:</strong> {hours.weekend}
+                      <strong>Sábado e Domingo:</strong> {hours.weekend} */}
                     </p>
                   </div>
                 </div>
               </div>
 
               {/* Contact */}
-              <div>
+              {/* <div>
                 <div className="flex items-start mb-2">
                   <Phone className="w-5 h-5 mr-3 mt-1 flex-shrink-0" />
                   <div>
@@ -174,10 +183,10 @@ export function Location({
                     </p>
                   </div>
                 </div>
-              </div>
+              </div> */}
 
               {/* Parking */}
-              <div>
+              {/* <div>
                 <div className="flex items-start mb-2">
                   <Car className="w-5 h-5 mr-3 mt-1 flex-shrink-0" />
                   <div>
@@ -185,10 +194,10 @@ export function Location({
                     <p className="text-neutral-white/90">{parkingInfo}</p>
                   </div>
                 </div>
-              </div>
+              </div> */}
 
               {/* Public Transport */}
-              {publicTransport.length > 0 && (
+              {/* {publicTransport.length > 0 && (
                 <div>
                   <div className="flex items-start mb-2">
                     <Bus className="w-5 h-5 mr-3 mt-1 flex-shrink-0" />
@@ -204,7 +213,7 @@ export function Location({
                     </div>
                   </div>
                 </div>
-              )}
+              )} */}
             </div>
           </motion.div>
         </div>

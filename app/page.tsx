@@ -140,7 +140,7 @@ const collabsData = {
 
 const locationData = {
   address: {
-    street: "Avenida Bartolomeu de Gusmão, s/n",
+    street: "Av. Rei Pelé, 192 – Ponta da Praia",
     city: "Santos",
     state: "SP",
     zip: "11030-906",

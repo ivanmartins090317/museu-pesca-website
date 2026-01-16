@@ -64,8 +64,7 @@ export function Blog({ title, posts, ctaLink }: BlogSectionProps) {
         <div className="text-center mb-12">
           <h2 className="text-h2 font-bold text-white mb-4">{title}</h2>
           <p className="text-body text-white max-w-2xl mx-auto">
-            Descubra histórias fascinantes sobre o mar, a pesca e nossa cultura
-            marítima
+            Descubra histórias fascinantes sobre a pesca e nossa cultura.
           </p>
         </div>
 

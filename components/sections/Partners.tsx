@@ -42,12 +42,7 @@ export function Partners({ partners }: PartnersProps) {
           transition={defaultTransition}
           className="text-center mb-0"
         >
-          <h2 className="text-h2 font-bold text-white mb-4">
-            Quem Apoia o Museu
-          </h2>
-          <p className="text-body text-white max-w-lg mx-auto">
-            Agradecemos aos nossos apoiadores que tornam possível nossa missão
-          </p>
+          <h2 className="text-h2 font-bold text-white mb-4">APOIO</h2>
         </motion.div>
       </div>
       <div className="relative h-full md:py-32 py-10">
