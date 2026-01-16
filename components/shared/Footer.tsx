@@ -190,7 +190,7 @@ export function Footer() {
             </div>
             <div>
               <h5 className="text-white mb-1 font-semibold">Email</h5>
-              <p className="text-gray-400">mpescasanto@gmail.com</p>
+              <p className="text-gray-400">mpescasantos@gmail.com</p>
             </div>
           </div>
           {/* <div className="flex items-start gap-4">
