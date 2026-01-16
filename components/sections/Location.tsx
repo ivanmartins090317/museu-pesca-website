@@ -135,13 +135,13 @@ export function Location({
                       Horário de Funcionamento
                     </h3>
                     <p className="text-primary-aqua">
-                      *Museu temporariamente fechado para restauração.
+                    Temporariamente fechado para restauro.
                       <br />{" "}
                       <a
                         href="/virtual-tour"
                         className="hover:text-neutral-white/80 transition-colors mt-8"
                       >
-                        - Conheça nossa visita virtual
+                       Visite o Museu de Pesca em nossa experiência virtual.
                       </a>
                       {/* <strong>Segunda a Sexta:</strong> {hours.weekday}
                       <br />

@@ -38,7 +38,7 @@ const aboutData = {
     { label: "Área do Museu", value: "1.800m²" },
   ],
   images: [
-    "/images/museu-pesca-frente-upscale.jpg",
+    "/images/imagem_mp_frente.jpg",
     "/images/museu-de-pesca-santos-visao-fora.webp",
     "/images/museu-pesca-peixes.jpg",
   ],

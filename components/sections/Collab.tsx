@@ -72,10 +72,10 @@ export function Collab({ collabs }: CollabProps) {
           className="text-center mb-0"
         >
           <h2 className="text-h2 font-bold text-white mb-4">
-            Parceiros <br className="sm:hidden" /> do Museu
+          Museus  <br className="sm:hidden" />Parceiros
           </h2>
-          <p className="text-body text-white max-w-lg mx-auto mb-10 md:mb-0">
-            Parceiros que tornam possível nossa missão
+          <p className="text-body text-white max-w-xl mx-auto mb-10 md:mb-0">
+          Explore os museus que fazem parte do Metaverso do Museu de Pesca
           </p>
         </motion.div>
       </div>
