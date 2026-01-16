@@ -182,7 +182,7 @@ export function Hero({
 
         {/* Container principal com layout de duas colunas */}
         <div className="relative pb-32 md:pb-0 md:pt-0 container overflow-y-visible mx-auto px-4 sm:px-6 md:px-8 lg:px-12 h-full flex items-center">
-          <div className="w-full  flex flex-col-reverse md:flex-row gap-8 lg:gap-12 items-center">
+          <div className="w-full  flex flex-col md:flex-row gap-8 lg:gap-12 items-center">
             {/* Coluna esquerda - Texto e Botão */}
             <motion.div
               style={{
@@ -321,7 +321,7 @@ export function Hero({
               initial={prefersReducedMotion ? {} : { opacity: 0, scale: 0.95 }}
               animate={prefersReducedMotion ? {} : { opacity: 1, scale: 1 }}
               transition={{ ...defaultTransition, delay: 0.3, duration: 0.6 }}
-              className="w-full md:w-1/2 lg:w-[65%]"
+              className="w-full md:w-[95%] lg:w-[65%] hidden md:flex"
             >
               <div className="relative w-full aspect-[4/3] md:aspect-video rounded-2xl overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.4)] border border-white/20">
                 <iframe
