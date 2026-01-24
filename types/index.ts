@@ -36,6 +36,7 @@ export interface colabora {
   name: string;
   logo: string;
   alt: string;
+  url?: string;
 }
 
 export interface BlogPost {

@@ -59,7 +59,7 @@ function BlogCard({ post }: BlogCardProps) {
 
 export function Blog({ title, posts, ctaLink }: BlogSectionProps) {
   return (
-    <section id="blog" className="relative py-section bg-primary-sea/10">
+    <section id="blog" className="relative py-section pt-0 bg-primary-sea/10">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-12">
           <h2 className="text-h2 font-bold text-white mb-4">{title}</h2>

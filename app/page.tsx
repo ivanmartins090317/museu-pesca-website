@@ -7,6 +7,7 @@ import { Blog } from "@/components/sections/Blog";
 import { Partners } from "@/components/sections/Partners";
 import { Location } from "@/components/sections/Location";
 import { Collab } from "@/components/sections/Collab";
+import { CollabTeste } from "@/components/sections/Collab_teste";
 
 // Dados mockados - em produção viriam de um CMS ou API
 const heroData = {
@@ -119,21 +120,77 @@ const collabsData = {
       name: "Aquario",
       logo: "/logos/Logo_parceiro_aquario.png",
       alt: "Conselho Nacional de Desenvolvimento Científico e Tecnológico",
+      url:"https://my.matterport.com/show/?m=VdoCpw6tTko"
     },
     {
       name: "Pinacoteca",
       logo: "/logos/Logo_parceiro_pinacoteca.png",
       alt: "Fundo Nacional de Desenvolvimento Científico e Tecnológico",
+      url:"https://my.matterport.com/show/?m=PDtXn1UGEbY"
     },
     {
       name: "Museu Café",
       logo: "/logos/Logo_parceiro_museu_cafe.png",
       alt: "Museu Café",
+      url:"https://my.matterport.com/show/?m=jKJkbyUGji8"
     },
     {
       name: "Museu Pelé",
       logo: "/logos/Logo_parceiro_museu_pele.png",
       alt: "Museu Pelé",
+      url:"https://my.matterport.com/show/?m=jarQfGi8u2o"
+    },
+    {
+      name: "Museu da arte sacra",
+      logo: "/logos/Logo_parceiro_museu_arte_sacra.png",
+      alt: "Museu da arte sacra",
+      url:"https://my.matterport.com/show/?m=RgMjNDx4Bzi"
+    },
+    {
+      name: "Planeta Inseto",
+      logo: "/logos/Logo_parceiro_planeta_inseto.png",
+      alt: "Planeta Inseto",
+      url:"https://my.matterport.com/show/?m=swPdM6117zL"
+    },
+  ],
+};
+const collabsDataTeste = {
+  collabs: [
+    {
+      name: "Aquario",
+      logo: "/logos/Logo_parceiro_aquario.png",
+      alt: "Conselho Nacional de Desenvolvimento Científico e Tecnológico",
+      url:"https://my.matterport.com/show/?m=VdoCpw6tTko"
+    },
+    {
+      name: "Pinacoteca",
+      logo: "/logos/Logo_parceiro_pinacoteca.png",
+      alt: "Fundo Nacional de Desenvolvimento Científico e Tecnológico",
+      url:"https://my.matterport.com/show/?m=PDtXn1UGEbY"
+    },
+    {
+      name: "Museu Café",
+      logo: "/logos/Logo_parceiro_museu_cafe.png",
+      alt: "Museu Café",
+      url:"https://my.matterport.com/show/?m=jKJkbyUGji8"
+    },
+    {
+      name: "Museu Pelé",
+      logo: "/logos/Logo_parceiro_museu_pele.png",
+      alt: "Museu Pelé",
+      url:"https://my.matterport.com/show/?m=jarQfGi8u2o"
+    },
+    {
+      name: "Museu da arte sacra",
+      logo: "/logos/Logo_parceiro_museu_arte_sacra.png",
+      alt: "Museu da arte sacra",
+      url:"https://my.matterport.com/show/?m=RgMjNDx4Bzi"
+    },
+    {
+      name: "Planeta Inseto",
+      logo: "/logos/Logo_parceiro_planeta_inseto.png",
+      alt: "Planeta Inseto",
+      url:"https://my.matterport.com/show/?m=swPdM6117zL"
     },
   ],
 };
@@ -174,7 +231,7 @@ export default function HomePage() {
         <Hero {...heroData} />
         <About {...aboutData} />
         <Virtual360 {...virtual360Data} />
-        <Collab {...collabsData} />
+        <CollabTeste {...collabsDataTeste } />
         <Blog {...blogData} />
         <Partners {...partnersData} />
         <Location {...locationData} />

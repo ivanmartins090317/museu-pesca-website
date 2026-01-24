@@ -9,6 +9,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { defaultTransition } from "@/lib/animations";
 import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
 import type { CollabProps } from "@/types";
+import Link from "next/link";
 
 export function Collab({ collabs }: CollabProps) {
   const prefersReducedMotion = useReducedMotion();
@@ -98,18 +99,35 @@ export function Collab({ collabs }: CollabProps) {
               }}
               className="flex items-center justify-center  hover:grayscale-100 transition-all duration-300 hover:scale-105"
             >
-              <Image
-                src={collab.logo}
-                alt={collab.alt}
-                width={800}
-                height={300}
-                className="object-contain max-h-40 md:max-h-48 w-auto h-auto bg-white p-4 rounded-lg"
-                priority={index === 0}
-              />
-            </motion.div>
-          ))}
+               {collab.url ? (
+              <Link 
+                href={collab.url} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="block"
+              >
+                <Image
+                  src={collab.logo}
+                  alt={collab.alt}
+                  width={800}
+                  height={300}
+                  className="object-contain max-h-40 md:max-h-48 w-auto h-auto bg-white p-4 rounded-lg cursor-pointer"
+                  priority={index === 0}
+                />
+              </Link>
+              ) : (
+                <Image
+                  src={collab.logo}
+                  alt={collab.alt}
+                  width={800}
+                  height={300}
+                  className="object-contain max-h-40 md:max-h-48 w-auto h-auto bg-white p-4 rounded-lg"
+                  priority={index === 0}
+                />
+              )}         
         </motion.div>
-
+        ))}
+        </motion.div>
         {/* Carrossel Mobile - abaixo de 760px com cards empilhados */}
         <div className="md:hidden w-full overflow-visible relative">
           <motion.div
