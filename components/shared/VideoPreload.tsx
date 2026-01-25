@@ -1,31 +1,56 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 /**
- * Componente que injeta preload do vídeo no head do documento
- * para iniciar o download o mais cedo possível
- *
- * Preloada apenas WebM (que é o formato principal usado).
- * MP4 não precisa de preload pois é apenas fallback para navegadores antigos.
+ * Componente que faz preload inteligente do vídeo
+ * Só carrega quando a página está visível e próxima do vídeo
  */
 export function VideoPreload() {
+  const [shouldPreload, setShouldPreload] = useState(false);
+
   useEffect(() => {
-    // Preloada apenas WebM (formato principal, menor tamanho)
-    // MP4 não precisa de preload pois é apenas fallback e será carregado sob demanda
+    // Só preloada se a página estiver visível
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        setShouldPreload(true);
+      }
+    };
+
+    // Verifica se já está visível
+    if (!document.hidden) {
+      setShouldPreload(true);
+    }
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!shouldPreload) return;
+
+    // Detecta qual vídeo preloadar baseado no tamanho da tela
+    const width = window.innerWidth;
+    const videoPath = width < 400 
+      ? "/video/video_drone-museu-web-mobile.webm"
+      : "/video/video_drone-museu-web.webm";
+
     const existingLink = document.querySelector(
-      'link[rel="preload"][href="/video/video_drone-museu-web.webm"]'
+      `link[rel="preload"][href="${videoPath}"]`
     );
 
     if (!existingLink) {
       const link = document.createElement("link");
       link.rel = "preload";
-      link.href = "/video/video_drone-museu-web.webm";
-      link.as = "fetch";
+      link.href = videoPath;
+      link.as = "video";
       link.type = "video/webm";
       document.head.appendChild(link);
     }
-  }, []);
+  }, [shouldPreload]);
 
   return null;
 }

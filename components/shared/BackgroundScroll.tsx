@@ -3,25 +3,40 @@
 import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
 import { useEffect, useRef, useState } from "react";
 
-/**
- * Componente de background fixo compatível com iOS Safari
- *
- * Otimizações:
- * - Versões mobile (< 400px) e web (>= 400px)
- * - Preload adaptativo baseado na conexão
- * - Fallback para imagem em conexões lentas
- * - Respeita prefersReducedMotion
- */
 export function BackgroundScroll() {
   const prefersReducedMotion = useReducedMotion();
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [preloadStrategy, setPreloadStrategy] = useState<"metadata" | "auto">(
-    "metadata"
-  );
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [preloadStrategy, setPreloadStrategy] = useState<"metadata" | "auto" | "none">("none");
   const [shouldUseVideo, setShouldUseVideo] = useState<boolean>(true);
   const [videoSource, setVideoSource] = useState<"mobile" | "web">("web");
+  const [isVisible, setIsVisible] = useState(false);
 
-  // Detecta largura da tela e seleciona vídeo apropriado
+  // Intersection Observer para lazy load
+  useEffect(() => {
+    if (!containerRef.current || prefersReducedMotion) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true);
+            observer.disconnect();
+          }
+        });
+      },
+      { 
+        rootMargin: "100px", // Começa a carregar 100px antes de aparecer
+        threshold: 0.1 
+      }
+    );
+
+    observer.observe(containerRef.current);
+
+    return () => observer.disconnect();
+  }, [prefersReducedMotion]);
+
+  // Detecta largura da tela
   useEffect(() => {
     const updateVideoSource = () => {
       const width = window.innerWidth;
@@ -36,12 +51,13 @@ export function BackgroundScroll() {
     return () => window.removeEventListener("resize", updateVideoSource);
   }, [videoSource]);
 
-  // Detecta qualidade da conexão e ajusta estratégia
+  // Detecta qualidade da conexão
   useEffect(() => {
-    const isMobile =
-      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-        navigator.userAgent
-      ) || window.innerWidth < 768;
+    if (!isVisible) return; // Só verifica quando visível
+
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent
+    ) || window.innerWidth < 768;
 
     const connection =
       (navigator as any).connection ||
@@ -51,7 +67,6 @@ export function BackgroundScroll() {
     if (connection) {
       const { effectiveType, downlink, saveData } = connection;
 
-      // Mobile com conexão lenta: usa apenas imagem
       if (
         isMobile &&
         (saveData ||
@@ -63,7 +78,6 @@ export function BackgroundScroll() {
         return;
       }
 
-      // Ajusta preload baseado na conexão
       if (
         saveData ||
         effectiveType === "2g" ||
@@ -77,26 +91,25 @@ export function BackgroundScroll() {
         setPreloadStrategy("metadata");
       }
     } else {
-      // Fallback: assume conexão média
       setPreloadStrategy("metadata");
     }
 
     setShouldUseVideo(true);
-  }, [videoSource]);
+  }, [videoSource, isVisible]);
 
-  // Inicia carregamento do vídeo
+  // Carrega vídeo apenas quando visível
   useEffect(() => {
-    if (videoRef.current && !prefersReducedMotion && shouldUseVideo) {
+    if (videoRef.current && !prefersReducedMotion && shouldUseVideo && isVisible) {
       const video = videoRef.current;
       video.preload = preloadStrategy;
       video.load();
     }
-  }, [prefersReducedMotion, preloadStrategy, shouldUseVideo, videoSource]);
+  }, [prefersReducedMotion, preloadStrategy, shouldUseVideo, videoSource, isVisible]);
 
-  // Fallback para imagem se movimento reduzido ou sem vídeo
   if (prefersReducedMotion || !shouldUseVideo) {
     return (
       <div
+        ref={containerRef}
         className="fixed inset-0 w-full h-full z-0 pointer-events-none bg-primary-sea"
         aria-hidden="true"
         style={{
@@ -109,7 +122,6 @@ export function BackgroundScroll() {
     );
   }
 
-  // Determina qual vídeo usar
   const videoPath =
     videoSource === "mobile"
       ? "/video/video_drone-museu-web-mobile.webm"
@@ -117,6 +129,7 @@ export function BackgroundScroll() {
 
   return (
     <div
+      ref={containerRef}
       className="fixed inset-0 w-full h-full z-0 pointer-events-none bg-primary-sea"
       aria-hidden="true"
     >
@@ -127,14 +140,12 @@ export function BackgroundScroll() {
         loop
         muted
         playsInline
-        preload={preloadStrategy}
-        crossOrigin="anonymous"
+        preload={isVisible ? preloadStrategy : "none"} // ✅ Lazy load real
         poster="/images/bg_sea_floor.png"
         className="absolute inset-0 w-full h-full object-cover pointer-events-none"
       >
-        <source src={videoPath} type="video/webm" />
+        <source src={isVisible ? videoPath : undefined} type="video/webm" />
       </video>
-      {/* Overlay escuro */}
       <div className="absolute inset-0 bg-black/55 pointer-events-none" />
     </div>
   );
