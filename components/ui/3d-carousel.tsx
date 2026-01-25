@@ -91,17 +91,55 @@ const Carousel = memo(
     cards: CollabItem[];
     isCarouselActive: boolean;
   }) => {
-    const isScreenSizeSm = useMediaQuery("(max-width: 640px)");
-    const isScreenSizeMd = useMediaQuery("(max-width: 768px)");
-    const isScreenSizeLg = useMediaQuery("(max-width: 1024px)");
+    // Estado para garantir que só aplicamos valores responsivos após hidratação
+    const [mounted, setMounted] = useState(false);
     
-    // Aumentar significativamente a largura do cilindro para ocupar mais espaço na tela
-    const cylinderWidth = isScreenSizeSm ? 1400 : isScreenSizeMd ? 2000 : isScreenSizeLg ? 2400 : 3000;
+    useEffect(() => {
+      setMounted(true);
+    }, []);
+
+    // Valores padrão que funcionam no servidor e cliente inicial
+    const isScreenSizeSm = useMediaQuery("(max-width: 640px)", {
+      defaultValue: false,
+      initializeWithValue: false, // Importante: não inicializar com valor no SSR
+    });
+    const isScreenSizeMd = useMediaQuery("(max-width: 768px)", {
+      defaultValue: false,
+      initializeWithValue: false,
+    });
+    const isScreenSizeLg = useMediaQuery("(max-width: 1024px)", {
+      defaultValue: false,
+      initializeWithValue: false,
+    });
+    
+    // Usar valores padrão até que o componente esteja montado no cliente
+    const cylinderWidth = !mounted 
+      ? 2000 // Valor padrão que funciona no SSR
+      : isScreenSizeSm 
+        ? 1400 
+        : isScreenSizeMd 
+          ? 2000 
+          : isScreenSizeLg 
+            ? 2400 
+            : 3000;
+    
     const faceCount = cards.length;
-    // Cards menores para melhor proporção
-    const faceWidth = isScreenSizeSm ? 220 : isScreenSizeMd ? 280 : 320;
-    // Aumentar o radius para melhor visibilidade dos painéis laterais e efeito 3D mais pronunciado
-    const radius = isScreenSizeSm ? 250 : isScreenSizeMd ? 350 : 450;
+    const faceWidth = !mounted
+      ? 300 // Valor padrão
+      : isScreenSizeSm 
+        ? 220 
+        : isScreenSizeMd 
+          ? 280 
+          : 320;
+    
+    const radius = !mounted
+      ? 350 // Valor padrão
+      : isScreenSizeSm 
+        ? 250 
+        : isScreenSizeMd 
+          ? 350 
+          : 450;
+    
     const rotation = useMotionValue(0);
     const transform = useTransform(
       rotation,
