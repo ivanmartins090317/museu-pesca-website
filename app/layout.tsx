@@ -42,10 +42,11 @@ export const metadata: Metadata = {
     siteName: siteConfig.name,
     images: [
       {
-        url: `${siteConfig.url}/images/museu-de-pesca-santos-visao-fora.webp`,
+        url: `${siteConfig.url}/images/museu-pesca-frente-upscale.jpg`,
         width: 1200,
         height: 630,
         alt: siteConfig.name,
+        type: "image/jpeg",
       },
     ],
   },
@@ -53,7 +54,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: siteConfig.name,
     description: siteConfig.description,
-    images: [`${siteConfig.url}/images/museu-de-pesca-santos-visao-fora.webp`],
+    images: [`${siteConfig.url}/images/museu-pesca-frente-upscale.jpg`],
   },
 };
 
