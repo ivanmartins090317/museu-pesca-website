@@ -1,7 +1,7 @@
 export const siteConfig = {
   name: "Museu de Pesca",
   description: "Preservando a história pesca brasileira desde 1950",
-  url: "https://museu-pesca-santos.com.br",
+  url: "https://museu-pesca.vercel.app",
 };
 
 export const navigation = [

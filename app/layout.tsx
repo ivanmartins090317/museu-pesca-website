@@ -17,7 +17,25 @@ const robotoMono = Roboto_Mono({
   display: "swap",
 });
 
+// Função para obter a URL base do site
+function getBaseUrl() {
+  // Em produção, usa a URL do siteConfig ou variável de ambiente
+  if (process.env.NEXT_PUBLIC_SITE_URL) {
+    return process.env.NEXT_PUBLIC_SITE_URL;
+  }
+  if (process.env.VERCEL_URL) {
+    
+    return `https://${process.env.VERCEL_URL}`;
+  }
+  return siteConfig.url;
+}
+
+const baseUrl = getBaseUrl();
+console.log(baseUrl);
+const ogImageUrl = `${baseUrl}/images/imagem_mp_frente.jpg`;
+
 export const metadata: Metadata = {
+  metadataBase: new URL(baseUrl),
   title: {
     default: siteConfig.name,
     template: `%s | ${siteConfig.name}`,
@@ -36,13 +54,13 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "pt_BR",
-    url: siteConfig.url,
+    url: baseUrl,
     title: siteConfig.name,
     description: siteConfig.description,
     siteName: siteConfig.name,
     images: [
       {
-        url: `${siteConfig.url}/images/museu-pesca-frente-upscale.jpg`,
+        url: ogImageUrl,
         width: 1200,
         height: 630,
         alt: siteConfig.name,
@@ -54,7 +72,12 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: siteConfig.name,
     description: siteConfig.description,
-    images: [`${siteConfig.url}/images/museu-pesca-frente-upscale.jpg`],
+    images: [ogImageUrl],
+  },
+  other: {
+    "og:image:width": "1200",
+    "og:image:height": "630",
+    "og:image:type": "image/jpeg",
   },
 };
 
