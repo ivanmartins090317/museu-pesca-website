@@ -301,7 +301,7 @@ function ThreeDPhotoCarousel({ cards }: { cards: CollabItem[] }) {
             layoutId={`img-container-${activeImg}`}
             layout="position"
             onClick={handleClose}
-            className="fixed w-full h-full border inset-0 bg-black/80 flex items-center justify-center z-50 top-10 rounded-3xl"
+            className="fixed w-full h-[80%] border inset-0 bg-black/80 flex items-center justify-center z-50 top-24 rounded-3xl"
             style={{ willChange: "opacity" }}
             transition={transitionOverlay}
           >
