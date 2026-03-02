@@ -42,6 +42,14 @@ const aboutData = {
     "/images/imagem_mp_frente.jpg",
     "/images/museu-de-pesca-santos-visao-fora.webp",
     "/images/museu-pesca-peixes.jpg",
+    "/images/museu_pier.jpeg",
+    "/images/museu_albatroz.jpeg", 
+    "/images/museu_escadas.jpeg",
+    "/images/museu_canoa.jpeg",
+    "/images/museu_exposição.jpeg",
+    "/images/museu_pesca_esqueleto.jpeg",
+    "/images/museu_barco.jpeg",
+    "/images/museu_antigo.jpeg",
   ],
 };
 

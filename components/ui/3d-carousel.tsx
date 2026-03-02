@@ -5,6 +5,7 @@ import {
   AnimatePresence,
   animate,
   motion,
+  MotionValue,
   useAnimation,
   useMotionValue,
   useTransform,
@@ -94,8 +95,8 @@ const Carousel = memo(
     controls: any;
     cards: CollabItem[];
     isCarouselActive: boolean;
-    rotation: ReturnType<typeof useMotionValue<number>>;
-    transform: ReturnType<typeof useTransform>;
+    rotation: MotionValue<number>;
+    transform: MotionValue<string>;
     onDragEnd?: (velocity: number) => void;
   }) => {
     // Estado para garantir que só aplicamos valores responsivos após hidratação
