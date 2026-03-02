@@ -202,8 +202,8 @@ const locationData = {
     state: "SP",
     zip: "11030-906",
     coordinates: {
-      lat: -23.9735,
-      lng: -46.3182,
+      lat: -23.990026,
+      lng: -46.306237,
     },
   },
   hours: {

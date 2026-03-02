@@ -22,25 +22,19 @@ export function Location({
 
   // Gera a URL do embed do Google Maps
   const getMapEmbedUrl = (): string | null => {
-    // Prepara o endereço completo para usar como query
-    const addressQuery = encodeURIComponent(
-      `${address.street}, ${address.city}, ${address.state}`
-    );
-
-    // Se tiver API key, usa a API oficial do Google Maps Embed
+    // Se tiver API key, usa a API oficial do Google Maps Embed (mais precisa)
     if (process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY) {
-      return `https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&q=${addressQuery}&zoom=15`;
+      const addressQuery = encodeURIComponent(
+        `${address.street}, ${address.city}, ${address.state}`
+      );
+      return `https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&q=${addressQuery}&zoom=16`;
     }
 
-    // Usa coordenadas diretamente no formato de embed do Google Maps
-    // Formato que funciona sem API key usando coordenadas
+    // Sem API key: usa OpenStreetMap para exibir pin limpo sem caixa de informações
+    // bbox assimétrico: mais espaço ao norte (ruas) e menos ao sul (mar)
     const { lat, lng } = address.coordinates;
-
-    // Gera URL de embed usando coordenadas no formato padrão do Google Maps
-    // Este formato funciona sem necessidade de API key
-    // O formato pb (place base) é complexo, então usamos uma abordagem mais simples
-    // com coordenadas e endereço como fallback
-    return `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3000!2d${lng}!3d${lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjPCsDU4JzI0LjYiUyA0NsKwMTknMDUuNSJX!5e0!3m2!1spt-BR!2sbr!4v}&q=${addressQuery}`;
+    const bbox = `${lng - 0.009},${lat - 0.002},${lng + 0.009},${lat + 0.007}`;
+    return `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat},${lng}`;
   };
 
   const mapUrl = getMapEmbedUrl();
