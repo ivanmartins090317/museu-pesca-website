@@ -1,8 +1,9 @@
 "use client";
 
-import { memo, useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import {
   AnimatePresence,
+  animate,
   motion,
   useAnimation,
   useMotionValue,
@@ -10,7 +11,7 @@ import {
 } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { X } from "lucide-react";
+import { X, ChevronLeft, ChevronRight } from "lucide-react";
 
 export const useIsomorphicLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
@@ -85,11 +86,17 @@ const Carousel = memo(
     controls,
     cards,
     isCarouselActive,
+    rotation,
+    transform,
+    onDragEnd,
   }: {
     handleClick: (imgUrl: string, index: number) => void;
     controls: any;
     cards: CollabItem[];
     isCarouselActive: boolean;
+    rotation: ReturnType<typeof useMotionValue<number>>;
+    transform: ReturnType<typeof useTransform>;
+    onDragEnd?: (velocity: number) => void;
   }) => {
     // Estado para garantir que só aplicamos valores responsivos após hidratação
     const [mounted, setMounted] = useState(false);
@@ -139,12 +146,6 @@ const Carousel = memo(
         : isScreenSizeMd 
           ? 350 
           : 450;
-    
-    const rotation = useMotionValue(0);
-    const transform = useTransform(
-      rotation,
-      (value) => `rotate3d(0, 1, 0, ${value}deg)`
-    );
 
     return (
       <div
@@ -169,18 +170,20 @@ const Carousel = memo(
             isCarouselActive &&
             rotation.set(rotation.get() + info.offset.x * 0.05)
           }
-          onDragEnd={(_, info) =>
-            isCarouselActive &&
+          onDragEnd={(_, info) => {
+            if (!isCarouselActive) return;
+            const newRotation = rotation.get() + info.velocity.x * 0.05;
             controls.start({
-              rotateY: rotation.get() + info.velocity.x * 0.05,
+              rotateY: newRotation,
               transition: {
                 type: "spring",
                 stiffness: 100,
                 damping: 30,
                 mass: 0.1,
               },
-            })
-          }
+            });
+            onDragEnd?.(info.velocity.x);
+          }}
           animate={controls}
         >
           {cards.map((card, i) => (
@@ -255,7 +258,46 @@ Carousel.displayName = "Carousel";
 function ThreeDPhotoCarousel({ cards }: { cards: CollabItem[] }) {
   const [activeImg, setActiveImg] = useState<string | null>(null);
   const [isCarouselActive, setIsCarouselActive] = useState(true);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const controls = useAnimation();
+
+  // Elevados para cá para permitir controle via botões
+  const rotation = useMotionValue(0);
+  const transform = useTransform(
+    rotation,
+    (value) => `rotate3d(0, 1, 0, ${value}deg)`
+  );
+
+  const faceCount = cards.length;
+  const degreesPerFace = faceCount > 0 ? 360 / faceCount : 0;
+
+  const navigateTo = useCallback(
+    (index: number) => {
+      if (faceCount === 0) return;
+      const normalized = ((index % faceCount) + faceCount) % faceCount;
+      setCurrentIndex(normalized);
+
+      // Calcula o caminho mais curto de rotação (evita girar o lado longo)
+      const idealTarget = -normalized * degreesPerFace;
+      const current = rotation.get();
+      let delta = idealTarget - current;
+      // Normaliza o delta para [-180, 180] → sempre gira pelo ângulo menor
+      while (delta > 180) delta -= 360;
+      while (delta < -180) delta += 360;
+      const finalTarget = current + delta;
+
+      // Anima o motion value diretamente — sem conflito com controls
+      animate(rotation, finalTarget, {
+        type: "tween",
+        duration: 0.65,
+        ease: [0.32, 0.72, 0, 1], // curva suave: aceleração rápida, desaceleração gentil
+      });
+    },
+    [faceCount, degreesPerFace, rotation]
+  );
+
+  const prev = useCallback(() => navigateTo(currentIndex - 1), [currentIndex, navigateTo]);
+  const next = useCallback(() => navigateTo(currentIndex + 1), [currentIndex, navigateTo]);
 
   useEffect(() => {
     console.log("Cards loaded:", cards);
@@ -348,14 +390,74 @@ function ThreeDPhotoCarousel({ cards }: { cards: CollabItem[] }) {
           </motion.div>
         )}
       </AnimatePresence>
-      <div className="relative h-[550px] md:h-[650px] lg:h-[750px] w-full overflow-visible">
+
+      <div className="relative h-[320px] sm:h-[360px] md:h-[420px] lg:h-[460px] w-full overflow-visible">
         <Carousel
           handleClick={handleClick}
           controls={controls}
           cards={cards}
           isCarouselActive={isCarouselActive}
+          rotation={rotation}
+          transform={transform}
         />
       </div>
+
+      {/* Navegação: botões + dots */}
+      {faceCount > 1 && (
+        <div className="flex flex-col items-center gap-4 mt-2 pb-2">
+          {/* Botões prev / next + dots em linha */}
+          <div className="flex items-center gap-4">
+            <motion.button
+              onClick={prev}
+              className="p-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20 transition-colors focus:outline-none focus:ring-2 focus:ring-white/40 focus:ring-offset-2 focus:ring-offset-transparent"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              aria-label="Parceiro anterior"
+            >
+              <ChevronLeft className="w-5 h-5" aria-hidden="true" />
+            </motion.button>
+
+            {/* Dots */}
+            <div
+              className="flex items-center gap-2"
+              role="tablist"
+              aria-label="Indicadores de parceiros"
+            >
+              {cards.map((_, index) => (
+                <motion.button
+                  key={index}
+                  onClick={() => navigateTo(index)}
+                  role="tab"
+                  aria-selected={currentIndex === index}
+                  aria-label={`Ir para parceiro ${index + 1} de ${faceCount}`}
+                  className={`h-2 rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/40 focus:ring-offset-2 focus:ring-offset-transparent ${
+                    currentIndex === index
+                      ? "bg-white w-8"
+                      : "bg-white/30 w-2 hover:bg-white/50"
+                  }`}
+                  whileHover={{ scale: 1.2 }}
+                  whileTap={{ scale: 0.9 }}
+                />
+              ))}
+            </div>
+
+            <motion.button
+              onClick={next}
+              className="p-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20 transition-colors focus:outline-none focus:ring-2 focus:ring-white/40 focus:ring-offset-2 focus:ring-offset-transparent"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              aria-label="Próximo parceiro"
+            >
+              <ChevronRight className="w-5 h-5" aria-hidden="true" />
+            </motion.button>
+          </div>
+
+          {/* Screen reader announcement */}
+          <div className="sr-only" aria-live="polite" aria-atomic="true">
+            Parceiro {currentIndex + 1} de {faceCount}
+          </div>
+        </div>
+      )}
     </motion.div>
   );
 }
