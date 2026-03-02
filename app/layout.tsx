@@ -43,7 +43,7 @@ export const metadata: Metadata = {
   description: siteConfig.description,
   icons: {
     icon: [
-      { url: "/logos/logo_museu.png" },
+      { url: "/logos/logo_museu_.svg" },
       { url: "/logos/logo_museu.png", sizes: "16x16", type: "image/png" },
       { url: "/logos/logo_museu.png", sizes: "32x32", type: "image/png" },
     ],

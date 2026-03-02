@@ -29,7 +29,7 @@ export function Header() {
           : "bg-transparent"
       }`}
     >
-      <div className="w-11/12 mx-auto px-4 sm:px-6 md:px-1 py-3 sm:py-4 md:py-5">
+      <div className="w-11/12 mx-auto px-0 sm:px-6 md:px-1 py-3 sm:py-4 md:py-5">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <motion.div
@@ -39,9 +39,12 @@ export function Header() {
             transition={{ type: "spring", stiffness: 400, damping: 17 }}
           >
             <Link href="/" className="flex items-center gap-2 group">
-              <span className="text-white text-sm sm:text-xl md:text-sm font-light tracking-tight transition-colors group-hover:text-primary-aqua">
+               <span className="text-white text-md sm:text-xl md:text-md font-bold tracking-tight transition-colors group-hover:text-primary-aqua">
                 {siteConfig.name}
-              </span>
+              </span> 
+              {/* <div className="w-full rounded-md p-2 bg-white/80">
+              <Image src="/logos/logo_museu_predio_sem_fundo.png" alt="Logo" width={100} height={100} />
+              </div> */}
             </Link>
           </motion.div>
 
@@ -106,7 +109,7 @@ export function Header() {
                 >
                   <Link
                     href={item.href}
-                    className="block text-gray-200 hover:text-primary-aqua transition-colors py-3 px-4 rounded-lg hover:bg-white/5 active:bg-white/10 text-base font-medium min-h-[44px] flex items-center touch-manipulation"
+                    className=" text-gray-200 hover:text-primary-aqua transition-colors py-3 px-4 rounded-lg hover:bg-white/5 active:bg-white/10 text-base font-medium min-h-[44px] flex items-center touch-manipulation"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     {item.label}

@@ -34,9 +34,9 @@ const aboutData = {
   ],
   highlights: [
     { label: "Desde", value: "1950" },
-    { label: "Peças no Acervo", value: "2.000+" },
+    { label: "Peças no Acervo", value: "1.399+" },
     { label: "Visitantes/Ano", value: "50.000+" },
-    { label: "Área do Museu", value: "1.800m²" },
+    { label: "Área do Museu", value: "1.795m²" },
   ],
   images: [
     "/images/imagem_mp_frente.jpg",
@@ -228,7 +228,7 @@ export default function HomePage() {
     <>
       <main className="overflow-hidden z-10">
         <Header />
-        <Hero {...heroData} />
+        {/* <Hero {...heroData} /> */}
         <About {...aboutData} />
         <Virtual360 {...virtual360Data} />
         <CollabTeste {...collabsDataTeste } />

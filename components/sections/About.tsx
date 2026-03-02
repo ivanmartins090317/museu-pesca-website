@@ -1,6 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import type { AboutSection } from "@/types";
 import { defaultTransition, staggerContainer } from "@/lib/animations";
@@ -29,8 +30,26 @@ const IMAGE_ALT_TEXTS = [
   "Detalhes arquitetônicos do edifício do museu",
 ];
 
+const CAROUSEL_INTERVAL_MS = 4000;
+
 export function About({ title, description, highlights, images }: AboutProps) {
   const prefersReducedMotion = useReducedMotion();
+  const [currentImage, setCurrentImage] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    if (!images || images.length <= 1 || prefersReducedMotion || isHovered) {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      return;
+    }
+    intervalRef.current = setInterval(() => {
+      setCurrentImage((prev) => (prev + 1) % images.length);
+    }, CAROUSEL_INTERVAL_MS);
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [images, prefersReducedMotion, isHovered]);
 
   return (
     <section
@@ -46,8 +65,8 @@ export function About({ title, description, highlights, images }: AboutProps) {
         <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-primary-ocean rounded-full blur-[120px]" />
       </div>
 
-      <div className="max-w-7xl mx-auto relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
+      <div className="container mx-auto relative z-10">
+        <div className="grid grid-cols-1 mt-12 lg:grid-cols-2 gap-8 md:gap-16 lg:items-stretch">
           {/* Text Content */}
           <motion.div
             initial={prefersReducedMotion ? undefined : { opacity: 0, x: -30 }}
@@ -56,7 +75,7 @@ export function About({ title, description, highlights, images }: AboutProps) {
             }
             transition={defaultTransition}
             viewport={{ once: true, amount: 0.2 }}
-            className="space-y-6 md:space-y-8"
+            className="space-y-6 md:space-y-8 lg:flex lg:flex-col lg:justify-between"
           >
             <motion.h2
               className="text-h2 md:text-[clamp(2.5rem,5vw,4rem)] text-white font-bold"
@@ -119,7 +138,7 @@ export function About({ title, description, highlights, images }: AboutProps) {
                 {highlights.map((highlight, index) => (
                   <motion.div
                     key={index}
-                    className="bg-primary-sea/20 backdrop-blur-sm border border-primary-aqua/30 rounded-lg p-4 md:p-5"
+                    className="bg-primary-sea/20 flex flex-row-reverse md:flex-col justify-between backdrop-blur-sm border border-primary-aqua/30 rounded-lg p-4 md:p-5"
                     initial={
                       prefersReducedMotion
                         ? undefined
@@ -138,7 +157,7 @@ export function About({ title, description, highlights, images }: AboutProps) {
                     }}
                     viewport={{ once: true, amount: 0.2 }}
                   >
-                    <div className="text-2xl md:text-3xl font-bold text-white">
+                      <div className="text-2xl md:text-3xl font-bold text-white">
                       {highlight.value}
                     </div>
                     <div className="text-sm md:text-base text-gray-400 mt-1">
@@ -150,10 +169,10 @@ export function About({ title, description, highlights, images }: AboutProps) {
             )}
           </motion.div>
 
-          {/* Image Grid */}
+          {/* Image Carousel */}
           {images && images.length > 0 && (
             <motion.div
-              className="grid grid-cols-2 gap-4"
+              className="flex flex-col gap-3 lg:h-full"
               initial={prefersReducedMotion ? undefined : { opacity: 0, x: 30 }}
               whileInView={
                 prefersReducedMotion ? undefined : { opacity: 1, x: 0 }
@@ -163,48 +182,110 @@ export function About({ title, description, highlights, images }: AboutProps) {
                 delay: ANIMATION_DELAYS.images,
               }}
               viewport={{ once: true, amount: 0.2 }}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
             >
-              {images.map((imageSrc, index) => {
-                const altText =
-                  IMAGE_ALT_TEXTS[index] ||
-                  `Imagem do acervo do Museu de Pesca - ${index + 1}`;
-                return (
+              {/* Imagem principal com fade + zoom */}
+              <div className="relative overflow-hidden rounded-2xl shadow-2xl shadow-black/40 aspect-video mt-8 sm:aspect-[4/3] lg:aspect-auto lg:flex-1 lg:min-h-[280px]">
+                <AnimatePresence mode="wait">
                   <motion.div
-                    key={index}
-                    className={`relative overflow-hidden rounded-2xl ${
-                      index === 0 ? "col-span-2" : ""
-                    }`}
+                    key={currentImage}
                     initial={
-                      prefersReducedMotion ? undefined : { opacity: 0, y: 20 }
+                      prefersReducedMotion
+                        ? undefined
+                        : { opacity: 0, scale: 1.06 }
                     }
-                    whileInView={
-                      prefersReducedMotion ? undefined : { opacity: 1, y: 0 }
+                    animate={
+                      prefersReducedMotion
+                        ? undefined
+                        : { opacity: 1, scale: 1 }
                     }
-                    transition={{
-                      ...defaultTransition,
-                      delay:
-                        ANIMATION_DELAYS.images +
-                        index * ANIMATION_DELAYS.imagesStagger,
-                    }}
-                    viewport={{ once: true, amount: 0.2 }}
-                    whileHover={
-                      prefersReducedMotion ? undefined : { scale: 1.03 }
+                    exit={
+                      prefersReducedMotion
+                        ? undefined
+                        : { opacity: 0, scale: 0.97 }
+                    }
+                    transition={{ duration: 0.75, ease: "easeInOut" }}
+                    className="absolute inset-0"
+                  >
+                    <Image
+                      src={images[currentImage]}
+                      alt={
+                        IMAGE_ALT_TEXTS[currentImage] ||
+                        `Imagem do Museu de Pesca ${currentImage + 1}`
+                      }
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 1024px) 100vw, 50vw"
+                      priority={currentImage === 0}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0a1628]/70 via-transparent to-transparent" />
+                  </motion.div>
+                </AnimatePresence>
+
+                {/* Barra de progresso */}
+                {!prefersReducedMotion && (
+                  <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-white/10">
+                    <motion.div
+                      key={`progress-${currentImage}-${isHovered}`}
+                      className="h-full bg-primary-aqua"
+                      initial={{ width: "0%" }}
+                      animate={{ width: isHovered ? "0%" : "100%" }}
+                      transition={{
+                        duration: isHovered ? 0 : CAROUSEL_INTERVAL_MS / 1000,
+                        ease: "linear",
+                      }}
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Thumbnails clicáveis */}
+              <div
+                className={`grid gap-2`}
+                style={{
+                  gridTemplateColumns: `repeat(${Math.min(images.length, 4)}, 1fr)`,
+                }}
+              >
+                {images.slice(0, 4).map((src, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setCurrentImage(i)}
+                    className={`relative overflow-hidden rounded-xl aspect-video transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-aqua ${
+                      i === currentImage
+                        ? "ring-2 ring-primary-aqua ring-offset-1 ring-offset-[#0a1628] scale-[1.04] opacity-100"
+                        : "opacity-50 hover:opacity-80 hover:scale-[1.02]"
+                    }`}
+                    aria-label={
+                      IMAGE_ALT_TEXTS[i] || `Ver imagem ${i + 1}`
                     }
                   >
-                    <div className="relative aspect-[4/3] overflow-hidden group">
-                      <Image
-                        src={imageSrc}
-                        alt={altText}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        loading={index > 1 ? "lazy" : "eager"}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#0a1628]/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    </div>
-                  </motion.div>
-                );
-              })}
+                    <Image
+                      src={src}
+                      alt={IMAGE_ALT_TEXTS[i] || `Miniatura ${i + 1}`}
+                      fill
+                      className="object-cover"
+                      sizes="120px"
+                    />
+                  </button>
+                ))}
+              </div>
+
+              {/* Dots indicator */}
+              <div className="flex justify-center items-center gap-2">
+                {images.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setCurrentImage(i)}
+                    aria-label={`Ir para imagem ${i + 1}`}
+                    className={`h-1.5 rounded-full transition-all duration-300 focus:outline-none ${
+                      i === currentImage
+                        ? "bg-primary-aqua w-6"
+                        : "bg-white/30 w-1.5 hover:bg-white/60"
+                    }`}
+                  />
+                ))}
+              </div>
             </motion.div>
           )}
         </div>
