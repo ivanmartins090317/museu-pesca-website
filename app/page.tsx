@@ -29,7 +29,7 @@ const heroData = {
 const aboutData = {
   title: "Sobre o Museu",
   description: [
-    "O Museu de Pesca do Instituto de Pesca é uma instituição centenária dedicada à preservação do patrimônio científico, natural e cultural relacionado à pesca e aos ambientes aquáticos no Brasil. Localizado em um edifício histórico na Ponta da Praia, o museu abriga um acervo de mais de 2.000 peças, que inclui exemplares da biodiversidade marinha e costeira, além de objetos e registros que narram a história da pesca artesanal e industrial no país.",
+    "O Museu de Pesca do Instituto de Pesca é uma instituição centenária dedicada à preservação do patrimônio científico, natural e cultural relacionado à pesca e aos ambientes aquáticos no Brasil. Localizado em um edifício histórico na Ponta da Praia, o museu abriga um acervo de mais de 1.400 peças, que inclui exemplares da biodiversidade marinha e costeira, além de objetos e registros que narram a história da pesca artesanal e industrial no país.",
     "Sua missão é promover a educação ambiental e a comunicação científica, valorizando o patrimônio cultural da pesca e sensibilizando o público sobre a importância dos ecossistemas aquáticos na manutenção da vida e da biodiversidade.",
   ],
   highlights: [

@@ -27,6 +27,8 @@ export function Virtual360({ title, embedUrl }: Virtual360Props) {
   );
   const [loadedIframes, setLoadedIframes] = useState<Set<number>>(new Set());
   const carouselRef = useRef<HTMLDivElement>(null);
+  const swipeStartX = useRef<number | null>(null);
+  const swipeStartY = useRef<number | null>(null);
 
   // Calcular valores aleatórios apenas no cliente para evitar erro de hidratação
   const backgroundElements = useMemo(() => {
@@ -90,6 +92,28 @@ export function Virtual360({ title, embedUrl }: Virtual360Props) {
       goTo(embedUrls.length - 1);
     }
   }, [embedUrls, goTo]);
+
+  // Swipe / touch handlers
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    swipeStartX.current = e.touches[0].clientX;
+    swipeStartY.current = e.touches[0].clientY;
+  }, []);
+
+  const handleTouchEnd = useCallback(
+    (e: React.TouchEvent) => {
+      if (swipeStartX.current === null || swipeStartY.current === null) return;
+      const dx = e.changedTouches[0].clientX - swipeStartX.current;
+      const dy = e.changedTouches[0].clientY - swipeStartY.current;
+      const THRESHOLD = 50;
+      if (Math.abs(dx) > THRESHOLD && Math.abs(dx) > Math.abs(dy)) {
+        if (dx > 0) prev();
+        else next();
+      }
+      swipeStartX.current = null;
+      swipeStartY.current = null;
+    },
+    [prev, next]
+  );
 
   // Navegação por teclado
   useEffect(() => {
@@ -277,6 +301,8 @@ export function Virtual360({ title, embedUrl }: Virtual360Props) {
           role="group"
           aria-label="Carrossel de visitas virtuais"
           tabIndex={0}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
         >
           <div className="relative h-[300px] md:h-[600px] flex items-center justify-center perspective-[1000px]">
             <div className="relative w-full h-full flex items-center justify-center">
@@ -340,6 +366,23 @@ export function Virtual360({ title, embedUrl }: Virtual360Props) {
                     aria-hidden={!isCurrent}
                   >
                     <div className="relative aspect-video rounded-2xl overflow-hidden shadow-2xl bg-primary-sea/20 border border-cyan-500/20">
+                      {/* Swipe zones: capturam touch nas bordas do iframe ativo */}
+                      {isCurrent && embedUrls.length > 1 && (
+                        <>
+                          <div
+                            className="absolute left-0 top-0 w-14 h-full z-10 touch-none"
+                            onTouchStart={handleTouchStart}
+                            onTouchEnd={handleTouchEnd}
+                            aria-hidden="true"
+                          />
+                          <div
+                            className="absolute right-0 top-0 w-14 h-full z-10 touch-none"
+                            onTouchStart={handleTouchStart}
+                            onTouchEnd={handleTouchEnd}
+                            aria-hidden="true"
+                          />
+                        </>
+                      )}
                       {!iframeState.error && (
                         <iframe
                           src={
@@ -392,23 +435,23 @@ export function Virtual360({ title, embedUrl }: Virtual360Props) {
               <>
                 <motion.button
                   onClick={prev}
-                  className="absolute left-4 z-40 p-3 rounded-full bg-primary-sea/20 backdrop-blur-sm border border-cyan-500/20 text-white hover:bg-primary-sea/40 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-sea/400 focus:ring-offset-2 focus:ring-offset-primary-sea"
+                  className="absolute left-2 md:left-4 z-40 p-3 md:p-4 rounded-full bg-black/40 backdrop-blur-sm border border-white/20 text-white hover:bg-black/60 active:bg-black/70 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-transparent shadow-lg"
                   whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
+                  whileTap={{ scale: 0.85 }}
                   aria-label="Visita anterior"
                   aria-controls="visita-360"
                 >
-                  <ChevronLeft className="w-6 h-6" aria-hidden="true" />
+                  <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" aria-hidden="true" />
                 </motion.button>
                 <motion.button
                   onClick={next}
-                  className="absolute right-4 z-40 p-3 rounded-full bg-primary-sea/20 backdrop-blur-sm border border-cyan-500/20 text-white hover:bg-primary-sea/40 transition-colors focus:outline-none focus:ring-2 focus:primary-sea-400 focus:ring-offset-2 focus:ring-offset-primary-sea"
+                  className="absolute right-2 md:right-4 z-40 p-3 md:p-4 rounded-full bg-black/40 backdrop-blur-sm border border-white/20 text-white hover:bg-black/60 active:bg-black/70 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-transparent shadow-lg"
                   whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
+                  whileTap={{ scale: 0.85 }}
                   aria-label="Próxima visita"
                   aria-controls="visita-360"
                 >
-                  <ChevronRight className="w-6 h-6" aria-hidden="true" />
+                  <ChevronRight className="w-5 h-5 md:w-6 md:h-6" aria-hidden="true" />
                 </motion.button>
               </>
             )}
