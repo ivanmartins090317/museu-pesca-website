@@ -51,7 +51,7 @@ export function Partners({ partners }: PartnersProps) {
           initial={shouldAnimate ? { opacity: 0, y: 30 } : undefined}
           animate={shouldAnimate ? { opacity: 1, y: 0 } : undefined}
           transition={{ ...defaultTransition, delay: 0.2 }}
-          className="flex sm:bg-transparent md:bg-white p-4 w-full flex-wrap items-center justify-center gap-20 md:gap-12 lg:gap-16 mt-0"
+          className="flex sm:bg-transparent md: p-4 w-full flex-wrap items-center justify-center gap-20 md:gap-12 lg:gap-16 mt-0"
         >
           {partners.map((apoiador, index) => (
             <motion.div
@@ -69,7 +69,7 @@ export function Partners({ partners }: PartnersProps) {
                 alt={apoiador.alt}
                 width={200}
                 height={80}
-                className="object-contain max-h-20 md:max-h-24 w-auto h-auto bg-white p-4 rounded-lg"
+                className="object-contain max-h-20 md:max-h-24 w-auto h-auto bg-white/10 backdrop-blur-md border border-white/20 shadow-lg p-4 rounded-lg"
                 priority={index === 0}
               />
             </motion.div>

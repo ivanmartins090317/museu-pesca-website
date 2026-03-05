@@ -107,17 +107,17 @@ const partnersData = {
   partners: [
     {
       name: "CNPq",
-      logo: "/logos/Logo_apoiadores_CNPq.svg",
+      logo: "/logos/Logo_apoiadores_CNPq_v2.svg",
       alt: "Conselho Nacional de Desenvolvimento Científico e Tecnológico",
     },
     {
       name: "FNDCT",
-      logo: "/logos/Logo_apoiadores_fndct.svg",
+      logo: "/logos/Logo_apoiadores_FNDCT_v2_.svg",
       alt: "Fundo Nacional de Desenvolvimento Científico e Tecnológico",
     },
     {
       name: "MCTI",
-      logo: "/logos/Logo_apoiadores_MCTI_color.svg",
+      logo: "/logos/Logo_apoiadores_MCTI_v2_.svg",
       alt: "Ministério da Ciência, Tecnologia e Inovações",
     },
   ],
