@@ -67,9 +67,14 @@ export function Partners({ partners }: PartnersProps) {
               <Image
                 src={apoiador.logo}
                 alt={apoiador.alt}
+                onClick={() => {
+                  if (apoiador.link) {
+                    window.open(apoiador.link, "_blank");
+                  }
+                }}
                 width={200}
                 height={80}
-                className="object-contain max-h-20 md:max-h-24 w-auto h-auto bg-white/10 backdrop-blur-md border border-white/20 shadow-lg p-4 rounded-lg"
+                className="object-contain max-h-20 cursor-pointer md:max-h-24 w-auto h-auto bg-white/10 backdrop-blur-md border border-white/20 shadow-lg p-4 rounded-lg"
                 priority={index === 0}
               />
             </motion.div>

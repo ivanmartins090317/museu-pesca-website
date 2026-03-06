@@ -109,17 +109,20 @@ const partnersData = {
       name: "CNPq",
       logo: "/logos/Logo_apoiadores_CNPq_v2.svg",
       alt: "Conselho Nacional de Desenvolvimento Científico e Tecnológico",
+      link: "https://www.gov.br/cnpq/pt-br",
     },
     {
       name: "FNDCT",
       logo: "/logos/Logo_apoiadores_FNDCT_v2_.svg",
       alt: "Fundo Nacional de Desenvolvimento Científico e Tecnológico",
+      link: " https://www.gov.br/mcti/pt-br/acompanhe-o-mcti/fndct",
     },
     {
       name: "MCTI",
       logo: "/logos/Logo_apoiadores_MCTI_v2_.svg",
       alt: "Ministério da Ciência, Tecnologia e Inovações",
-    },
+      link: "https://www.gov.br/mcti/pt-br",
+    },  
   ],
 };
 const collabsData = {

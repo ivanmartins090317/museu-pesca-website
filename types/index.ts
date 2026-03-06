@@ -31,6 +31,7 @@ export interface Apoiador {
   name: string;
   logo: string;
   alt: string;
+  link?: string;  
 }
 export interface colabora {
   name: string;
