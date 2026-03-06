@@ -199,7 +199,7 @@ const Carousel = memo(
               }}
               onClick={() => handleClick(card.logo, i)}
             >
-              <div className="relative w-full h-[35%] max-h-[200px] flex items-center justify-center bg-white rounded-xl p-3 md:p-4 lg:p-5 shadow-2xl border border-gray-100/50">
+              <div className="relative w-full h-[35%] max-h-[200px] flex items-center justify-center bg-white rounded-xl p-3 md:p-0 lg:p-0 shadow-2xl border border-gray-100/50">
                 {card.url ? (
                   <Link
                     href={card.url}
@@ -392,7 +392,7 @@ function ThreeDPhotoCarousel({ cards }: { cards: CollabItem[] }) {
         )}
       </AnimatePresence>
 
-      <div className="relative h-[320px] sm:h-[360px] md:h-[420px] lg:h-[460px] w-full overflow-visible">
+      <div className="relative h-[293px] sm:h-[360px] md:h-[420px] lg:h-[460px] w-full overflow-visible">
         <Carousel
           handleClick={handleClick}
           controls={controls}

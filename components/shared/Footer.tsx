@@ -28,12 +28,12 @@ const footerLinks = {
     { label: "Parceiros", href: "#parceiros" },
     { label: "Visitação 360", href: "#visita-360" },
   ],
-  Legal: [
-    { label: "Privacidade", href: "/privacidade" },
-    { label: "Termos de Uso", href: "/termos" },
-    { label: "Cookies", href: "/cookies" },
-    { label: "Acessibilidade", href: "/acessibilidade" },
-  ],
+  // Legal: [
+  //   { label: "Privacidade", href: "/privacidade" },
+  //   { label: "Termos de Uso", href: "/termos" },
+  //   { label: "Cookies", href: "/cookies" },
+  //   { label: "Acessibilidade", href: "/acessibilidade" },
+  // ],
 };
 
 export function Footer() {
@@ -225,7 +225,7 @@ export function Footer() {
             © {new Date().getFullYear()} {siteConfig.name}. Todos os direitos
             reservados.
           </p>
-          <div className="flex gap-6">
+          <div className="gap-6 hidden">
             <Link
               href="/privacidade"
               className="text-gray-500 hover:text-cyan-400 transition-colors"

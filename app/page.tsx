@@ -147,7 +147,7 @@ const collabsData = {
     },
     {
       name: "Museu Pelé",
-      logo: "/logos/Logo_parceiro_museu_pele.png",
+      logo: "/logos/Logo_parceiro_museu_p.png",
       alt: "Museu Pelé",
       url:"https://my.matterport.com/show/?m=jarQfGi8u2o"
     },
@@ -169,7 +169,7 @@ const collabsDataTeste = {
   collabs: [
     {
       name: "Aquario",
-      logo: "/logos/Logo_parceiro_aquario.png",
+      logo: "/logos/Logo_parceiro_aquario_v2.png",
       alt: "Conselho Nacional de Desenvolvimento Científico e Tecnológico",
       url:"https://my.matterport.com/show/?m=VdoCpw6tTko"
     },
@@ -181,25 +181,25 @@ const collabsDataTeste = {
     },
     {
       name: "Museu Café",
-      logo: "/logos/Logo_parceiro_museu_cafe.png",
+      logo: "/logos/Logo_parceiro_museu_cafe_v2.png",
       alt: "Museu Café",
       url:"https://my.matterport.com/show/?m=jKJkbyUGji8"
     },
     {
       name: "Museu Pelé",
-      logo: "/logos/Logo_parceiro_museu_pele.png",
+      logo: "/logos/Logo_parceiro_museu_pele_v2.png",
       alt: "Museu Pelé",
       url:"https://my.matterport.com/show/?m=jarQfGi8u2o"
     },
     {
       name: "Museu da arte sacra",
-      logo: "/logos/Logo_parceiro_museu_arte_sacra.png",
+      logo: "/logos/Logo_parceiro_museu_arte_sacra_v2.png",
       alt: "Museu da arte sacra",
       url:"https://my.matterport.com/show/?m=RgMjNDx4Bzi"
     },
     {
       name: "Planeta Inseto",
-      logo: "/logos/Logo_parceiro_planeta_inseto.png",
+      logo: "/logos/Logo_parceiro_planeta_inseto_v2.png",
       alt: "Planeta Inseto",
       url:"https://my.matterport.com/show/?m=swPdM6117zL"
     },
