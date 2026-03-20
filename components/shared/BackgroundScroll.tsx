@@ -124,8 +124,10 @@ export function BackgroundScroll() {
 
   const videoPath =
     videoSource === "mobile"
-      ? "/video/video_drone-museu-web-mobile.webm"
-      : "/video/video_drone-museu-web.webm";
+      // ? "/video/video_drone-museu-web-mobile.webm"
+      // : "/video/video_drone-museu-web.webm";
+      ? "./images/museu-de-pesca-santos-visao-fora.webp"
+      : "./images/museu-de-pesca-santos-visao-fora.webp";
 
   return (
     <div
@@ -142,11 +144,11 @@ export function BackgroundScroll() {
         playsInline
         preload={isVisible ? preloadStrategy : "none"} // ✅ Lazy load real
         poster="/images/bg_sea_floor.png"
-        className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+        className="absolute inset-0 w-full h-full object-fill pointer-events-none"
       >
         <source src={isVisible ? videoPath : undefined} type="video/webm" />
       </video>
-      <div className="absolute inset-0 bg-black/55 pointer-events-none" />
+      <div className="absolute inset-0 bg-black/80 pointer-events-none" />
     </div>
   );
 }
