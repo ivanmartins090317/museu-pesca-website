@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import type { AboutSection } from "@/types";
 import { defaultTransition, staggerContainer } from "@/lib/animations";
@@ -50,6 +51,22 @@ export function About({ title, description, highlights, images }: AboutProps) {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
   }, [images, prefersReducedMotion, isHovered]);
+
+  const imageCount = images?.length ?? 0;
+  const canNavigateCarousel = imageCount > 1;
+
+  function goToPreviousImage() {
+    if (!images?.length) return;
+    setCurrentImage((prev) => (prev - 1 + images.length) % images.length);
+  }
+
+  function goToNextImage() {
+    if (!images?.length) return;
+    setCurrentImage((prev) => (prev + 1) % images.length);
+  }
+
+  const carouselNavButtonClassName =
+    "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-primary-aqua/35 bg-[#0a1628]/70 text-primary-aqua backdrop-blur-sm transition-all duration-300 hover:bg-primary-aqua/15 hover:border-primary-aqua/55 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-aqua focus-visible:ring-offset-1 focus-visible:ring-offset-[#0a1628] disabled:pointer-events-none disabled:opacity-35";
 
   return (
     <section
@@ -271,20 +288,41 @@ export function About({ title, description, highlights, images }: AboutProps) {
                 ))}
               </div>
 
-              {/* Dots indicator */}
-              <div className="flex justify-center items-center gap-2">
-                {images.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setCurrentImage(i)}
-                    aria-label={`Ir para imagem ${i + 1}`}
-                    className={`h-1.5 rounded-full transition-all duration-300 focus:outline-none ${
-                      i === currentImage
-                        ? "bg-primary-aqua w-6"
-                        : "bg-white/30 w-1.5 hover:bg-white/60"
-                    }`}
-                  />
-                ))}
+              {/* Dots + navegação anterior/próximo */}
+              <div className="flex justify-center items-center gap-3">
+                <button
+                  type="button"
+                  onClick={goToPreviousImage}
+                  disabled={!canNavigateCarousel}
+                  aria-label="Imagem anterior"
+                  className={carouselNavButtonClassName}
+                >
+                  <ChevronLeft className="h-3.5 w-3.5" aria-hidden />
+                </button>
+                <div className="flex justify-center items-center gap-2">
+                  {images.map((_, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => setCurrentImage(i)}
+                      aria-label={`Ir para imagem ${i + 1}`}
+                      className={`h-1.5 rounded-full transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-aqua focus-visible:ring-offset-1 focus-visible:ring-offset-[#0a1628] ${
+                        i === currentImage
+                          ? "bg-primary-aqua w-6"
+                          : "bg-white/30 w-1.5 hover:bg-white/60"
+                      }`}
+                    />
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  onClick={goToNextImage}
+                  disabled={!canNavigateCarousel}
+                  aria-label="Próxima imagem"
+                  className={carouselNavButtonClassName}
+                >
+                  <ChevronRight className="h-3.5 w-3.5" aria-hidden />
+                </button>
               </div>
             </motion.div>
           )}

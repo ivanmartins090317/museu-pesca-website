@@ -11,6 +11,7 @@ import {
   Mail,
   MapPin,
   Phone,
+  Landmark,
 } from "lucide-react";
 import { socialMedia, navigation, siteConfig } from "@/lib/constants";
 
@@ -21,12 +22,12 @@ const socialIcons = {
 };
 
 const footerLinks = {
-  Navegação: navigation,
-  Recursos: [
-    { label: "Blog", href: "#blog" },
-    { label: "Eventos", href: "#eventos" },
-    { label: "Parceiros", href: "#parceiros" },
+  Navegação: [
+    { label: "Sobre", href: "#sobre" },
     { label: "Visitação 360", href: "#visita-360" },
+    { label: "Blog", href: "#blog" },
+    { label: "Parceiros", href: "#partners" },
+    { label: "Apoio", href: "#apoio" },
   ],
   // Legal: [
   //   { label: "Privacidade", href: "/privacidade" },
@@ -203,11 +204,26 @@ export function Footer() {
             </div>
           </div> */}
           <div className="flex items-start gap-4">
-            <div className="p-3 rounded-lg bg-cyan-500/10 border border-cyan-500/30">
-              <MapPin className="w-5 h-5 text-cyan-400" />
-            </div>
+            <Link href="#localizacao">
+              <div className="p-3 rounded-lg bg-cyan-500/10 border border-cyan-500/30">
+                <MapPin className="w-5 h-5 text-cyan-400" />
+              </div>
+            </Link>
             <div>
               <h5 className="text-white mb-1 font-semibold">Localização</h5>
+              <p className="text-gray-400">Santos, SP - Brasil</p>
+            </div>
+          </div>
+          <div className="flex items-start gap-4">
+            <Link href="https://www.pesca.sp.gov.br/" target="_blank">
+              <div className="p-3 rounded-lg bg-cyan-500/10 border border-cyan-500/30">
+                <Landmark className="w-5 h-5 text-cyan-400" />
+              </div>
+            </Link>
+            <div>
+              <h5 className="text-white mb-1 font-semibold">
+                Instituto de Pesca
+              </h5>
               <p className="text-gray-400">Santos, SP - Brasil</p>
             </div>
           </div>

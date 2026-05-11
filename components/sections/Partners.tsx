@@ -33,7 +33,10 @@ export function Partners({ partners }: PartnersProps) {
   }, [partners.length, prefersReducedMotion]);
 
   return (
-    <section className="py-section relative overflow-hidden bg-transparent isolate">
+    <section
+      id="apoio"
+      className="py-section relative overflow-hidden bg-transparent isolate"
+    >
       <div className="container mx-auto sm:px-6 lg:px-8 h-full pb-10 relative z-10 px-1">
         <motion.div
           ref={ref}

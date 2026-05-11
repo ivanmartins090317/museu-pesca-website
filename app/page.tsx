@@ -43,7 +43,7 @@ const aboutData = {
     "/images/museu-de-pesca-santos-visao-fora.webp",
     "/images/museu-pesca-peixes.jpg",
     "/images/museu_pier.jpeg",
-    "/images/museu_albatroz.jpeg", 
+    "/images/museu_albatroz.jpeg",
     "/images/museu_escadas.jpeg",
     "/images/museu_canoa.jpeg",
     "/images/museu_exposição.jpeg",
@@ -122,86 +122,47 @@ const partnersData = {
       logo: "/logos/Logo_apoiadores_MCTI_v2_.svg",
       alt: "Ministério da Ciência, Tecnologia e Inovações",
       link: "https://www.gov.br/mcti/pt-br",
-    },  
-  ],
-};
-const collabsData = {
-  collabs: [
-    {
-      name: "Aquario",
-      logo: "/logos/Logo_parceiro_aquario.png",
-      alt: "Conselho Nacional de Desenvolvimento Científico e Tecnológico",
-      url:"https://my.matterport.com/show/?m=VdoCpw6tTko"
-    },
-    {
-      name: "Pinacoteca",
-      logo: "/logos/Logo_parceiro_pinacoteca.png",
-      alt: "Fundo Nacional de Desenvolvimento Científico e Tecnológico",
-      url:"https://my.matterport.com/show/?m=PDtXn1UGEbY"
-    },
-    {
-      name: "Museu Café",
-      logo: "/logos/Logo_parceiro_museu_cafe.png",
-      alt: "Museu Café",
-      url:"https://my.matterport.com/show/?m=jKJkbyUGji8"
-    },
-    {
-      name: "Museu Pelé",
-      logo: "/logos/Logo_parceiro_museu_p.png",
-      alt: "Museu Pelé",
-      url:"https://my.matterport.com/show/?m=jarQfGi8u2o"
-    },
-    {
-      name: "Museu da arte sacra",
-      logo: "/logos/Logo_parceiro_museu_arte_sacra.png",
-      alt: "Museu da arte sacra",
-      url:"https://my.matterport.com/show/?m=RgMjNDx4Bzi"
-    },
-    {
-      name: "Planeta Inseto",
-      logo: "/logos/Logo_parceiro_planeta_inseto.png",
-      alt: "Planeta Inseto",
-      url:"https://my.matterport.com/show/?m=swPdM6117zL"
     },
   ],
 };
+
 const collabsDataTeste = {
   collabs: [
     {
       name: "Aquario",
       logo: "/logos/Logo_parceiro_aquario_v2.png",
       alt: "Conselho Nacional de Desenvolvimento Científico e Tecnológico",
-      url:"https://my.matterport.com/show/?m=VdoCpw6tTko"
+      url: "https://my.matterport.com/show/?m=8Em3WyqnGE7",
     },
     {
       name: "Pinacoteca",
       logo: "/logos/Logo_parceiro_pinacoteca.png",
       alt: "Fundo Nacional de Desenvolvimento Científico e Tecnológico",
-      url:"https://my.matterport.com/show/?m=PDtXn1UGEbY"
+      url: "https://my.matterport.com/show/?m=PDtXn1UGEbY",
     },
     {
       name: "Museu Café",
       logo: "/logos/Logo_parceiro_museu_cafe_v2.png",
       alt: "Museu Café",
-      url:"https://my.matterport.com/show/?m=jKJkbyUGji8"
+      url: "https://my.matterport.com/show/?m=jKJkbyUGji8",
     },
     {
       name: "Museu Pelé",
       logo: "/logos/Logo_parceiro_museu_pele_v2.png",
       alt: "Museu Pelé",
-      url:"https://my.matterport.com/show/?m=jarQfGi8u2o"
+      url: "https://my.matterport.com/show/?m=jarQfGi8u2o",
     },
     {
       name: "Museu da arte sacra",
       logo: "/logos/Logo_parceiro_museu_arte_sacra_v2.png",
       alt: "Museu da arte sacra",
-      url:"https://my.matterport.com/show/?m=RgMjNDx4Bzi"
+      url: "https://my.matterport.com/show/?m=RgMjNDx4Bzi",
     },
     {
       name: "Planeta Inseto",
       logo: "/logos/Logo_parceiro_planeta_inseto_v2.png",
       alt: "Planeta Inseto",
-      url:"https://my.matterport.com/show/?m=swPdM6117zL"
+      url: "https://my.matterport.com/show/?m=swPdM6117zL",
     },
   ],
 };
@@ -242,7 +203,7 @@ export default function HomePage() {
         {/* <Hero {...heroData} /> */}
         <About {...aboutData} />
         <Virtual360 {...virtual360Data} />
-        <CollabTeste {...collabsDataTeste } />
+        <CollabTeste {...collabsDataTeste} />
         <Blog {...blogData} />
         <Partners {...partnersData} />
         <Location {...locationData} />

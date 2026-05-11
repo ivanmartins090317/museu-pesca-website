@@ -14,7 +14,10 @@ export function CollabTeste({ collabs }: CollabProps) {
   const shouldAnimate = !prefersReducedMotion && isInView;
 
   return (
-    <section className="relative overflow-visible bg-transparent isolate py-10 md:py-14">
+    <section
+      id="partners"
+      className="relative overflow-visible bg-transparent isolate py-10 md:py-14"
+    >
       <div className="container mx-auto sm:px-6 lg:px-8 h-full relative z-10 px-1">
         <motion.div
           ref={ref}

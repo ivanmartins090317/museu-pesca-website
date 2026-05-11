@@ -8,6 +8,8 @@ export const navigation = [
   { label: "Sobre", href: "#sobre" },
   { label: "Visitação 360", href: "#visita-360" },
   { label: "Blog", href: "#blog" },
+  { label: "Parceiros", href: "#partners" },
+  { label: "Apoio", href: "#apoio" },
   { label: "Localização", href: "#localizacao" },
 ];
 

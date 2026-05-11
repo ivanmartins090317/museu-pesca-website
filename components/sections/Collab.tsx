@@ -36,7 +36,7 @@ export function Collab({ collabs }: CollabProps) {
   // Função para lidar com drag/swipe
   const handleDragEnd = (
     event: MouseEvent | TouchEvent | PointerEvent,
-    info: PanInfo
+    info: PanInfo,
   ) => {
     if (Math.abs(info.offset.x) > 100) {
       setExitX(info.offset.x);
@@ -63,7 +63,10 @@ export function Collab({ collabs }: CollabProps) {
   }, [collabs.length, prefersReducedMotion]);
 
   return (
-    <section className="py-section relative overflow-hidden bg-transparent isolate">
+    <section
+      className="py-section relative overflow-hidden bg-transparent isolate"
+      id=""
+    >
       <div className="container mx-auto sm:px-6 lg:px-8 h-full pb-10 relative z-10 px-1">
         <motion.div
           ref={ref}
@@ -73,10 +76,11 @@ export function Collab({ collabs }: CollabProps) {
           className="text-center mb-0"
         >
           <h2 className="text-h2 font-bold text-white mb-4">
-          Museus  <br className="sm:hidden" />Parceiros
+            Museus <br className="sm:hidden" />
+            Parceiros
           </h2>
           <p className="text-body text-white max-w-xl mx-auto mb-10 md:mb-0">
-          Explore os museus que fazem parte do Metaverso do Museu de Pesca
+            Explore os museus que fazem parte do Metaverso do Museu de Pesca
           </p>
         </motion.div>
       </div>
@@ -99,22 +103,22 @@ export function Collab({ collabs }: CollabProps) {
               }}
               className="flex items-center justify-center  hover:grayscale-100 transition-all duration-300 hover:scale-105"
             >
-               {collab.url ? (
-              <Link 
-                href={collab.url} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="block"
-              >
-                <Image
-                  src={collab.logo}
-                  alt={collab.alt}
-                  width={800}
-                  height={300}
-                  className="object-contain max-h-40 md:max-h-48 w-auto h-auto bg-white p-4 rounded-lg cursor-pointer"
-                  priority={index === 0}
-                />
-              </Link>
+              {collab.url ? (
+                <Link
+                  href={collab.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block"
+                >
+                  <Image
+                    src={collab.logo}
+                    alt={collab.alt}
+                    width={800}
+                    height={300}
+                    className="object-contain max-h-40 md:max-h-48 w-auto h-auto bg-white p-4 rounded-lg cursor-pointer"
+                    priority={index === 0}
+                  />
+                </Link>
               ) : (
                 <Image
                   src={collab.logo}
@@ -124,9 +128,9 @@ export function Collab({ collabs }: CollabProps) {
                   className="object-contain max-h-40 md:max-h-48 w-auto h-auto bg-white p-4 rounded-lg"
                   priority={index === 0}
                 />
-              )}         
-        </motion.div>
-        ))}
+              )}
+            </motion.div>
+          ))}
         </motion.div>
         {/* Carrossel Mobile - abaixo de 760px com cards empilhados */}
         <div className="md:hidden w-full overflow-visible relative">
@@ -178,8 +182,8 @@ export function Collab({ collabs }: CollabProps) {
                           rotate: isCurrentCard
                             ? exitX / 20
                             : isPrevCard
-                            ? -2
-                            : -4,
+                              ? -2
+                              : -4,
                         }}
                         transition={{
                           type: "spring",
