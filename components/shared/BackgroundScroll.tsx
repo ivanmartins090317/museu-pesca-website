@@ -158,7 +158,7 @@ export function BackgroundScroll() {
         playsInline
         preload={isVisible ? preloadStrategy : "none"} // ✅ Lazy load real
         poster="/images/bg_sea_floor.png"
-        className="absolute inset-0 w-full h-full object-fill pointer-events-none"
+        className="absolute inset-0 h-full w-full object-cover object-center pointer-events-none"
       >
         <source
           src={isVisible ? videoPath : undefined}
