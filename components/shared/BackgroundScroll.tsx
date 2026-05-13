@@ -3,11 +3,17 @@
 import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
 import { useEffect, useRef, useState } from "react";
 
+/** Vídeos em `public/video` — servidos como `/video/...` */
+const BACKGROUND_VIDEO_MOBILE = "/video/clip_02_vista_museu_pesca_leve.webm";
+const BACKGROUND_VIDEO_WEB = "/video/clip_02_vista_museu_pesca_leve.webm";
+
 export function BackgroundScroll() {
   const prefersReducedMotion = useReducedMotion();
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [preloadStrategy, setPreloadStrategy] = useState<"metadata" | "auto" | "none">("none");
+  const [preloadStrategy, setPreloadStrategy] = useState<
+    "metadata" | "auto" | "none"
+  >("none");
   const [shouldUseVideo, setShouldUseVideo] = useState<boolean>(true);
   const [videoSource, setVideoSource] = useState<"mobile" | "web">("web");
   const [isVisible, setIsVisible] = useState(false);
@@ -25,10 +31,10 @@ export function BackgroundScroll() {
           }
         });
       },
-      { 
+      {
         rootMargin: "100px", // Começa a carregar 100px antes de aparecer
-        threshold: 0.1 
-      }
+        threshold: 0.1,
+      },
     );
 
     observer.observe(containerRef.current);
@@ -55,9 +61,10 @@ export function BackgroundScroll() {
   useEffect(() => {
     if (!isVisible) return; // Só verifica quando visível
 
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-      navigator.userAgent
-    ) || window.innerWidth < 768;
+    const isMobile =
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent,
+      ) || window.innerWidth < 768;
 
     const connection =
       (navigator as any).connection ||
@@ -99,12 +106,23 @@ export function BackgroundScroll() {
 
   // Carrega vídeo apenas quando visível
   useEffect(() => {
-    if (videoRef.current && !prefersReducedMotion && shouldUseVideo && isVisible) {
+    if (
+      videoRef.current &&
+      !prefersReducedMotion &&
+      shouldUseVideo &&
+      isVisible
+    ) {
       const video = videoRef.current;
       video.preload = preloadStrategy;
       video.load();
     }
-  }, [prefersReducedMotion, preloadStrategy, shouldUseVideo, videoSource, isVisible]);
+  }, [
+    prefersReducedMotion,
+    preloadStrategy,
+    shouldUseVideo,
+    videoSource,
+    isVisible,
+  ]);
 
   if (prefersReducedMotion || !shouldUseVideo) {
     return (
@@ -123,11 +141,7 @@ export function BackgroundScroll() {
   }
 
   const videoPath =
-    videoSource === "mobile"
-      // ? "/video/video_drone-museu-web-mobile.webm"
-      // : "/video/video_drone-museu-web.webm";
-      ? "./images/museu-de-pesca-santos-visao-fora.webp"
-      : "./images/museu-de-pesca-santos-visao-fora.webp";
+    videoSource === "mobile" ? BACKGROUND_VIDEO_MOBILE : BACKGROUND_VIDEO_WEB;
 
   return (
     <div
@@ -136,7 +150,7 @@ export function BackgroundScroll() {
       aria-hidden="true"
     >
       <video
-        key={videoSource}
+        key="museu-vista-pesca-bg"
         ref={videoRef}
         autoPlay
         loop
@@ -146,9 +160,12 @@ export function BackgroundScroll() {
         poster="/images/bg_sea_floor.png"
         className="absolute inset-0 w-full h-full object-fill pointer-events-none"
       >
-        <source src={isVisible ? videoPath : undefined} type="video/webm" />
+        <source
+          src={isVisible ? videoPath : undefined}
+          type="video/webm; codecs=vp9"
+        />
       </video>
-      <div className="absolute inset-0 bg-black/80 pointer-events-none" />
+      <div className="absolute inset-0 bg-black/70 pointer-events-none" />
     </div>
   );
 }
