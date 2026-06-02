@@ -7,9 +7,9 @@ import { useEffect, useRef, useState } from "react";
 const BACKGROUND_VIDEO_MOBILE = "/video/clip_02_vista_museu_pesca_leve.webm";
 const BACKGROUND_VIDEO_WEB = "/video/clip_02_vista_museu_pesca_leve.webm";
 
-/** Imagens de fundo otimizadas em WebP (geradas com ffmpeg a partir do PNG original) */
-const BACKGROUND_POSTER_WEB = "/images/bg_sea_floor_web.webp";
-const BACKGROUND_POSTER_MOBILE = "/images/bg_sea_floor_mobile.webp";
+/** Poster temporariamente removido para testes de performance */
+// const BACKGROUND_POSTER_WEB = "/images/bg_sea_floor_web.webp";
+// const BACKGROUND_POSTER_MOBILE = "/images/bg_sea_floor_mobile.webp";
 
 export function BackgroundScroll() {
   const prefersReducedMotion = useReducedMotion();
@@ -134,23 +134,12 @@ export function BackgroundScroll() {
     isVisible,
   ]);
 
-  const posterImage =
-    videoSource === "mobile" ? BACKGROUND_POSTER_MOBILE : BACKGROUND_POSTER_WEB;
-
-  // Renderização estática SSR-safe: evita hydration mismatch
-  // O cliente substitui o fundo estático pelo vídeo após montagem
   if (!mounted || prefersReducedMotion || !shouldUseVideo) {
     return (
       <div
         ref={containerRef}
         className="fixed inset-0 w-full h-full z-0 pointer-events-none bg-primary-sea"
         aria-hidden="true"
-        style={{
-          backgroundImage: mounted ? `url(${posterImage})` : undefined,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-        }}
       />
     );
   }
@@ -172,7 +161,6 @@ export function BackgroundScroll() {
         muted
         playsInline
         preload={isVisible ? preloadStrategy : "none"}
-        poster={posterImage}
         className="absolute inset-0 h-full w-full object-cover object-center pointer-events-none"
       >
         <source

@@ -40,16 +40,6 @@ export const metadata: Metadata = {
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
-  icons: {
-    icon: [
-      { url: "/logos/logo_museu_.svg" },
-      { url: "/logos/logo_museu.png", sizes: "16x16", type: "image/png" },
-      { url: "/logos/logo_museu.png", sizes: "32x32", type: "image/png" },
-    ],
-    apple: [
-      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
-    ],
-  },
   openGraph: {
     type: "website",
     locale: "pt_BR",
