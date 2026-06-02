@@ -31,7 +31,6 @@ function getBaseUrl() {
 }
 
 const baseUrl = getBaseUrl();
-console.log(baseUrl);
 const ogImageUrl = `${baseUrl}/images/imagem_mp_frente.jpg`;
 
 export const metadata: Metadata = {

@@ -6,7 +6,6 @@ import { Virtual360 } from "@/components/sections/Virtual360";
 import { Blog } from "@/components/sections/Blog";
 import { Partners } from "@/components/sections/Partners";
 import { Location } from "@/components/sections/Location";
-import { Collab } from "@/components/sections/Collab";
 import { CollabTeste } from "@/components/sections/Collab_teste";
 
 // Dados mockados - em produção viriam de um CMS ou API

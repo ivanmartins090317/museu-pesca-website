@@ -7,16 +7,26 @@ import { useEffect, useRef, useState } from "react";
 const BACKGROUND_VIDEO_MOBILE = "/video/clip_02_vista_museu_pesca_leve.webm";
 const BACKGROUND_VIDEO_WEB = "/video/clip_02_vista_museu_pesca_leve.webm";
 
+/** Imagens de fundo otimizadas em WebP (geradas com ffmpeg a partir do PNG original) */
+const BACKGROUND_POSTER_WEB = "/images/bg_sea_floor_web.webp";
+const BACKGROUND_POSTER_MOBILE = "/images/bg_sea_floor_mobile.webp";
+
 export function BackgroundScroll() {
   const prefersReducedMotion = useReducedMotion();
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted] = useState(false);
   const [preloadStrategy, setPreloadStrategy] = useState<
     "metadata" | "auto" | "none"
   >("none");
   const [shouldUseVideo, setShouldUseVideo] = useState<boolean>(true);
   const [videoSource, setVideoSource] = useState<"mobile" | "web">("web");
   const [isVisible, setIsVisible] = useState(false);
+
+  // Monta apenas no cliente para evitar hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Intersection Observer para lazy load
   useEffect(() => {
@@ -124,14 +134,19 @@ export function BackgroundScroll() {
     isVisible,
   ]);
 
-  if (prefersReducedMotion || !shouldUseVideo) {
+  const posterImage =
+    videoSource === "mobile" ? BACKGROUND_POSTER_MOBILE : BACKGROUND_POSTER_WEB;
+
+  // Renderização estática SSR-safe: evita hydration mismatch
+  // O cliente substitui o fundo estático pelo vídeo após montagem
+  if (!mounted || prefersReducedMotion || !shouldUseVideo) {
     return (
       <div
         ref={containerRef}
         className="fixed inset-0 w-full h-full z-0 pointer-events-none bg-primary-sea"
         aria-hidden="true"
         style={{
-          backgroundImage: "url(/images/bg_sea_floor.png)",
+          backgroundImage: mounted ? `url(${posterImage})` : undefined,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
@@ -156,8 +171,8 @@ export function BackgroundScroll() {
         loop
         muted
         playsInline
-        preload={isVisible ? preloadStrategy : "none"} // ✅ Lazy load real
-        poster="/images/bg_sea_floor.png"
+        preload={isVisible ? preloadStrategy : "none"}
+        poster={posterImage}
         className="absolute inset-0 h-full w-full object-cover object-center pointer-events-none"
       >
         <source

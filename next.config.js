@@ -1,14 +1,28 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    formats: ['image/webp', 'image/avif'],
+    formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 60 * 60 * 24 * 30, // 30 dias
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '**',
+        hostname: 'images.unsplash.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.matterport.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.googleusercontent.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.blogger.com',
       },
     ],
   },
+  compress: true,
   async headers() {
     return [
       {
