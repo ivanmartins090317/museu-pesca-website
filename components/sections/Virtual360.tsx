@@ -1,100 +1,85 @@
 "use client";
 
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, Loader2, AlertCircle, Maximize2, Minimize2 } from "lucide-react";
+import { motion } from "framer-motion";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { Virtual360Props } from "@/types";
+import { Virtual360CarouselItem } from "./Virtual360CarouselItem";
+import { Virtual360Fullscreen } from "./Virtual360Fullscreen";
+import type { IframeState } from "./Virtual360CarouselItem";
 
-interface IframeState {
-  loading: boolean;
-  error: boolean;
+function resolveCarouselPosition(
+  offset: number,
+  total: number
+): { position: number; scale: number; rotateY: number; zIndex: number; opacity: number } {
+  const isCurrent = offset === 0;
+  const isNext = offset === 1;
+  const isPrev = offset === total - 1;
+
+  if (isCurrent) return { position: 0, scale: 1, rotateY: 0, zIndex: 30, opacity: 1 };
+  if (isNext) return { position: 35, scale: 0.75, rotateY: -25, zIndex: 20, opacity: 0.7 };
+  if (isPrev) return { position: -35, scale: 0.75, rotateY: 25, zIndex: 20, opacity: 0.7 };
+  return { position: 0, scale: 0.7, rotateY: 0, zIndex: 0, opacity: 0.5 };
 }
 
 export function Virtual360({ title, embedUrl }: Virtual360Props) {
-  // Criar array de embedUrls - se for string única, criar array com um item
   const embedUrls = useMemo(() => {
     const urls = Array.isArray(embedUrl) ? embedUrl : [embedUrl];
-    // Validar URLs
-    return urls.filter(
-      (url) => url && typeof url === "string" && url.trim() !== ""
-    );
+    return urls.filter((url) => url && typeof url === "string" && url.trim() !== "");
   }, [embedUrl]);
 
   const [current, setCurrent] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [iframeStates, setIframeStates] = useState<Record<number, IframeState>>(
-    {}
-  );
+  const [iframeStates, setIframeStates] = useState<Record<number, IframeState>>({});
   const [loadedIframes, setLoadedIframes] = useState<Set<number>>(new Set());
   const carouselRef = useRef<HTMLDivElement>(null);
   const swipeStartX = useRef<number | null>(null);
   const swipeStartY = useRef<number | null>(null);
 
-  // Calcular valores aleatórios apenas no cliente para evitar erro de hidratação
-  const backgroundElements = useMemo(() => {
-    return Array.from({ length: 20 }, (_, i) => ({
-      id: i,
-      width: Math.random() * 300 + 100,
-      height: Math.random() * 300 + 100,
-      left: Math.random() * 100,
-      top: Math.random() * 100,
-      duration: Math.random() * 5 + 5,
-      delay: Math.random() * 2,
-    }));
-  }, []);
+  const backgroundElements = useMemo(
+    () =>
+      Array.from({ length: 20 }, (_, i) => ({
+        id: i,
+        width: Math.random() * 300 + 100,
+        height: Math.random() * 300 + 100,
+        left: Math.random() * 100,
+        top: Math.random() * 100,
+        duration: Math.random() * 5 + 5,
+        delay: Math.random() * 2,
+      })),
+    []
+  );
 
-  // Garantir que só renderiza no cliente
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  useEffect(() => { setMounted(true); }, []);
 
-  // Inicializar estados dos iframes
   useEffect(() => {
     const states: Record<number, IframeState> = {};
-    embedUrls.forEach((_, index) => {
-      states[index] = { loading: true, error: false };
-    });
+    embedUrls.forEach((_, index) => { states[index] = { loading: true, error: false }; });
     setIframeStates(states);
   }, [embedUrls]);
 
   const next = useCallback(() => {
-    if (embedUrls && embedUrls.length > 0) {
-      setCurrent((prev) => (prev + 1) % embedUrls.length);
-    }
+    if (embedUrls.length > 0) setCurrent((prev) => (prev + 1) % embedUrls.length);
   }, [embedUrls]);
 
   const prev = useCallback(() => {
-    if (embedUrls && embedUrls.length > 0) {
-      setCurrent((prev) => (prev - 1 + embedUrls.length) % embedUrls.length);
-    }
+    if (embedUrls.length > 0) setCurrent((prev) => (prev - 1 + embedUrls.length) % embedUrls.length);
   }, [embedUrls]);
 
   const goTo = useCallback(
     (index: number) => {
-      if (
-        embedUrls &&
-        embedUrls.length > 0 &&
-        index >= 0 &&
-        index < embedUrls.length
-      ) {
-        setCurrent(index);
-      }
+      if (embedUrls.length > 0 && index >= 0 && index < embedUrls.length) setCurrent(index);
     },
     [embedUrls]
   );
 
-  const goToFirst = useCallback(() => {
-    goTo(0);
-  }, [goTo]);
+  const goToFirst = useCallback(() => goTo(0), [goTo]);
 
   const goToLast = useCallback(() => {
-    if (embedUrls && embedUrls.length > 0) {
-      goTo(embedUrls.length - 1);
-    }
+    if (embedUrls.length > 0) goTo(embedUrls.length - 1);
   }, [embedUrls, goTo]);
 
-  // Swipe / touch handlers
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     swipeStartX.current = e.touches[0].clientX;
     swipeStartY.current = e.touches[0].clientY;
@@ -105,125 +90,64 @@ export function Virtual360({ title, embedUrl }: Virtual360Props) {
       if (swipeStartX.current === null || swipeStartY.current === null) return;
       const dx = e.changedTouches[0].clientX - swipeStartX.current;
       const dy = e.changedTouches[0].clientY - swipeStartY.current;
-      const THRESHOLD = 50;
-      if (Math.abs(dx) > THRESHOLD && Math.abs(dx) > Math.abs(dy)) {
-        if (dx > 0) prev();
-        else next();
-      }
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) dx > 0 ? prev() : next();
       swipeStartX.current = null;
       swipeStartY.current = null;
     },
     [prev, next]
   );
 
-  // Navegação por teclado
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape" && isExpanded) {
-        setIsExpanded(false);
-        return;
-      }
-
-      if (!carouselRef.current?.contains(document.activeElement)) {
-        return;
-      }
-
+      if (event.key === "Escape" && isExpanded) { setIsExpanded(false); return; }
+      if (!carouselRef.current?.contains(document.activeElement)) return;
       switch (event.key) {
-        case "ArrowLeft":
-          event.preventDefault();
-          prev();
-          break;
-        case "ArrowRight":
-          event.preventDefault();
-          next();
-          break;
-        case "Home":
-          event.preventDefault();
-          goToFirst();
-          break;
-        case "End":
-          event.preventDefault();
-          goToLast();
-          break;
+        case "ArrowLeft": event.preventDefault(); prev(); break;
+        case "ArrowRight": event.preventDefault(); next(); break;
+        case "Home": event.preventDefault(); goToFirst(); break;
+        case "End": event.preventDefault(); goToLast(); break;
       }
     }
-
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isExpanded, prev, next, goToFirst, goToLast]);
 
-  // Handlers para iframes
   const handleIframeLoad = useCallback((index: number) => {
-    setIframeStates((prev) => ({
-      ...prev,
-      [index]: { loading: false, error: false },
-    }));
+    setIframeStates((prev) => ({ ...prev, [index]: { loading: false, error: false } }));
     setLoadedIframes((prev) => new Set(prev).add(index));
   }, []);
 
   const handleIframeError = useCallback((index: number) => {
-    setIframeStates((prev) => ({
-      ...prev,
-      [index]: { loading: false, error: true },
-    }));
+    setIframeStates((prev) => ({ ...prev, [index]: { loading: false, error: true } }));
   }, []);
 
-  // Timeout para remover overlay caso onLoad não dispare (comum em iframes 360°)
-  // Para visitas virtuais, o iframe pode estar pronto mas o evento onLoad não disparar
   useEffect(() => {
-    const timeouts: NodeJS.Timeout[] = [];
-
-    embedUrls.forEach((_, index) => {
-      // Timeout curto (2s) para permitir interação mesmo durante carregamento
-      const shortTimeout = setTimeout(() => {
+    const timeouts = embedUrls.map((_, index) =>
+      setTimeout(() => {
         setIframeStates((prev) => {
-          if (prev[index]?.loading && !prev[index]?.error) {
-            return {
-              ...prev,
-              [index]: { loading: false, error: false },
-            };
-          }
+          if (prev[index]?.loading && !prev[index]?.error)
+            return { ...prev, [index]: { loading: false, error: false } };
           return prev;
         });
-      }, 2000);
-
-      timeouts.push(shortTimeout);
-    });
-
-    return () => {
-      timeouts.forEach((timeout) => clearTimeout(timeout));
-    };
+      }, 2000)
+    );
+    return () => timeouts.forEach(clearTimeout);
   }, [embedUrls]);
 
-  // Carregar iframe quando se torna current
   useEffect(() => {
-    if (!loadedIframes.has(current)) {
-      setIframeStates((prev) => ({
-        ...prev,
-        [current]: { loading: true, error: false },
-      }));
-    }
+    if (!loadedIframes.has(current))
+      setIframeStates((prev) => ({ ...prev, [current]: { loading: true, error: false } }));
   }, [current, loadedIframes]);
 
-  // Calcular quais iframes devem ser renderizados (apenas visíveis)
   const visibleIndices = useMemo(() => {
     if (embedUrls.length === 0) return [];
     if (embedUrls.length === 1) return [0];
-
-    const indices: number[] = [];
     const prevIndex = (current - 1 + embedUrls.length) % embedUrls.length;
     const nextIndex = (current + 1) % embedUrls.length;
-
-    indices.push(prevIndex);
-    indices.push(current);
-    indices.push(nextIndex);
-
-    return [...new Set(indices)].sort((a, b) => a - b);
+    return [...new Set([prevIndex, current, nextIndex])].sort((a, b) => a - b);
   }, [current, embedUrls.length]);
 
-  if (embedUrls.length === 0) {
-    return null;
-  }
+  if (embedUrls.length === 0) return null;
 
   return (
     <section
@@ -233,38 +157,23 @@ export function Virtual360({ title, embedUrl }: Virtual360Props) {
       aria-label="Visita Virtual 360°"
       aria-live="polite"
     >
-      {/* Light overlay for readability */}
       <div className="absolute inset-0 bg-primary-sea/40" />
 
-      {/* Background Elements */}
       {mounted && (
         <div className="absolute inset-0 opacity-5" aria-hidden="true">
-          {backgroundElements.map((element) => (
+          {backgroundElements.map((el) => (
             <motion.div
-              key={element.id}
+              key={el.id}
               className="absolute rounded-full border border-cyan-500"
-              style={{
-                width: element.width,
-                height: element.height,
-                left: `${element.left}%`,
-                top: `${element.top}%`,
-              }}
-              animate={{
-                scale: [1, 1.2, 1],
-                opacity: [0.3, 0.6, 0.3],
-              }}
-              transition={{
-                duration: element.duration,
-                repeat: Infinity,
-                delay: element.delay,
-              }}
+              style={{ width: el.width, height: el.height, left: `${el.left}%`, top: `${el.top}%` }}
+              animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }}
+              transition={{ duration: el.duration, repeat: Infinity, delay: el.delay }}
             />
           ))}
         </div>
       )}
 
       <div className="max-w-7xl mx-auto relative z-10">
-        {/* Header */}
         <motion.div
           className="text-center mb-16"
           initial={{ opacity: 0, y: 30 }}
@@ -272,11 +181,9 @@ export function Virtual360({ title, embedUrl }: Virtual360Props) {
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
         >
-          <span className="text-white uppercase tracking-wider">
-            Visita Virtual
-          </span>
+          <span className="text-white uppercase tracking-wider">Visita Virtual</span>
           <motion.h2
-            className="text-h2 font-bold  text-white mt-4"
+            className="text-h2 font-bold text-white mt-4"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
@@ -291,12 +198,10 @@ export function Virtual360({ title, embedUrl }: Virtual360Props) {
             transition={{ duration: 0.8, delay: 0.4 }}
             viewport={{ once: true }}
           >
-            Explore o museu virtualmente e conheça nossos espaços sem sair de
-            casa
+            Explore o museu virtualmente e conheça nossos espaços sem sair de casa
           </motion.p>
         </motion.div>
 
-        {/* 3D Matterport Carousel */}
         <motion.div
           ref={carouselRef}
           className="w-full mx-auto"
@@ -313,141 +218,30 @@ export function Virtual360({ title, embedUrl }: Virtual360Props) {
           <div className="relative h-[300px] md:h-[600px] flex items-center justify-center perspective-[1000px]">
             <div className="relative w-full h-full flex items-center justify-center">
               {visibleIndices.map((index) => {
-                const url = embedUrls[index];
-                const offset =
-                  (index - current + embedUrls.length) % embedUrls.length;
-                const isCurrent = offset === 0;
-                const isNext = offset === 1;
-                const isPrev = offset === embedUrls.length - 1;
-
-                let position = 0;
-                let scale = 0.7;
-                let rotateY = 0;
-                let zIndex = 0;
-                let opacity = 0.5;
-
-                if (isCurrent) {
-                  position = 0;
-                  scale = 1;
-                  rotateY = 0;
-                  zIndex = 30;
-                  opacity = 1;
-                } else if (isNext) {
-                  position = 35;
-                  scale = 0.75;
-                  rotateY = -25;
-                  zIndex = 20;
-                  opacity = 0.7;
-                } else if (isPrev) {
-                  position = -35;
-                  scale = 0.75;
-                  rotateY = 25;
-                  zIndex = 20;
-                  opacity = 0.7;
-                }
-
-                const iframeState = iframeStates[index] || {
-                  loading: true,
-                  error: false,
-                };
+                const offset = (index - current + embedUrls.length) % embedUrls.length;
+                const layout = resolveCarouselPosition(offset, embedUrls.length);
+                const iframeState = iframeStates[index] ?? { loading: true, error: false };
 
                 return (
-                  <motion.div
+                  <Virtual360CarouselItem
                     key={index}
-                    className="absolute w-full max-w-4xl"
-                    style={{
-                      transformStyle: "preserve-3d",
-                    }}
-                    animate={{
-                      x: `${position}%`,
-                      scale,
-                      rotateY,
-                      zIndex,
-                      opacity,
-                    }}
-                    transition={{
-                      duration: 0.7,
-                      ease: "easeInOut",
-                    }}
-                    aria-hidden={!isCurrent}
-                  >
-                    <div className="relative aspect-video rounded-2xl overflow-hidden shadow-2xl bg-primary-sea/20 border border-cyan-500/20">
-                      {/* Swipe zones: capturam touch nas bordas do iframe ativo */}
-                      {isCurrent && embedUrls.length > 1 && (
-                        <>
-                          <div
-                            className="absolute left-0 top-0 w-14 h-full z-10 touch-none"
-                            onTouchStart={handleTouchStart}
-                            onTouchEnd={handleTouchEnd}
-                            aria-hidden="true"
-                          />
-                          <div
-                            className="absolute right-0 top-0 w-14 h-full z-10 touch-none"
-                            onTouchStart={handleTouchStart}
-                            onTouchEnd={handleTouchEnd}
-                            aria-hidden="true"
-                          />
-                        </>
-                      )}
-                      {!iframeState.error && (
-                        <iframe
-                          src={
-                            isCurrent || loadedIframes.has(index)
-                              ? url
-                              : undefined
-                          }
-                          data-src={url}
-                          className="w-full h-full border-0"
-                          allow="fullscreen; accelerometer; gyroscope; autoplay; camera; microphone; xr-spatial-tracking; vr; payment"
-                          allowFullScreen
-                          title={`Visita Virtual 360° - Museu de Pesca de Santos - ${
-                            index + 1
-                          } de ${embedUrls.length}`}
-                          loading={isCurrent ? "eager" : "lazy"}
-                          onLoad={() => handleIframeLoad(index)}
-                          onError={() => handleIframeError(index)}
-                          aria-label={`Visita virtual ${index + 1} de ${
-                            embedUrls.length
-                          }`}
-                        />
-                      )}
-                      {iframeState.loading && (
-                        <div
-                          className="absolute inset-0 flex items-center justify-center bg-primary-sea/10 z-[5] pointer-events-none transition-opacity duration-300"
-                          style={{
-                            opacity: iframeState.loading ? 0.3 : 0,
-                          }}
-                          aria-hidden="true"
-                        >
-                          <Loader2 className="w-8 h-8 text-cyan-400 animate-spin opacity-70" />
-                        </div>
-                      )}
-                      {iframeState.error && (
-                        <div className="absolute inset-0 flex flex-col items-center justify-center bg-primary-sea/30 z-10 p-4 pointer-events-auto">
-                          <AlertCircle className="w-8 h-8 text-red-400 mb-2" />
-                          <p className="text-white text-sm text-center">
-                            Erro ao carregar visita virtual
-                          </p>
-                        </div>
-                      )}
-                      {isCurrent && !iframeState.error && (
-                        <motion.button
-                          onClick={() => setIsExpanded(true)}
-                          className="absolute top-3 right-3 z-20 p-2 rounded-full bg-black/50 backdrop-blur-sm border border-white/20 text-white hover:bg-black/70 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-400"
-                          whileHover={{ scale: 1.1 }}
-                          whileTap={{ scale: 0.9 }}
-                          aria-label="Expandir para tela cheia"
-                        >
-                          <Maximize2 className="w-4 h-4" aria-hidden="true" />
-                        </motion.button>
-                      )}
-                    </div>
-                  </motion.div>
+                    url={embedUrls[index]}
+                    index={index}
+                    total={embedUrls.length}
+                    isCurrent={offset === 0}
+                    isLoaded={loadedIframes.has(index)}
+                    iframeState={iframeState}
+                    onExpand={() => setIsExpanded(true)}
+                    onLoad={() => handleIframeLoad(index)}
+                    onError={() => handleIframeError(index)}
+                    onTouchStart={handleTouchStart}
+                    onTouchEnd={handleTouchEnd}
+                    {...layout}
+                  />
                 );
               })}
             </div>
 
-            {/* Navigation Buttons */}
             {embedUrls.length > 1 && (
               <>
                 <motion.button
@@ -474,7 +268,6 @@ export function Virtual360({ title, embedUrl }: Virtual360Props) {
             )}
           </div>
 
-          {/* Indicators */}
           {embedUrls.length > 1 && (
             <div
               className="flex justify-center gap-3 mt-0 min-[480px]:mt-12 md:mt-0"
@@ -489,63 +282,29 @@ export function Virtual360({ title, embedUrl }: Virtual360Props) {
                   aria-selected={current === index}
                   aria-controls={`visita-${index}`}
                   className={`h-2 rounded-full transition-all border duration-300 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-primary-sea ${
-                    current === index
-                      ? "bg-primary-sea w-12"
-                      : "bg-cyan-500/30 w-2 hover:bg-cyan-500/50"
+                    current === index ? "bg-primary-sea w-12" : "bg-cyan-500/30 w-2 hover:bg-cyan-500/50"
                   }`}
                   whileHover={{ scale: 1.2 }}
                   whileTap={{ scale: 0.9 }}
-                  aria-label={`Ir para visita ${index + 1} de ${
-                    embedUrls.length
-                  }`}
+                  aria-label={`Ir para visita ${index + 1} de ${embedUrls.length}`}
                 />
               ))}
             </div>
           )}
 
-          {/* Screen reader announcement */}
           <div className="sr-only" aria-live="polite" aria-atomic="true">
             Visita {current + 1} de {embedUrls.length}
           </div>
         </motion.div>
       </div>
 
-      {/* Overlay fullscreen */}
-      <AnimatePresence>
-        {isExpanded && (
-          <motion.div
-            className="fixed inset-0 z-[9999] bg-black flex flex-col"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            role="dialog"
-            aria-modal="true"
-            aria-label="Visita virtual em tela cheia"
-          >
-            <motion.button
-              onClick={() => setIsExpanded(false)}
-              className="absolute top-4 right-4 z-10 flex items-center gap-2 px-4 py-2 rounded-full bg-black/60 backdrop-blur-sm border border-white/20 text-white hover:bg-black/80 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-400 text-sm font-medium shadow-lg"
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              aria-label="Sair do modo tela cheia"
-            >
-              <Minimize2 className="w-4 h-4" aria-hidden="true" />
-              Voltar ao padrão
-            </motion.button>
-            <iframe
-              src={embedUrls[current]}
-              className="w-full h-full border-0"
-              allow="fullscreen; accelerometer; gyroscope; autoplay; camera; microphone; xr-spatial-tracking; vr; payment"
-              allowFullScreen
-              title={`Visita Virtual 360° - Tela Cheia - ${current + 1} de ${embedUrls.length}`}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <Virtual360Fullscreen
+        isOpen={isExpanded}
+        src={embedUrls[current]}
+        index={current}
+        total={embedUrls.length}
+        onClose={() => setIsExpanded(false)}
+      />
     </section>
   );
 }
