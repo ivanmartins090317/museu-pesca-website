@@ -3,6 +3,8 @@ import { Roboto, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import { siteConfig } from "@/lib/constants";
 import { BackgroundScroll } from "@/components/shared/BackgroundScroll";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const roboto = Roboto({
   weight: ["100", "300", "400", "500", "700", "900"],
@@ -80,6 +82,8 @@ export default function RootLayout({
       <body className="relative" suppressHydrationWarning>
         <BackgroundScroll />
         {children}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
