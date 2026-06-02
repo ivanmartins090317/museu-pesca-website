@@ -7,9 +7,8 @@ import { useEffect, useRef, useState } from "react";
 const BACKGROUND_VIDEO_MOBILE = "/video/clip_02_vista_museu_pesca_leve.webm";
 const BACKGROUND_VIDEO_WEB = "/video/clip_02_vista_museu_pesca_leve.webm";
 
-/** Poster temporariamente removido para testes de performance */
-// const BACKGROUND_POSTER_WEB = "/images/bg_sea_floor_web.webp";
-// const BACKGROUND_POSTER_MOBILE = "/images/bg_sea_floor_mobile.webp";
+const BACKGROUND_POSTER_WEB = "/images/bg_sea_floor_poster_web.webp";
+const BACKGROUND_POSTER_MOBILE = "/images/bg_sea_floor_poster_mobile.webp";
 
 export function BackgroundScroll() {
   const prefersReducedMotion = useReducedMotion();
@@ -147,6 +146,9 @@ export function BackgroundScroll() {
   const videoPath =
     videoSource === "mobile" ? BACKGROUND_VIDEO_MOBILE : BACKGROUND_VIDEO_WEB;
 
+  const posterPath =
+    videoSource === "mobile" ? BACKGROUND_POSTER_MOBILE : BACKGROUND_POSTER_WEB;
+
   return (
     <div
       ref={containerRef}
@@ -160,6 +162,7 @@ export function BackgroundScroll() {
         loop
         muted
         playsInline
+        poster={posterPath}
         preload={isVisible ? preloadStrategy : "none"}
         className="absolute inset-0 h-full w-full object-cover object-center pointer-events-none"
       >

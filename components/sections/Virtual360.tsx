@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
-import { ChevronLeft, ChevronRight, Loader2, AlertCircle } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronLeft, ChevronRight, Loader2, AlertCircle, Maximize2, Minimize2 } from "lucide-react";
 import type { Virtual360Props } from "@/types";
 
 interface IframeState {
@@ -21,6 +21,7 @@ export function Virtual360({ title, embedUrl }: Virtual360Props) {
   }, [embedUrl]);
 
   const [current, setCurrent] = useState(0);
+  const [isExpanded, setIsExpanded] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [iframeStates, setIframeStates] = useState<Record<number, IframeState>>(
     {}
@@ -118,6 +119,11 @@ export function Virtual360({ title, embedUrl }: Virtual360Props) {
   // Navegação por teclado
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape" && isExpanded) {
+        setIsExpanded(false);
+        return;
+      }
+
       if (!carouselRef.current?.contains(document.activeElement)) {
         return;
       }
@@ -144,7 +150,7 @@ export function Virtual360({ title, embedUrl }: Virtual360Props) {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [prev, next, goToFirst, goToLast]);
+  }, [isExpanded, prev, next, goToFirst, goToLast]);
 
   // Handlers para iframes
   const handleIframeLoad = useCallback((index: number) => {
@@ -424,6 +430,17 @@ export function Virtual360({ title, embedUrl }: Virtual360Props) {
                           </p>
                         </div>
                       )}
+                      {isCurrent && !iframeState.error && (
+                        <motion.button
+                          onClick={() => setIsExpanded(true)}
+                          className="absolute top-3 right-3 z-20 p-2 rounded-full bg-black/50 backdrop-blur-sm border border-white/20 text-white hover:bg-black/70 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-400"
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                          aria-label="Expandir para tela cheia"
+                        >
+                          <Maximize2 className="w-4 h-4" aria-hidden="true" />
+                        </motion.button>
+                      )}
                     </div>
                   </motion.div>
                 );
@@ -492,6 +509,43 @@ export function Virtual360({ title, embedUrl }: Virtual360Props) {
           </div>
         </motion.div>
       </div>
+
+      {/* Overlay fullscreen */}
+      <AnimatePresence>
+        {isExpanded && (
+          <motion.div
+            className="fixed inset-0 z-[9999] bg-black flex flex-col"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Visita virtual em tela cheia"
+          >
+            <motion.button
+              onClick={() => setIsExpanded(false)}
+              className="absolute top-4 right-4 z-10 flex items-center gap-2 px-4 py-2 rounded-full bg-black/60 backdrop-blur-sm border border-white/20 text-white hover:bg-black/80 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-400 text-sm font-medium shadow-lg"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              aria-label="Sair do modo tela cheia"
+            >
+              <Minimize2 className="w-4 h-4" aria-hidden="true" />
+              Voltar ao padrão
+            </motion.button>
+            <iframe
+              src={embedUrls[current]}
+              className="w-full h-full border-0"
+              allow="fullscreen; accelerometer; gyroscope; autoplay; camera; microphone; xr-spatial-tracking; vr; payment"
+              allowFullScreen
+              title={`Visita Virtual 360° - Tela Cheia - ${current + 1} de ${embedUrls.length}`}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
