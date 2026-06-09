@@ -23,11 +23,46 @@ const nextConfig = {
     ],
   },
   compress: true,
+  async redirects() {
+    return [
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'museudepescasantos.com.br' }],
+        destination: 'https://www.museudepescasantos.com.br/:path*',
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {
         source: '/:path*',
         headers: [
+          // Força HTTPS por 1 ano e inclui subdomínios
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=31536000; includeSubDomains; preload',
+          },
+          // Previne clickjacking
+          {
+            key: 'X-Frame-Options',
+            value: 'SAMEORIGIN',
+          },
+          // Previne MIME sniffing
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          // Controla informações do referrer
+          {
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin',
+          },
+          // Bloqueia recursos mistos (HTTP em página HTTPS)
+          {
+            key: 'Content-Security-Policy',
+            value: "upgrade-insecure-requests",
+          },
           {
             key: 'Permissions-Policy',
             value: 'xr-spatial-tracking=()',

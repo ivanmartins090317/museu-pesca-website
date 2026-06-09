@@ -1,3 +1,15 @@
 {
-  "installCommand": "npm ci --legacy-peer-deps"
+  "installCommand": "npm ci --legacy-peer-deps",
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=31536000; includeSubDomains; preload"
+        }
+      ]
+    }
+  ]
 }
+
