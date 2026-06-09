@@ -25,9 +25,17 @@ const nextConfig = {
   compress: true,
   async redirects() {
     return [
+      // Sem www → com www
       {
         source: '/:path*',
         has: [{ type: 'host', value: 'museudepescasantos.com.br' }],
+        destination: 'https://www.museudepescasantos.com.br/:path*',
+        permanent: true,
+      },
+      // Domínio técnico Vercel → domínio canônico
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'museu-pesca-santos.vercel.app' }],
         destination: 'https://www.museudepescasantos.com.br/:path*',
         permanent: true,
       },
