@@ -6,7 +6,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import type { AboutSection } from "@/types";
 import { defaultTransition, staggerContainer } from "@/lib/animations";
-import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
+import { useDeviceCapability } from "@/lib/hooks/useDeviceCapability";
 
 interface AboutProps extends AboutSection {}
 
@@ -34,7 +34,7 @@ const IMAGE_ALT_TEXTS = [
 const CAROUSEL_INTERVAL_MS = 4000;
 
 export function About({ title, description, highlights, images }: AboutProps) {
-  const prefersReducedMotion = useReducedMotion();
+  const { shouldReduceMotion: prefersReducedMotion } = useDeviceCapability();
   const [currentImage, setCurrentImage] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
