@@ -13,6 +13,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import { useDeviceCapability } from "@/lib/hooks/useDeviceCapability";
 
 export const useIsomorphicLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
@@ -101,7 +102,8 @@ const Carousel = memo(
   }) => {
     // Estado para garantir que só aplicamos valores responsivos após hidratação
     const [mounted, setMounted] = useState(false);
-    
+    const { isLowEnd } = useDeviceCapability();
+
     useEffect(() => {
       setMounted(true);
     }, []);
@@ -151,22 +153,34 @@ const Carousel = memo(
     return (
       <div
         className="flex h-full items-center justify-center w-full"
-        style={{
-          perspective: "1500px",
-          transformStyle: "preserve-3d",
-          willChange: "transform",
-        }}
+        style={
+          isLowEnd
+            ? undefined
+            : {
+                perspective: "1500px",
+                transformStyle: "preserve-3d",
+                willChange: "transform",
+              }
+        }
       >
         <motion.div
           drag={isCarouselActive ? "x" : false}
           className="relative flex h-full origin-center cursor-grab justify-center active:cursor-grabbing w-full"
-          style={{
-            transform,
-            rotateY: rotation,
-            width: `${cylinderWidth}px`,
-            minWidth: "100%",
-            transformStyle: "preserve-3d",
-          }}
+          style={
+            isLowEnd
+              ? {
+                  rotateY: rotation,
+                  width: `${cylinderWidth}px`,
+                  minWidth: "100%",
+                }
+              : {
+                  transform,
+                  rotateY: rotation,
+                  width: `${cylinderWidth}px`,
+                  minWidth: "100%",
+                  transformStyle: "preserve-3d",
+                }
+          }
           onDrag={(_, info) =>
             isCarouselActive &&
             rotation.set(rotation.get() + info.offset.x * 0.05)
@@ -300,9 +314,6 @@ function ThreeDPhotoCarousel({ cards }: { cards: CollabItem[] }) {
   const prev = useCallback(() => navigateTo(currentIndex - 1), [currentIndex, navigateTo]);
   const next = useCallback(() => navigateTo(currentIndex + 1), [currentIndex, navigateTo]);
 
-  useEffect(() => {
-    console.log("Cards loaded:", cards);
-  }, [cards]);
 
   const handleClick = (imgUrl: string) => {
     setActiveImg(imgUrl);

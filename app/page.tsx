@@ -1,12 +1,13 @@
 import { Header } from "@/components/shared/Header";
 import { Footer } from "@/components/shared/Footer";
-import { Hero } from "@/components/sections/Hero";
 import { About } from "@/components/sections/About";
-import { Virtual360 } from "@/components/sections/Virtual360";
 import { Blog } from "@/components/sections/Blog";
 import { Partners } from "@/components/sections/Partners";
 import { Location } from "@/components/sections/Location";
-import { CollabTeste } from "@/components/sections/Collab_teste";
+import {
+  Virtual360Section,
+  CollabTesteSection,
+} from "@/components/shared/DynamicSections";
 
 // Dados mockados - em produção viriam de um CMS ou API
 const heroData = {
@@ -44,11 +45,6 @@ const aboutData = {
     "/images/museu_pier.jpeg",
     "/images/museu_albatroz.jpeg",
     "/images/museu_escadas.jpeg",
-    "/images/museu_canoa.jpeg",
-    "/images/museu_exposição.jpeg",
-    "/images/museu_pesca_esqueleto.jpeg",
-    "/images/museu_barco.jpeg",
-    "/images/museu_antigo.jpeg",
   ],
 };
 
@@ -201,8 +197,8 @@ export default function HomePage() {
         <Header />
         {/* <Hero {...heroData} /> */}
         <About {...aboutData} />
-        <Virtual360 {...virtual360Data} />
-        <CollabTeste {...collabsDataTeste} />
+        <Virtual360Section {...virtual360Data} />
+        <CollabTesteSection {...collabsDataTeste} />
         <Blog {...blogData} />
         <Partners {...partnersData} />
         <Location {...locationData} />

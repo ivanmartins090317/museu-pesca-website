@@ -155,7 +155,7 @@ export function About({ title, description, highlights, images }: AboutProps) {
                 {highlights.map((highlight, index) => (
                   <motion.div
                     key={index}
-                    className="bg-primary-sea/20 flex flex-row-reverse md:flex-col justify-between backdrop-blur-sm border border-primary-aqua/30 rounded-lg p-4 md:p-5"
+                    className="bg-primary-sea/40 flex flex-row-reverse md:flex-col justify-between border border-primary-aqua/30 rounded-lg p-4 md:p-5"
                     initial={
                       prefersReducedMotion
                         ? undefined

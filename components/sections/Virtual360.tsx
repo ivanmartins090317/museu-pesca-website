@@ -7,6 +7,7 @@ import type { Virtual360Props } from "@/types";
 import { Virtual360CarouselItem } from "./Virtual360CarouselItem";
 import { Virtual360Fullscreen } from "./Virtual360Fullscreen";
 import type { IframeState } from "./Virtual360CarouselItem";
+import { useDeviceCapability } from "@/lib/hooks/useDeviceCapability";
 
 function resolveCarouselPosition(
   offset: number,
@@ -23,6 +24,7 @@ function resolveCarouselPosition(
 }
 
 export function Virtual360({ title, embedUrl }: Virtual360Props) {
+  const { shouldReduceMotion } = useDeviceCapability();
   const embedUrls = useMemo(() => {
     const urls = Array.isArray(embedUrl) ? embedUrl : [embedUrl];
     return urls.filter((url) => url && typeof url === "string" && url.trim() !== "");
@@ -159,7 +161,7 @@ export function Virtual360({ title, embedUrl }: Virtual360Props) {
     >
       <div className="absolute inset-0 bg-primary-sea/40" />
 
-      {mounted && (
+      {mounted && !shouldReduceMotion && (
         <div className="absolute inset-0 opacity-5" aria-hidden="true">
           {backgroundElements.map((el) => (
             <motion.div
