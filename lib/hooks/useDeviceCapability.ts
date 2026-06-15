@@ -43,7 +43,9 @@ export function useDeviceCapability(): DeviceCapability {
 
   return {
     isLowEnd,
-    shouldReduceMotion: isLowEnd || prefersReducedMotion,
+    // shouldReduceMotion é exclusivamente para acessibilidade (prefers-reduced-motion)
+    // isLowEnd não deve bloquear o vídeo — apenas ajusta qualidade/preload
+    shouldReduceMotion: prefersReducedMotion,
     shouldRemoveBlur: isLowEnd,
   };
 }

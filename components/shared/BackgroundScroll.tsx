@@ -23,7 +23,9 @@ const BACKGROUND_POSTER_WEB = "/images/bg_sea_floor_poster_web.webp";
 const BACKGROUND_POSTER_MOBILE = "/images/bg_sea_floor_poster_mobile.webp";
 
 /** Tempo máximo em ms aguardando o vídeo iniciar antes de usar o poster */
-const VIDEO_TIMEOUT_MS = 8000;
+const VIDEO_TIMEOUT_MS = 12000;
+/** Timeout estendido para hardware fraco ou conexão lenta */
+const VIDEO_TIMEOUT_LOW_END_MS = 20000;
 
 export function BackgroundScroll() {
   const { shouldReduceMotion, isLowEnd } = useDeviceCapability();
@@ -73,22 +75,29 @@ export function BackgroundScroll() {
     const video = videoRef.current;
     if (!video || !isVisible || videoFailed) return;
 
-    // Em hardware fraco: não pré-carrega, só carrega quando visível
+    // Hardware fraco: não pré-carrega para economizar memória/CPU
     video.preload = isLowEnd ? "none" : "metadata";
     video.load();
 
-    // Fallback: se o vídeo não iniciar em VIDEO_TIMEOUT_MS, exibe poster
+    // Fallback: timeout estendido para hardware fraco ou conexão lenta
+    const timeout = isLowEnd ? VIDEO_TIMEOUT_LOW_END_MS : VIDEO_TIMEOUT_MS;
     timeoutRef.current = setTimeout(() => {
       if (video.readyState < HTMLMediaElement.HAVE_FUTURE_DATA) {
         setVideoFailed(true);
       }
-    }, VIDEO_TIMEOUT_MS);
+    }, timeout);
 
     const handleCanPlay = () => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
         timeoutRef.current = null;
       }
+      // Dispara play() explicitamente: necessário em alguns browsers quando
+      // as <source> são adicionadas dinamicamente e preload="none"
+      video.play().catch(() => {
+        // Autoplay bloqueado pelo browser (política de mídia) — poster permanece
+        setVideoFailed(true);
+      });
     };
 
     const handleError = () => {
@@ -99,12 +108,14 @@ export function BackgroundScroll() {
       setVideoFailed(true);
     };
 
-    video.addEventListener("canplaythrough", handleCanPlay);
+    // canplay (não canplaythrough): dispara assim que há dados para iniciar a reprodução,
+    // sem exigir buffer completo — fundamental para conexões lentas
+    video.addEventListener("canplay", handleCanPlay);
     video.addEventListener("error", handleError);
 
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
-      video.removeEventListener("canplaythrough", handleCanPlay);
+      video.removeEventListener("canplay", handleCanPlay);
       video.removeEventListener("error", handleError);
     };
   }, [isVisible, isLowEnd, videoFailed]);
