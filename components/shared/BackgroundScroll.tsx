@@ -30,7 +30,6 @@ const VIDEO_TIMEOUT_LOW_END_MS = 20000;
 export function BackgroundScroll() {
   const { shouldReduceMotion, isLowEnd } = useDeviceCapability();
   const videoRef = useRef<HTMLVideoElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const [mounted, setMounted] = useState(false);
@@ -50,33 +49,24 @@ export function BackgroundScroll() {
     return () => window.removeEventListener("resize", update);
   }, []);
 
-  // Intersection Observer para lazy load do vídeo
+  // Ativa o carregamento do vídeo após a montagem do componente.
+  // IntersectionObserver não é necessário aqui: o elemento é `fixed inset-0`
+  // e está sempre 100% visível. Usar observer criava uma race condition em
+  // máquinas lentas — o div do poster era desmontado antes do observer disparar.
   useEffect(() => {
-    if (!containerRef.current || shouldReduceMotion) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setIsVisible(true);
-            observer.disconnect();
-          }
-        });
-      },
-      { rootMargin: "100px", threshold: 0.1 }
-    );
-
-    observer.observe(containerRef.current);
-    return () => observer.disconnect();
-  }, [shouldReduceMotion]);
+    if (!mounted || shouldReduceMotion) return;
+    setIsVisible(true);
+  }, [mounted, shouldReduceMotion]);
 
   // Controla o load do vídeo e inicia o timer de fallback
   useEffect(() => {
     const video = videoRef.current;
     if (!video || !isVisible || videoFailed) return;
 
-    // Hardware fraco: não pré-carrega para economizar memória/CPU
-    video.preload = isLowEnd ? "none" : "metadata";
+    // Sempre usa "metadata" quando visível: garante que o browser carregue
+    // dados suficientes para iniciar a reprodução, mesmo em hardware fraco.
+    // "none" bloquearia o canplay event em conexões lentas.
+    video.preload = "metadata";
     video.load();
 
     // Fallback: timeout estendido para hardware fraco ou conexão lenta
@@ -92,11 +82,11 @@ export function BackgroundScroll() {
         clearTimeout(timeoutRef.current);
         timeoutRef.current = null;
       }
-      // Dispara play() explicitamente: necessário em alguns browsers quando
-      // as <source> são adicionadas dinamicamente e preload="none"
+      // play() explícito: necessário quando <source> são adicionadas dinamicamente.
+      // Verifica video.paused antes de marcar como falha: em alguns browsers o autoPlay
+      // já iniciou a reprodução e play() rejeita com AbortError mesmo tocando.
       video.play().catch(() => {
-        // Autoplay bloqueado pelo browser (política de mídia) — poster permanece
-        setVideoFailed(true);
+        if (video.paused) setVideoFailed(true);
       });
     };
 
@@ -128,7 +118,6 @@ export function BackgroundScroll() {
   if (!mounted || shouldReduceMotion || videoFailed) {
     return (
       <div
-        ref={containerRef}
         className="fixed inset-0 w-full h-full z-0 pointer-events-none bg-primary-sea"
         style={
           mounted
@@ -146,7 +135,6 @@ export function BackgroundScroll() {
 
   return (
     <div
-      ref={containerRef}
       className="fixed inset-0 w-full h-full z-0 pointer-events-none bg-primary-sea"
       aria-hidden="true"
     >
@@ -158,7 +146,7 @@ export function BackgroundScroll() {
         muted
         playsInline
         poster={posterPath}
-        preload={isVisible ? (isLowEnd ? "none" : "metadata") : "none"}
+        preload={isVisible ? "metadata" : "none"}
         className="absolute inset-0 h-full w-full object-cover object-center pointer-events-none"
       >
         {/* MP4 H.264 primeiro: decodificação por hardware em CPUs/GPUs antigas */}
