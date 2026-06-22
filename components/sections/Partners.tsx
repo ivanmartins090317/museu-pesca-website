@@ -142,20 +142,6 @@ export function Partners({ partners }: PartnersProps) {
             </div>
           </motion.div>
         </div>
-        {/* Background text "APOIO" */}
-        <div className="absolute inset-0 flex  items-center justify-center pointer-events-none z-0 overflow-hidden">
-          <h2
-            className="text-[clamp(6rem,25vw,20rem)] font-black text-transparent select-none leading-none"
-            style={{
-              WebkitTextStroke: "2px rgba(255, 255, 255, 0.08)",
-              WebkitTextFillColor: "transparent",
-              letterSpacing: "0.05em",
-              fontFamily: "var(--font-roboto)",
-            }}
-          >
-            APOIO
-          </h2>
-        </div>
       </div>
     </section>
   );
