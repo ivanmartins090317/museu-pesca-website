@@ -29,6 +29,15 @@ interface Virtual360CarouselItemProps {
   onTouchEnd: (e: React.TouchEvent) => void;
 }
 
+const TOUR_PREVIEW_IMAGES = [
+  "/images/museu_barco.jpeg",
+  "/images/museu-de-pesca-santos-visao-fora.webp",
+] as const;
+
+function getTourPreviewImage(index: number): string {
+  return TOUR_PREVIEW_IMAGES[index] ?? TOUR_PREVIEW_IMAGES[0];
+}
+
 /**
  * Poster de preview exibido antes do usuário iniciar o tour.
  * Evita que o Matterport (WebGL) carregue automaticamente —
@@ -46,7 +55,7 @@ function TourPlaceholder({
   return (
     <div className="absolute inset-0 flex flex-col items-center justify-center bg-primary-sea/60">
       <Image
-        src="/images/museu-de-pesca-santos-visao-fora.webp"
+        src={getTourPreviewImage(index)}
         alt={`Preview da visita virtual ${index + 1} de ${total}`}
         fill
         className="object-cover opacity-40"

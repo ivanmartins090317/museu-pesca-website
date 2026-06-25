@@ -27,10 +27,11 @@ export function CollabTeste({ collabs }: CollabProps) {
           className="text-center mb-6 md:mb-8"
         >
           <h2 className="text-h2 font-bold text-white mb-3">
-            Museus <br className="sm:hidden" /> Parceiros
+            Visite os museus <br className="sm:hidden" /> parceiros
           </h2>
           <p className="text-body text-white max-w-xl mx-auto">
-            Explore os museus que fazem parte do Metaverso do Museu de Pesca
+            Explore também os museus que fazem parte do Metaverso do <br />{" "}
+            Museu de Pesca
           </p>
         </motion.div>
       </div>

@@ -17,27 +17,26 @@ interface BlogCardProps {
 
 function BlogCard({ post }: BlogCardProps) {
   return (
-    <Card className="h-full flex flex-col hover:shadow-xl transition-all duration-300 hover:scale-[1.02]">
+    <Card className="h-full flex flex-col hover:shadow-xl transition-all duration-300 hover:scale-[1.02] bg-primary-sea_floor/30 backdrop-blur-md text-neutral-white border border-white/10 isolate">
       <div className="relative aspect-[4/3] overflow-hidden rounded-t-lg">
         <Image
           src={post.thumbnail}
-          alt={post.title}
+          alt={post.titleAlt}
           fill
           className="object-cover"
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
       </div>
       <CardHeader>
         <div className="flex items-center justify-between mb-2">
           <Badge variant="info">{post.category}</Badge>
-          <time className="text-small text-neutral-gray-800">
+          <time className="text-small text-neutral-white">
             {new Date(post.publishedAt).toLocaleDateString("pt-BR")}
           </time>
         </div>
         <CardTitle className="text-xl">{post.title}</CardTitle>
       </CardHeader>
       <CardContent className="flex-1">
-        <CardDescription className="line-clamp-2">
+        <CardDescription className="line-clamp-2 text-neutral-white/70">
           {post.excerpt}
         </CardDescription>
       </CardContent>
@@ -46,7 +45,7 @@ function BlogCard({ post }: BlogCardProps) {
           href={post.url || `/blog/${post.slug}`}
           target={post.url ? "_blank" : undefined}
           rel={post.url ? "noopener noreferrer" : undefined}
-          className="text-primary-sea hover:text-primary-aqua font-medium text-sm transition-colors"
+          className="text-neutral-white/70 hover:text-primary-aqua font-medium text-sm transition-colors"
         >
           Ler mais →
         </Link>
@@ -62,7 +61,7 @@ export function Blog({ title, posts, ctaLink }: BlogSectionProps) {
         <div className="text-center mb-12">
           <h2 className="text-h2 font-bold text-white mb-4">{title}</h2>
           <p className="text-body text-white max-w-2xl mx-auto">
-            Descubra histórias fascinantes sobre a pesca e nossa cultura.
+            Artigos, curiosidades e bastidores do acervo do Museu de Pesca.{" "}
           </p>
         </div>
 

@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 export interface HeroProps {
   title?: string;
   subtitle: string;
@@ -42,8 +44,9 @@ export interface colabora {
 
 export interface BlogPost {
   id: string;
-  title: string;
-  excerpt: string;
+  title: ReactNode;
+  titleAlt: string;
+  excerpt: ReactNode;
   category: string;
   publishedAt: Date;
   thumbnail: string;
