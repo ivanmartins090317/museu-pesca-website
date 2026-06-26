@@ -63,7 +63,7 @@ const blogData = {
       id: "1",
       title: (
         <>
-          Lula-gigante <em>(Architeuthis spp.)</em>
+          Lula-gigante <em>(Architeuthis</em> spp.)
         </>
       ),
       titleAlt: "Lula-gigante (Architeuthis spp.)",
@@ -98,10 +98,7 @@ const blogData = {
       title: "Exposição: arcadas de tubarões",
       titleAlt: "Exposição: arcadas de tubarões",
       excerpt: (
-        <>
-          Arcada dentária dos <em>Elasmobranchii – Selatachimorpha</em>{" "}
-          (tubrarões)
-        </>
+        <>Arcada dentária dos Elasmobranchii – Selatachimorpha (tubrarões)</>
       ),
       category: "Ciência",
       publishedAt: new Date("2024-01-05"),
