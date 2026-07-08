@@ -241,6 +241,17 @@ export function Footer() {
             © {new Date().getFullYear()} {siteConfig.name}. Todos os direitos
             reservados.
           </p>
+          <p className="text-gray-500 text-sm text-center md:text-left">
+            Website desenvolvido por{" "}
+            <a
+              href="https://portfolio-ivanmartins.vercel.app/"
+              target="_blank"
+              className="text-cyan-400/20 hover:text-cyan-500 transition-colors"
+            >
+              Ivan Martins
+            </a>
+            .
+          </p>
           <div className="gap-6 hidden">
             <Link
               href="/privacidade"
